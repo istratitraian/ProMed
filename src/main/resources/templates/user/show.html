@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head lang="en" th:replace="fragments/head-resources :: resources">
+        <title>Show User</title>
+    </head>
+    <body>
+        <footer th:replace="fragments/navbar :: navbar"></footer>
+        <div class="container" id="margin-top50-bottom150">
+
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2 th:text="${user.username}">User Name</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">User Id:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" th:text="${user.id}">User Id</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">First Name:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" th:text="${user.firstName}">Description</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Last Name:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" th:text="${user.lastName}">Price</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 sm-2 control-label">Email:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" th:text="${user.email}">Image</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 sm-2 control-label">Phone Number:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" th:text="${user.phoneNumber}">Image</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </body>
+</html>

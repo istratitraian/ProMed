@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="resources">
+        <meta charset="UTF-8"/>
+
+        <!--bootstrap 1-->
+        <link href=""
+              th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}"
+              rel="stylesheet" media="screen"/>
+
+        <!--bootstrap 2-->
+        <script 
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+            th:src="@{/webjars/jquery/3.2.1/jquery.min.js}">
+        </script>
+
+        <!--bootstrap 3-->
+        <script 
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.js}">
+        </script>
+
+
+        <link href="../../static/css/basic.css"
+              th:href="@{/static/css/basic.css}" rel="stylesheet" media="screen"/>
+
+
+
+    </head>
+    <body></body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head lang="en" th:replace="fragments/head-resources :: resources">
+        <title>List Users</title>
+    </head>
+    <body>
+        <footer th:replace="fragments/navbar :: navbar"></footer>
+        <div class="container" id="margin-top50-bottom150">
+
+            <div th:if="${not #lists.isEmpty(users)}">
+                <h2>User List</h2>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Id</th>
+                        <th>User Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>List</th>
+                    <div sec:authorize="hasAuthority('ADMIN')">
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </div>
+                    </tr>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.firstName}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td><a th:href="@{'/user/show/' + ${user.id}}">View</a> </td>
+
+                    <div sec:authorize="hasAuthority('ADMIN')">
+                        <td><a th:href="@{'/admin/edit/' + ${user.id}}">Edit</a> </td>
+                        <td><a th:href="@{'/admin/delete/' + ${user.id}}">Delete</a> </td>
+                    </div>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <a href="" th:href="@{/user/new}">New User</a>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </body>
+</html>
