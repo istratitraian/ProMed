@@ -30,22 +30,18 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         loadRoles();
         loadUsersAndUsers();
-
-        System.out.println(" *** Authorities " + roleRepository.findAll());
     }
 
     private void loadRoles() {
-        roleRepository.save(SecurityConfig.AUTHORITY_ADMIN);
-        roleRepository.save(SecurityConfig.AUTHORITY_USER);
-        roleRepository.save(SecurityConfig.AUTHORITY_GUEST);
+        roleRepository.save(SecurityConfig.AUTHORITY_SU_ADMIN);
+        roleRepository.save(SecurityConfig.AUTHORITY_MEDIC);
+        roleRepository.save(SecurityConfig.AUTHORITY_PACIENT);
     }
 
     public void loadUsersAndUsers() {
 
         User user0 = new User();
-        user0.addAuthority(SecurityConfig.AUTHORITY_ADMIN);
-        user0.addAuthority(SecurityConfig.AUTHORITY_USER);
-        user0.addAuthority(SecurityConfig.AUTHORITY_GUEST);
+        user0.addAuthority(SecurityConfig.AUTHORITY_SU_ADMIN);
         user0.setUsername("admin");
         user0.setEncryptedPassword(passwordEncoder.encode("admin"));
         user0.setFirstName("Istrati");
@@ -56,16 +52,29 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         userRepository.save(user0);
 
         for (int i = 0; i < 10; i++) {
-            synchronized(this){
-            User user1 = new User();
-            user1.addAuthority(SecurityConfig.AUTHORITY_USER);
-            user1.setUsername("user_" + i);
-            user1.setEncryptedPassword(passwordEncoder.encode("password"));
-            user1.setFirstName("Name" + i);
-            user1.setLastName("LastName" + i);
-            user1.setEmail(i + "a@test.com");
-            user1.setPhoneNumber("074800000" + i);
-            userRepository.save(user1);
+            synchronized (this) {
+                User user1 = new User();
+                user1.addAuthority(SecurityConfig.AUTHORITY_PACIENT);
+                user1.setUsername("pacient_" + i);
+                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setFirstName("Name" + i);
+                user1.setLastName("LastName" + i);
+                user1.setEmail(i + "pacient@test.com");
+                user1.setPhoneNumber("074800000" + i);
+                userRepository.save(user1);
+            }
+        }
+        for (int i = 10; i < 20; i++) {
+            synchronized (this) {
+                User user1 = new User();
+                user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+                user1.setUsername("medic_" + i);
+                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setFirstName("Name" + i);
+                user1.setLastName("LastName" + i);
+                user1.setEmail(i + "medic@test.com");
+                user1.setPhoneNumber("074800000" + i);
+                userRepository.save(user1);
             }
         }
 

@@ -20,9 +20,7 @@ import ro.duoline.promed.domains.security.Authority;
 @EnableJpaRepositories("ro.duoline.promed.jpa")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public static final Authority AUTHORITY_ADMIN = new Authority("ADMIN");
-    public static final Authority AUTHORITY_GUEST = new Authority("GUEST");
-    public static final Authority AUTHORITY_USER = new Authority("USER");
+    public static final Authority AUTHORITY_SU_ADMIN = new Authority("ADMIN");
     public static final Authority AUTHORITY_MEDIC = new Authority("MEDIC");
     public static final Authority AUTHORITY_PACIENT = new Authority("PACIENT");
 
@@ -60,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/js/**").permitAll()
                 .and().authorizeRequests().antMatchers("/user/**").permitAll()
                 .and().formLogin().loginPage("/login").permitAll()
-                .and().authorizeRequests().antMatchers("/admin/**").hasAuthority(AUTHORITY_ADMIN.getAuthority())//hasRole(ROLE_ADMIN.getRole()).anyRequest().authenticated()
+                .and().authorizeRequests().antMatchers("/admin/**").hasAuthority(AUTHORITY_SU_ADMIN.getAuthority())//hasRole(ROLE_ADMIN.getRole()).anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedPage("/access_denied");
 
     }
