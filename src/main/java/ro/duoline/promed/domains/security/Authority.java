@@ -1,6 +1,5 @@
 package ro.duoline.promed.domains.security;
 
-import ro.duoline.promed.domains.AbstractDomainClass;
 import ro.duoline.promed.domains.User;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,20 +7,36 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * @author I.T.W764
  */
 @Entity
 @Table(name="Roles")
-public class Authority extends AbstractDomainClass implements Serializable {
+public class Authority 
+//        extends AbstractDomainClass
+        implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String authority = "";
+   @Id
+    private String authority;
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    @Version
+    private Integer version;
 
     @JoinTable(name = "Users_x_Roles",
             joinColumns = @JoinColumn(name = "RoleId"),
