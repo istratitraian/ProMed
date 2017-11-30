@@ -18,22 +18,15 @@ import javax.persistence.Version;
  * @author I.T.W764
  */
 @Entity
-@Table(name="Roles")
-public class Authority 
-//        extends AbstractDomainClass
+@Table(name = "Roles")
+public class Authority
+        //        extends AbstractDomainClass
         implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-   @Id
+    private static final long serialVersionUID = 111L;
+
+    @Id
     private String authority;
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
 
     @Version
     private Integer version;
@@ -57,6 +50,14 @@ public class Authority
 
     public void setAuthority(String role) {
         this.authority = role;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public List<User> getUsers() {
