@@ -12,11 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ro.duoline.promed.domains.security.Authority;
 
 @Configuration
-@EnableWebMvc  //ro.duoline.promed.jpa
+  //ro.duoline.promed.jpa
 @EnableWebSecurity
 @EnableJpaRepositories("ro.duoline.promed.jpa")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -24,6 +23,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final Authority AUTHORITY_ADMIN = new Authority("ADMIN");
     public static final Authority AUTHORITY_GUEST = new Authority("GUEST");
     public static final Authority AUTHORITY_USER = new Authority("USER");
+    public static final Authority AUTHORITY_MEDIC = new Authority("MEDIC");
+    public static final Authority AUTHORITY_PACIENT = new Authority("PACIENT");
 
     @Resource(name = "userDetailsService")
     private UserDetailsService userDetailsService;
