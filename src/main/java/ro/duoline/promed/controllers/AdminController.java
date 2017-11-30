@@ -57,7 +57,7 @@ public class AdminController {
         }
         User u = userFormToUser.convert(userForm);
 
-        u.addAuthority(SecurityConfig.AUTHORITY_PACIENT);
+        u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
 
         User savedUser = userRepository.save(u);
         return "redirect:/user/show/" + savedUser.getId();
