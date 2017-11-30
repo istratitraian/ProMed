@@ -47,8 +47,8 @@ public class Authority
     public Authority() {
     }
 
-    public Authority(String role) {
-        this.authority = role;
+    public Authority(String authority) {
+        this.authority = authority;
     }
 
     public String getAuthority() {
