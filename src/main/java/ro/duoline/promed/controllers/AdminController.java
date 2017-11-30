@@ -41,7 +41,7 @@ public class AdminController {
     @GetMapping("/admin/newmedic")
     public String newMedic(Model model) {
         model.addAttribute("medicForm", new UserForm());
-        return "medicform";
+        return "admin/medicform";
     }
 
     @PostMapping("/admin/newmedic")
