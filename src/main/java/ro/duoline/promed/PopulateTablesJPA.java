@@ -1,5 +1,6 @@
 package ro.duoline.promed;
 
+import ro.duoline.promed.jpa.SpecializationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -7,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.jpa.RoleRepository;
 import ro.duoline.promed.jpa.UserRepository;
@@ -25,10 +27,14 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private SpecializationRepository specializationRepository;
+
     @Override
 //    @PostConstruct
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         loadRoles();
+        loadSpecializations();
         loadUsersAndUsers();
     }
 
@@ -36,6 +42,12 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         roleRepository.save(SecurityConfig.AUTHORITY_SU_ADMIN);
         roleRepository.save(SecurityConfig.AUTHORITY_MEDIC);
         roleRepository.save(SecurityConfig.AUTHORITY_PACIENT);
+    }
+
+    private void loadSpecializations() {
+        specializationRepository.save(SPECIALIZATION_CARDIOLOG);
+        specializationRepository.save(SPECIALIZATION_RADIOLOG);
+        specializationRepository.save(SPECIALIZATION_STOMATOLOG);
     }
 
     public void loadUsersAndUsers() {
@@ -64,10 +76,39 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
                 userRepository.save(user1);
             }
         }
-        for (int i = 10; i < 20; i++) {
+        for (int i = 10; i < 14; i++) {
             synchronized (this) {
                 User user1 = new User();
                 user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+                user1.addSpecialization(SPECIALIZATION_CARDIOLOG);
+                user1.setUsername("medic_" + i);
+                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setFirstName("Name" + i);
+                user1.setLastName("LastName" + i);
+                user1.setEmail(i + "medic@test.com");
+                user1.setPhoneNumber("074800000" + i);
+                userRepository.save(user1);
+            }
+        }
+        for (int i = 14; i < 17; i++) {
+            synchronized (this) {
+                User user1 = new User();
+                user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+                user1.addSpecialization(SPECIALIZATION_RADIOLOG);
+                user1.setUsername("medic_" + i);
+                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setFirstName("Name" + i);
+                user1.setLastName("LastName" + i);
+                user1.setEmail(i + "medic@test.com");
+                user1.setPhoneNumber("074800000" + i);
+                userRepository.save(user1);
+            }
+        }
+        for (int i = 17; i < 20; i++) {
+            synchronized (this) {
+                User user1 = new User();
+                user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+                user1.addSpecialization(SPECIALIZATION_STOMATOLOG);
                 user1.setUsername("medic_" + i);
                 user1.setEncryptedPassword(passwordEncoder.encode("password"));
                 user1.setFirstName("Name" + i);
@@ -79,5 +120,9 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         }
 
     }
+
+    public static final Specialization SPECIALIZATION_CARDIOLOG = new Specialization("Cardiolog");
+    public static final Specialization SPECIALIZATION_RADIOLOG = new Specialization("Radiolog");
+    public static final Specialization SPECIALIZATION_STOMATOLOG = new Specialization("Stomatolog");
 
 }

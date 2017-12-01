@@ -2,8 +2,9 @@ package ro.duoline.promed.domains.security;
 
 import ro.duoline.promed.domains.User;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,8 +35,10 @@ public class Authority
     @JoinTable(name = "Users_x_Roles",
             joinColumns = @JoinColumn(name = "RoleId"),
             inverseJoinColumns = @JoinColumn(name = "UserId"))
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<User> users = new ArrayList<>();//new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<User> users =
+//            new ArrayList<>();
+new HashSet<>();
 
     public Authority() {
     }
@@ -60,11 +63,11 @@ public class Authority
         this.version = version;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 

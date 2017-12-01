@@ -3,8 +3,10 @@ package ro.duoline.promed.domains;
 import ro.duoline.promed.domains.security.Authority;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -44,6 +46,14 @@ public class User extends AbstractDomainClass implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "RoleId"))
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Authority> authorities = new ArrayList<>();// new HashSet<>();
+
+    @JoinTable(name = "Users_x_Specializations",
+            joinColumns = @JoinColumn(name = "UserId"),
+            inverseJoinColumns = @JoinColumn(name = "SpecializationId"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Specialization> specializations
+            = //            new ArrayList<>();
+            new HashSet<>();
 
     public User() {
     }
@@ -135,13 +145,36 @@ public class User extends AbstractDomainClass implements Serializable {
             this.authorities.add(auth);
         }
         if (!auth.getUsers().contains(this)) {
-            auth.getUsers().add(this);
+            auth.addUser(this);
         }
     }
 
     public void removeAuthority(Authority auth) {
         this.authorities.remove(auth);
-        auth.getUsers().remove(this);
+        auth.removeUser(this);
+    }
+
+    public Set<Specialization> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(Set<Specialization> specializations) {
+        this.specializations = specializations;
+    }
+
+    public void addSpecialization(Specialization specialization) {
+
+        if (!specializations.contains(specialization)) {
+            this.specializations.add(specialization);
+        }
+        if (!specialization.getUsers().contains(this)) {
+            specialization.addUser(this);
+        }
+    }
+
+    public void removeSpecialization(Specialization specialization) {
+        this.specializations.remove(specialization);
+        specialization.removeUser(this);
     }
 
     public Integer getFailedLoginAttempts() {
