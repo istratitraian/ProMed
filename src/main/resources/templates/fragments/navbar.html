@@ -18,31 +18,35 @@
                     </button>
                     <a class="navbar-brand" href="#" th:href="@{/}">
                         <span  id="appNameId1">
-                           Pro<span id="appNameId2">MED</span>
+                            Pro<span id="appNameId2">MED</span>
                         </span>
                     </a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbarId">
                     <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#"  >Specializari<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">ORL</a></li>
-                                <li><a href="#">Cardiologie</a></li>
-                                <li><a href="#">Stomatologie</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="#" th:href="@{/specialization/list}">Specializari</a></li>
+                        <li><a href="#" th:href="@{/medic/list}">Doctori</a></li>
                     </ul>
-                    <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#"  >Doctori<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Dan Deleanu Cardiolog</a></li>
-                                <li><a href="#">Marian Postu Cardiolog</a></li>
-                                <li><a href="#">Dan Rares Nechifor Radiolog</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <!--                    <ul class="nav navbar-nav">
+                                            <li class="dropdown">
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"  >Specializari<span class="caret"></span></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">ORL</a></li>
+                                                    <li><a href="#">Cardiologie</a></li>
+                                                    <li><a href="#">Stomatologie</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        <ul class="nav navbar-nav">
+                                            <li class="dropdown">
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"  >Doctori<span class="caret"></span></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Dan Deleanu Cardiolog</a></li>
+                                                    <li><a href="#">Marian Postu Cardiolog</a></li>
+                                                    <li><a href="#">Dan Rares Nechifor Radiolog</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>-->
 
                     <div class="col-sm-3 col-md-3">
                         <form class="navbar-form" role="search">

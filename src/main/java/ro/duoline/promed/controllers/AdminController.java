@@ -5,6 +5,8 @@
  */
 package ro.duoline.promed.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,11 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import ro.duoline.promed.SecurityConfig;
-import ro.duoline.promed.commands.UserForm;
+import ro.duoline.promed.commands.UserMedicForm;
 import ro.duoline.promed.converters.UserFormToUser;
-import ro.duoline.promed.converters.UserToUserForm;
+import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
+import ro.duoline.promed.jpa.SpecializationRepository;
 import ro.duoline.promed.jpa.UserRepository;
 
 /**
@@ -36,31 +39,49 @@ public class AdminController {
     @Autowired
     private UserFormToUser userFormToUser;
 
-//    @Autowired
-//    private UserToUserForm userToUserForm;
+    @Autowired
+    private SpecializationRepository specializationRepository;
+
     @GetMapping("/admin/newmedic")
     public String newMedic(Model model) {
-        model.addAttribute("medicForm", new UserForm());
+        model.addAttribute("medicForm", new UserMedicForm());
         return "admin/medicform";
     }
 
     @PostMapping("/admin/newmedic")
-    public String saveOrUpdate(@Valid UserForm userForm, BindingResult bindingResult) {
+    public String saveOrUpdate(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
 
-        System.out.println("UserCOntroller.savOrUpdate()" + userForm);
+        System.out.println("UserCOntroller.savOrUpdate()" + userMedicForm);
 
-        newUserFormValidator.validate(userForm, bindingResult);
+        newUserFormValidator.validate(userMedicForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
             System.out.println("saveOrUpdate(/) hasErrors()" + bindingResult.hasErrors());
             return "admin/medicform";
         }
-        User u = userFormToUser.convert(userForm);
+
+        Specialization specialization = specializationRepository.findByName(userMedicForm.getSpecialization());
+
+        String[] spechs = userMedicForm.getSpecialization().split(",");
+        List<Specialization> list = new ArrayList<>();
+        for (String spech : spechs) {
+            list.add(new Specialization(spech));
+        }
+
+        if (specialization == null) {
+
+            specializationRepository.save(list);
+        }
+
+        User u = userFormToUser.convert(userMedicForm);
 
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+        u.addSpecialization(specialization);
 
         User savedUser = userRepository.save(u);
         return "redirect:/user/show/" + savedUser.getId();
     }
+
+   
 
 }

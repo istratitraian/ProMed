@@ -13,5 +13,7 @@ import ro.duoline.promed.domains.Specialization;
  * @author I.T.W764
  */
 public interface SpecializationRepository extends CrudRepository<Specialization, Integer> {
+
+    public Specialization findByName(String string);
     
 }

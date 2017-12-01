@@ -2,9 +2,9 @@ package ro.duoline.promed.domains;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -21,15 +21,16 @@ public class Specialization extends AbstractDomainClass implements Serializable 
 
     private static final long serialVersionUID = 222L;
 
+    @Column(unique = true)
     private String name;
 
     @JoinTable(name = "Users_x_Specializations",
             joinColumns = @JoinColumn(name = "SpecializationId"),
             inverseJoinColumns = @JoinColumn(name = "UserId"))
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<User> users = 
-//            new ArrayList<>();
- new HashSet<>();
+    private Set<User> users
+            = //            new ArrayList<>();
+            new HashSet<>();
 
     public Specialization(String name) {
         this.name = name;

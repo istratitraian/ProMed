@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head lang="en" th:replace="fragments/head-resources :: resources">
+        <title>Specialization Form</title>
+    </head>
+    <body>
+        <footer th:replace="fragments/navbar :: navbar"></footer>
+        <div class="container" id="margin-top50-bottom150">
+
+            <h2>New Specialization</h2>
+            <div>
+                <form class="form-horizontal"  th:action="@{/admin/newspecialization}" method="post">
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Specialization Name:</label>
+                        <div class="col-sm-10">
+                            <!--<input type="text" class="form-control" th:field="*{phoneNumber}"/>-->
+                            <input type="text" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> </label>
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-default">Add To DB</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </body>
+</html>
