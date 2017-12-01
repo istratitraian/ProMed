@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head lang="en" th:replace="fragments/head-resources :: resources">
-        <title>List Speciaizations</title>
+        <title>List Medic</title>
     </head>
     <body>
         <footer th:replace="fragments/navbar :: navbar"></footer>
+        
         <div class="container" id="margin-top50-bottom150">
-
             <div th:if="${not #lists.isEmpty(medics)}">
-                <h2>Specialization List</h2>
+                <h2>Medic List</h2>
                 <div  sec:authorize="hasAuthority('ADMIN')" class="row">
                     <div class="col-sm-3">
-                        <a href="" th:href="@{/admin/newsmedic}">New Medic</a>
+                        <a href="" th:href="@{/admin/newmedic}">New Medic</a>
                     </div>
                 </div>
                 <table class="table table-striped">
@@ -19,12 +19,13 @@
                         <th>Id</th>
                         <th>First Name</th>
                         <th>last Name</th>
+                        <th></th>
                     </tr>
                     <tr th:each="medic : ${medics}">
                         <td th:text="${medic.id}"></td>
                         <td th:text="${medic.firstName}"></td>
                         <td th:text="${medic.lastName}"></td>
-                        <!--<td><a th:href="@{'/user/show/' + ${user.id}}">View</a> </td>-->
+                        <td><a th:href="@{'/user/show/' + ${medic.id}}">View</a> </td>
                     </tr>
                 </table>
             </div>

@@ -31,7 +31,7 @@ public class MedicController {
     @GetMapping("/medic/list")
     public String list(Model model) {
         model.addAttribute("medics", roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
-        return "specialization/list";
+        return "medic/list";
     }
 
 }
