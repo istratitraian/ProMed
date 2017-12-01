@@ -12,8 +12,6 @@
 
 
 body {
-    /*padding-top: 40px;*/
-    /*padding-bottom: 40px;*/
     background-color: #eee;
 }
 
@@ -48,4 +46,18 @@ body {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+.retroshd {
+    letter-spacing: .05em;
+    text-shadow: 2px 3px 6px #222;
+    /*, 7px 7px 0px rgba(0, 0, 0, 0.2);*/
+}
+
+#appNameId1{
+    color:white;
+}
+#appNameId2{
+    color:red;
+    font-weight: bold;
 }
