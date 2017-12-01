@@ -32,6 +32,8 @@ public class Specialization extends AbstractDomainClass implements Serializable 
             = //            new ArrayList<>();
             new HashSet<>();
 
+    
+    
     public Specialization(String name) {
         this.name = name;
     }

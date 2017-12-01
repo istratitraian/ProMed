@@ -9,14 +9,13 @@
 
             <h2>New Specialization</h2>
             <div>
-                <form class="form-horizontal"  th:action="@{/admin/newspecialization}" method="post">
+                <form class="form-horizontal"   th:object="${spechForm}" th:action="@{/admin/newspecialization}" method="post">
 
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Specialization Name:</label>
                         <div class="col-sm-10">
-                            <!--<input type="text" class="form-control" th:field="*{phoneNumber}"/>-->
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" th:field="*{name}"/>
                         </div>
                     </div>
 

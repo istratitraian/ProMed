@@ -45,7 +45,7 @@ public class AdminController {
     @GetMapping("/admin/newmedic")
     public String newMedic(Model model) {
         model.addAttribute("medicForm", new UserMedicForm());
-        return "admin/medicform";
+        return "medic/medicform";
     }
 
     @PostMapping("/admin/newmedic")
@@ -57,7 +57,7 @@ public class AdminController {
 
         if (bindingResult.hasErrors()) {
             System.out.println("saveOrUpdate(/) hasErrors()" + bindingResult.hasErrors());
-            return "admin/medicform";
+            return "medic/medicform";
         }
 
         Specialization specialization = specializationRepository.findByName(userMedicForm.getSpecialization());
@@ -79,9 +79,7 @@ public class AdminController {
         u.addSpecialization(specialization);
 
         User savedUser = userRepository.save(u);
-        return "redirect:/user/show/" + savedUser.getId();
+        return "redirect:/medic/show/" + savedUser.getId();
     }
-
-   
 
 }

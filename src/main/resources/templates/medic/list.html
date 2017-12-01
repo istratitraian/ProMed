@@ -6,7 +6,7 @@
     <body>
         <footer th:replace="fragments/navbar :: navbar"></footer>
         
-        <div class="container" id="margin-top50-bottom150">
+        <div class="container margin-top100-bottom150">
             <div th:if="${not #lists.isEmpty(medics)}">
                 <h2>Medic List</h2>
                 <div  sec:authorize="hasAuthority('ADMIN')" class="row">
@@ -25,7 +25,7 @@
                         <td th:text="${medic.id}"></td>
                         <td th:text="${medic.firstName}"></td>
                         <td th:text="${medic.lastName}"></td>
-                        <td><a th:href="@{'/user/show/' + ${medic.id}}">View</a> </td>
+                        <td><a th:href="@{'/medic/show/' + ${medic.id}}">Details</a> </td>
                     </tr>
                 </table>
             </div>

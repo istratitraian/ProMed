@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head lang="en" th:replace="fragments/head-resources :: resources">
-        <title>List Speciaizations</title>
+        <title>List Services</title>
     </head>
     <body>
         <footer th:replace="fragments/navbar :: navbar"></footer>
         <div class="container" id="margin-top50-bottom150">
 
-            <div th:if="${not #lists.isEmpty(specializations)}">
-                <h2>Specialization List</h2>
+            <div th:if="${not #lists.isEmpty(services)}">
+                <h2>Services List</h2>
                 <div  sec:authorize="hasAuthority('ADMIN')" class="row">
                     <div class="col-sm-3">
-                        <a href="" th:href="@{/admin/newspecialization}">New Specialization</a>
+                        <a href="" th:href="@{/admin/newservice}">New Service</a>
                     </div>
                 </div>
                 <table class="table table-striped">
                     <tr>
                         <!--<th>Id</th>-->
-                        <th>Specialization</th>
-                        <th></th>
+                        <th>Service</th>
                     </tr>
-                    <tr th:each="spech : ${specializations}">
-                        <!--<td th:text="${spech.id}"></td>-->
-                        <td th:text="${spech.name}"></td>
-                        <td><a th:href="@{'/specialization/services/' + ${spech.id}}">Services</a> </td>
+                    <tr th:each="service : ${services}">
+                        <!--<td th:text="${service.id}"></td>-->
+                        <td th:text="${service}"></td>
+<!--                        <td><a th:href="@{'/specialization/services/' + ${service.id}}">Services</a> </td>
+                        <td><a th:href="@{'/specialization/services/' + ${service.id}}">Services</a> </td>-->
                     </tr>
                 </table>
             </div>
