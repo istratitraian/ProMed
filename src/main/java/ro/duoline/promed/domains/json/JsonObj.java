@@ -1,9 +1,10 @@
-package ro.duoline.promed;
+package ro.duoline.promed.domains.json;
 
 import java.io.Serializable;
 
-public class JsonObj implements Serializable{
-    public static final long serialVersionUid = 1L;
+public class JsonObj implements Serializable {
+
+    public static final long serialVersionUID = 1L;
     private String name;
     private String id;
 
@@ -11,7 +12,7 @@ public class JsonObj implements Serializable{
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -19,7 +20,7 @@ public class JsonObj implements Serializable{
         return id;
     }
 
-    void setId(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

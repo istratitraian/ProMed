@@ -31,7 +31,7 @@ public class Specialization extends AbstractDomainClass implements Serializable 
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "Specializations", fetch = FetchType.LAZY, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
+    @OneToMany(mappedBy = "specialization", fetch = FetchType.EAGER, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
 //    @JsonIgnore
     private Set<Service> services = new HashSet<>();
 

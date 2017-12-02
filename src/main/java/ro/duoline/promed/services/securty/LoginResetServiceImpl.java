@@ -26,9 +26,10 @@ public class LoginResetServiceImpl implements LoginResetService {
     @Override
     public void resetFailedLogins() {
 
-        System.out.println("LoginResetServiceImpl.resetFailedLogins()");
 
         List<User> users = userService.listAll();
+
+//        System.out.println("LoginResetServiceImpl.resetFailedLogins() uses : "+users);
 
         users.forEach(user -> {
             if (!user.getEnabled() || user.getFailedLoginAttempts() > 0) {

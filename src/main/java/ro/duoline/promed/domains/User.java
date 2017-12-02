@@ -2,7 +2,6 @@ package ro.duoline.promed.domains;
 
 import ro.duoline.promed.domains.security.Authority;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -139,12 +138,12 @@ public class User extends AbstractDomainClass implements Serializable {
 
     public void addAuthority(Authority auth) {
 
-        if (!authorities.contains(auth)) {
-            this.authorities.add(auth);
-        }
-        if (!auth.getUsers().contains(this)) {
-            auth.addUser(this);
-        }
+//        if (!authorities.contains(auth)) {
+        this.authorities.add(auth);
+//        }
+//        if (!auth.getUsers().contains(this)) {
+        auth.addUser(this);
+//        }
     }
 
     public void removeAuthority(Authority auth) {
@@ -162,12 +161,12 @@ public class User extends AbstractDomainClass implements Serializable {
 
     public void addSpecialization(Specialization specialization) {
 
-        if (!specializations.contains(specialization)) {
-            this.specializations.add(specialization);
-        }
-        if (!specialization.getUsers().contains(this)) {
-            specialization.addUser(this);
-        }
+//        if (!specializations.contains(specialization)) {
+        this.specializations.add(specialization);
+//        }
+//        if (!specialization.getUsers().contains(this)) {
+        specialization.addUser(this);
+//        }
     }
 
     public void removeSpecialization(Specialization specialization) {
@@ -206,6 +205,18 @@ public class User extends AbstractDomainClass implements Serializable {
     @Override
     public String toString() {
         return "User{" + "failedLoginAttempts=" + failedLoginAttempts + ", username=" + username + ", password=" + password + ", encryptedPassword=" + encryptedPassword + ", enabled=" + enabled + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", phoneNumber=" + phoneNumber + ", authorities=" + authorities + '}';
+    }
+
+    public void addLoginFailAttempt() {
+        failedLoginAttempts++;
+    }
+
+    public void addSpecializations(Set<Specialization> list) {
+        this.specializations.addAll(list);
+
+        list.forEach((specialization) -> {
+            specialization.addUser(this);
+        });
     }
 
 }

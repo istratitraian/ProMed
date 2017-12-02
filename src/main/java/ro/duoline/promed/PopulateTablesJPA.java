@@ -82,7 +82,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
                 user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
                 user1.addSpecialization(SPECIALIZATION_CARDIOLOG);
                 user1.setUsername("medic_" + i);
-                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setEncryptedPassword(passwordEncoder.encode("pass"));
                 user1.setFirstName("Name" + i);
                 user1.setLastName("LastName" + i);
                 user1.setEmail(i + "medic@test.com");
@@ -96,7 +96,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
                 user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
                 user1.addSpecialization(SPECIALIZATION_RADIOLOG);
                 user1.setUsername("medic_" + i);
-                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setEncryptedPassword(passwordEncoder.encode("pass"));
                 user1.setFirstName("Name" + i);
                 user1.setLastName("LastName" + i);
                 user1.setEmail(i + "medic@test.com");
@@ -110,7 +110,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
                 user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
                 user1.addSpecialization(SPECIALIZATION_STOMATOLOG);
                 user1.setUsername("medic_" + i);
-                user1.setEncryptedPassword(passwordEncoder.encode("password"));
+                user1.setEncryptedPassword(passwordEncoder.encode("pass"));
                 user1.setFirstName("Name" + i);
                 user1.setLastName("LastName" + i);
                 user1.setEmail(i + "medic@test.com");

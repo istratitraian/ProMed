@@ -19,9 +19,6 @@ import ro.duoline.promed.services.UserDetailsImpl;
 public class LoginAspect {
 
     @Autowired
-    private LoginFailureEventPublisher publisher;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Pointcut("execution(* org.springframework.security.authentication.AuthenticationProvider.authenticate(..))")
@@ -42,6 +39,16 @@ public class LoginAspect {
 
     @AfterThrowing("ro.duoline.promed.services.securty.LoginAspect.doAuthenticate() && args(authentication)")
     public void logAuthenicationException(Authentication authentication) {
-        publisher.publish(new LoginFailureEvent(authentication));
+
+        User user = userRepository.findByUsername((String) authentication.getPrincipal());
+        if (user != null) { //user found
+            user.addLoginFailAttempt();
+            if (user.getFailedLoginAttempts() > 5) {
+                user.setEnabled(false);
+            }
+            System.out.println("Valid User name, updating failed attempts " + user);
+            userRepository.save(user);
+        }
+
     }
 }

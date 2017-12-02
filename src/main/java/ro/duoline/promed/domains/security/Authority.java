@@ -35,9 +35,7 @@ public class Authority
             joinColumns = @JoinColumn(name = "RoleId"),
             inverseJoinColumns = @JoinColumn(name = "UserId"))
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<User> users =
-//            new ArrayList<>();
-new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     public Authority() {
     }
@@ -71,12 +69,12 @@ new HashSet<>();
     }
 
     public void addUser(User user) {
-        if (!this.users.contains(user)) {
-            this.users.add(user);
-        }
-        if (!user.getAuthorities().contains(this)) {
-            user.getAuthorities().add(this);
-        }
+//        if (!this.users.contains(user)) {
+        this.users.add(user);
+//        }
+//        if (!user.getAuthorities().contains(this)) {
+        user.getAuthorities().add(this);
+//        }
     }
 
     public void removeUser(User user) {

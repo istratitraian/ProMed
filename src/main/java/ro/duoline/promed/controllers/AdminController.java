@@ -5,8 +5,8 @@
  */
 package ro.duoline.promed.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,35 +49,34 @@ public class AdminController {
     }
 
     @PostMapping("/admin/newmedic")
-    public String saveOrUpdate(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
+    public String newMedic(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
 
-        System.out.println("UserCOntroller.savOrUpdate()" + userMedicForm);
+        System.out.println("UserCOntroller.newMedic()" + userMedicForm);
 
         newUserFormValidator.validate(userMedicForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            System.out.println("saveOrUpdate(/) hasErrors()" + bindingResult.hasErrors());
+            System.out.println("newMedic(/) hasErrors()" + bindingResult.hasErrors());
             return "medic/medicform";
         }
 
-        Specialization specialization = specializationRepository.findByName(userMedicForm.getSpecialization());
-
         String[] spechs = userMedicForm.getSpecialization().split(",");
-        List<Specialization> list = new ArrayList<>();
+        Set<Specialization> spechSet = new HashSet<>();
+
         for (String spech : spechs) {
-            list.add(new Specialization(spech));
-        }
+            Specialization specialization = new Specialization(spech);
+            spechSet.add(specialization);
 
-        if (specialization == null) {
-
-            specializationRepository.save(list);
         }
+        specializationRepository.save(spechSet);
+        
 
         User u = userFormToUser.convert(userMedicForm);
 
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
-        u.addSpecialization(specialization);
 
+        u.addSpecializations(spechSet);
+        
         User savedUser = userRepository.save(u);
         return "redirect:/medic/show/" + savedUser.getId();
     }
