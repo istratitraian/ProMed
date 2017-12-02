@@ -23,13 +23,24 @@ public class Specialization extends AbstractDomainClass implements Serializable 
     private static final long serialVersionUID = 222L;
 
     @Column(unique = true)
-    private String name;
+    private String name = "";
 
     @JoinTable(name = "Users_x_Specializations",
             joinColumns = @JoinColumn(name = "SpecializationId"),
             inverseJoinColumns = @JoinColumn(name = "UserId"))
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
+    private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+
+    public Set<UsersSpecializations> getUsersSpecializations() {
+        return usersSpecializations;
+    }
+
+    public void setUsersSpecializations(Set<UsersSpecializations> usersSpecializations) {
+        this.usersSpecializations = usersSpecializations;
+    }
 
     @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
 //    @JsonIgnore

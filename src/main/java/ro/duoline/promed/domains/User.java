@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -22,23 +23,17 @@ public class User extends AbstractDomainClass implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer failedLoginAttempts = 0;
-
-    private String username = "";
-
     @Transient
     private String password;
-
+    private String username = "";
     private String encryptedPassword;
     private Boolean enabled = true;
-
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
+    private Integer failedLoginAttempts = 0;
 
-    // @Embedded
-    // private Address shippingAddress = new Address();
     @JoinTable(name = "Users_x_Roles",
             joinColumns = @JoinColumn(name = "UserId"),
             inverseJoinColumns = @JoinColumn(name = "RoleId"))
@@ -51,16 +46,18 @@ public class User extends AbstractDomainClass implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Specialization> specializations = new HashSet<>();
 
-    public User() {
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
+    private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+
+    public Set<UsersSpecializations> getUsersSpecializations() {
+        return usersSpecializations;
     }
 
-    public User(String password, String encryptedPassword, String firstName, String lastName, String email, String phoneNumber) {
-        this.password = password;
-        this.encryptedPassword = encryptedPassword;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+    public void setUsersSpecializations(Set<UsersSpecializations> usersSpecializations) {
+        this.usersSpecializations = usersSpecializations;
+    }
+
+    public User() {
     }
 
     public String getFirstName() {
@@ -218,7 +215,8 @@ public class User extends AbstractDomainClass implements Serializable {
         this.specializations.addAll(set);
 
         set.forEach((specialization) -> {
-            specialization.addUser(this);
+//            specialization.addUser(this);
+            specialization.getUsers().add(this);
         });
     }
 

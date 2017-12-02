@@ -23,10 +23,10 @@ public class AbstractDomainClass implements DomainObject {
     @Version
     private Integer version;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateCreated;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date lastUpdated;
+//    @Temporal(javax.persistence.TemporalType.DATE)
+//    private Date dateCreated;
+//    @Temporal(javax.persistence.TemporalType.DATE)
+//    private Date lastUpdated;
 
     @Override
     public Integer getId() {
@@ -46,20 +46,20 @@ public class AbstractDomainClass implements DomainObject {
         this.version = version;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    @PreUpdate
-    @PrePersist
-    public void updateTimeStamps() {
-        lastUpdated = new Date();
-        if (dateCreated == null) {
-            dateCreated = new Date();
-        }
-    }
+//    public Date getDateCreated() {
+//        return dateCreated;
+//    }
+//
+//    public Date getLastUpdated() {
+//        return lastUpdated;
+//    }
+//
+//    @PreUpdate
+//    @PrePersist
+//    public void updateTimeStamps() {
+//        lastUpdated = new Date();
+//        if (dateCreated == null) {
+//            dateCreated = new Date();
+//        }
+//    }
 }
