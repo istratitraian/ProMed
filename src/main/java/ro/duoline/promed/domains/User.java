@@ -45,15 +45,13 @@ public class User extends AbstractDomainClass implements Serializable {
             joinColumns = @JoinColumn(name = "UserId"),
             inverseJoinColumns = @JoinColumn(name = "RoleId"))
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Authority> authorities = new ArrayList<>();// new HashSet<>();
+    private Set<Authority> authorities = new HashSet<>();
 
     @JoinTable(name = "Users_x_Specializations",
             joinColumns = @JoinColumn(name = "UserId"),
             inverseJoinColumns = @JoinColumn(name = "SpecializationId"))
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Specialization> specializations
-            = //            new ArrayList<>();
-            new HashSet<>();
+    private Set<Specialization> specializations = new HashSet<>();
 
     public User() {
     }
@@ -131,11 +129,11 @@ public class User extends AbstractDomainClass implements Serializable {
         this.enabled = enabled;
     }
 
-    public List<Authority> getAuthorities() {
+    public Set<Authority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(List<Authority> auth) {
+    public void setAuthorities(Set<Authority> auth) {
         this.authorities = auth;
     }
 

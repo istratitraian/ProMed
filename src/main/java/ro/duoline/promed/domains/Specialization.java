@@ -29,13 +29,19 @@ public class Specialization extends AbstractDomainClass implements Serializable 
             joinColumns = @JoinColumn(name = "SpecializationId"),
             inverseJoinColumns = @JoinColumn(name = "UserId"))
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<User> users
-            = //            new ArrayList<>();
-            new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "Specializations", fetch = FetchType.LAZY, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
 //    @JsonIgnore
     private Set<Service> services = new HashSet<>();
+
+    public Set<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(Set<Service> services) {
+        this.services = services;
+    }
 
     public Specialization(String name) {
         this.name = name;
