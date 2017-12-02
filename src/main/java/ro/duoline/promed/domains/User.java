@@ -40,14 +40,23 @@ public class User extends AbstractDomainClass implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-    @JoinTable(name = "Users_x_Specializations",
-            joinColumns = @JoinColumn(name = "UserId"),
-            inverseJoinColumns = @JoinColumn(name = "SpecializationId"))
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Specialization> specializations = new HashSet<>();
-
+//    @JoinTable(name = "Users_x_Specializations",
+//            joinColumns = @JoinColumn(name = "UserId"),
+//            inverseJoinColumns = @JoinColumn(name = "SpecializationId"))
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    private Set<Specialization> specializations = new HashSet<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+
+    public void addSpecializations(Set<Specialization> spechSet) {
+        for (Specialization specialization : spechSet) {
+            usersSpecializations.add(new UsersSpecializations(this, specialization));
+        }
+    }
+
+    public void addSpecialization(Specialization specialization) {
+        usersSpecializations.add(new UsersSpecializations(this, specialization));
+    }
 
     public Set<UsersSpecializations> getUsersSpecializations() {
         return usersSpecializations;
@@ -133,47 +142,39 @@ public class User extends AbstractDomainClass implements Serializable {
     }
 
     public void addAuthority(Authority auth) {
-
-//        if (!authorities.contains(auth)) {
         this.authorities.add(auth);
-//        }
-//        if (!auth.getUsers().contains(this)) {
-//        auth.addUser(this);
         auth.getUsers().add(this);
-//        }
     }
 
     public void removeAuthority(Authority auth) {
         this.authorities.remove(auth);
-//        auth.removeUser(this);
         auth.getUsers().remove(this);
     }
 
-    public Set<Specialization> getSpecializations() {
-        return specializations;
-    }
-
-    public void setSpecializations(Set<Specialization> specializations) {
-        this.specializations = specializations;
-    }
-
-    public void addSpecialization(Specialization specialization) {
-
-//        if (!specializations.contains(specialization)) {
-        this.specializations.add(specialization);
-//        }
-//        if (!specialization.getUsers().contains(this)) {
-//        specialization.addUser(this);
-        specialization.getUsers().add(this);
-//        }
-    }
-
-    public void removeSpecialization(Specialization specialization) {
-        this.specializations.remove(specialization);
-//        specialization.removeUser(this);
-        specialization.getUsers().remove(this);
-    }
-
+//    public Set<Specialization> getSpecializations() {
+//        return specializations;
+//    }
+//
+//    public void setSpecializations(Set<Specialization> specializations) {
+//        this.specializations = specializations;
+//    }
+//
+//    public void addSpecialization(Specialization specialization) {
+//
+//        this.specializations.add(specialization);
+//        specialization.getUsers().add(this);
+//    }
+//
+//    public void removeSpecialization(Specialization specialization) {
+//        this.specializations.remove(specialization);
+//        specialization.getUsers().remove(this);
+//    }
+//       public void addSpecializations(Set<Specialization> set) {
+//        this.specializations.addAll(set);
+//        set.forEach((specialization) -> {
+//            specialization.getUsers().add(this);
+//        });
+//    }
     public Integer getFailedLoginAttempts() {
         return failedLoginAttempts;
     }
@@ -209,15 +210,6 @@ public class User extends AbstractDomainClass implements Serializable {
 
     public void addLoginFailAttempt() {
         failedLoginAttempts++;
-    }
-
-    public void addSpecializations(Set<Specialization> set) {
-        this.specializations.addAll(set);
-
-        set.forEach((specialization) -> {
-//            specialization.addUser(this);
-            specialization.getUsers().add(this);
-        });
     }
 
 }

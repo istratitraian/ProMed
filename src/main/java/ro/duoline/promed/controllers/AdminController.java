@@ -16,13 +16,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import static ro.duoline.promed.PopulateTablesJPA.SPECIALIZATION_CARDIOLOG;
 import ro.duoline.promed.SecurityConfig;
 import ro.duoline.promed.commands.UserMedicForm;
 import ro.duoline.promed.converters.UserFormToUser;
 import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
+import ro.duoline.promed.domains.UsersSpecializations;
 import ro.duoline.promed.jpa.SpecializationRepository;
 import ro.duoline.promed.jpa.UserRepository;
+import ro.duoline.promed.jpa.UsersSpecializationsRepository;
 
 /**
  *
@@ -33,7 +36,7 @@ public class AdminController {
 
     @Resource(name = "newUserFormValidator")
     private Validator newUserFormValidator;
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -42,6 +45,9 @@ public class AdminController {
 
     @Autowired
     private SpecializationRepository specializationRepository;
+
+    @Autowired
+    private UsersSpecializationsRepository usersSpecializationsRepository;
 
     @GetMapping("/admin/newmedic")
     public String newMedic(Model model) {
@@ -62,28 +68,24 @@ public class AdminController {
         }
 
         String[] spechs = userMedicForm.getSpecialization().split(",");
-        Set<Specialization> spechSet = new HashSet<>();
-
-        for (String spech : spechs) {
-            Specialization specialization = new Specialization(spech);
-            spechSet.add(specialization);
-
-        }
-
-        System.out.println("UserCOntroller.newMedic() before spechSet : " + spechSet);
-
-        specializationRepository.save(spechSet);
-
-        System.out.println("UserCOntroller.newMedic() after spechSet : " + spechSet);
 
         User u = userFormToUser.convert(userMedicForm);
 
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
-        userRepository.save(u);
-
-        u.addSpecializations(spechSet);
-
         User savedUser = userRepository.save(u);
+
+        Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+
+        for (String spech : spechs) {
+
+            Specialization specialization = new Specialization(spech);
+            specializationRepository.save(specialization);
+
+            usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
+        }
+
+        usersSpecializationsRepository.save(usersSpecializations);
+
         return "redirect:/medic/show/" + savedUser.getId();
     }
 

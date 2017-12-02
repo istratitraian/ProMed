@@ -25,15 +25,16 @@ public class Specialization extends AbstractDomainClass implements Serializable 
     @Column(unique = true)
     private String name = "";
 
-    @JoinTable(name = "Users_x_Specializations",
-            joinColumns = @JoinColumn(name = "SpecializationId"),
-            inverseJoinColumns = @JoinColumn(name = "UserId"))
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<User> users = new HashSet<>();
+//    @JoinTable(name = "Users_x_Specializations",
+//            joinColumns = @JoinColumn(name = "SpecializationId"),
+//            inverseJoinColumns = @JoinColumn(name = "UserId"))
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
 
+    
     public Set<UsersSpecializations> getUsersSpecializations() {
         return usersSpecializations;
     }
@@ -69,29 +70,23 @@ public class Specialization extends AbstractDomainClass implements Serializable 
         this.name = name;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public void addUser(User user) {
-
-//        if (!users.contains(user)) {
-        this.users.add(user);
-//        }
-//        if (!user.getSpecializations().contains(this)) {
-//        user.addSpecialization(this);
-        user.getSpecializations().add(this);
-//        }
-    }
-
-    public void removeUser(User user) {
-        this.users.remove(user);
-        user.getSpecializations().remove(this);
-    }
+//    public Set<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
+//
+//    public void addUser(User user) {
+//        this.users.add(user);
+//        user.getSpecializations().add(this);
+//    }
+//
+//    public void removeUser(User user) {
+//        this.users.remove(user);
+//        user.getSpecializations().remove(this);
+//    }
 
     @Override
     public int hashCode() {

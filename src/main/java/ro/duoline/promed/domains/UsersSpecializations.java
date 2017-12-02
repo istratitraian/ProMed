@@ -32,6 +32,15 @@ public class UsersSpecializations extends AbstractDomainClass implements Seriali
     @ManyToOne(optional = false)
     private Specialization specialization;
 
+    public UsersSpecializations() {
+
+    }
+
+    public UsersSpecializations(User user, Specialization specialization) {
+        this.user = user;
+        this.specialization = specialization;
+    }
+
     public User getUser() {
         return user;
     }
@@ -48,13 +57,9 @@ public class UsersSpecializations extends AbstractDomainClass implements Seriali
         this.specialization = specialization;
     }
 
-    public UsersSpecializations() {
-
-    }
-
     @Override
     public int hashCode() {
-        return getId();
+        return (user.hashCode() + ":" + specialization.hashCode()).hashCode();
     }
 
     @Override
