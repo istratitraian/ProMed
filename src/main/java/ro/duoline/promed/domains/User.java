@@ -3,7 +3,6 @@ package ro.duoline.promed.domains;
 import ro.duoline.promed.domains.security.Authority;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -142,13 +141,15 @@ public class User extends AbstractDomainClass implements Serializable {
         this.authorities.add(auth);
 //        }
 //        if (!auth.getUsers().contains(this)) {
-        auth.addUser(this);
+//        auth.addUser(this);
+        auth.getUsers().add(this);
 //        }
     }
 
     public void removeAuthority(Authority auth) {
         this.authorities.remove(auth);
-        auth.removeUser(this);
+//        auth.removeUser(this);
+        auth.getUsers().remove(this);
     }
 
     public Set<Specialization> getSpecializations() {
@@ -165,13 +166,15 @@ public class User extends AbstractDomainClass implements Serializable {
         this.specializations.add(specialization);
 //        }
 //        if (!specialization.getUsers().contains(this)) {
-        specialization.addUser(this);
+//        specialization.addUser(this);
+        specialization.getUsers().add(this);
 //        }
     }
 
     public void removeSpecialization(Specialization specialization) {
         this.specializations.remove(specialization);
-        specialization.removeUser(this);
+//        specialization.removeUser(this);
+        specialization.getUsers().remove(this);
     }
 
     public Integer getFailedLoginAttempts() {
@@ -211,10 +214,10 @@ public class User extends AbstractDomainClass implements Serializable {
         failedLoginAttempts++;
     }
 
-    public void addSpecializations(Set<Specialization> list) {
-        this.specializations.addAll(list);
+    public void addSpecializations(Set<Specialization> set) {
+        this.specializations.addAll(set);
 
-        list.forEach((specialization) -> {
+        set.forEach((specialization) -> {
             specialization.addUser(this);
         });
     }

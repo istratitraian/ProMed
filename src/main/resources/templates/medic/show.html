@@ -24,17 +24,31 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 sm-2 control-label">Email:</label>
+                            <label class="col-sm-2 control-label">Email:</label>
                             <div class="col-sm-10">
                                 <p class="form-control-static" th:text="${medic.email}">Image</p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 sm-2 control-label">Phone Number:</label>
+                            <label class="col-sm-2 control-label">Phone Number:</label>
                             <div class="col-sm-10">
                                 <p class="form-control-static" th:text="${medic.phoneNumber}">Image</p>
                             </div>
                         </div>
+
+
+                        <div th:if="${not #lists.isEmpty(medic.specializations)}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Specializari</label>
+
+                                <ul class="col-sm-10">
+                                    <li th:each="specialization : ${medic.specializations}">
+                                        <a class="form-control-static" th:href="@{'/specialization/services/' + ${specialization.id}}" th:text="${specialization.name}">Servicii</a> 
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
             </div>

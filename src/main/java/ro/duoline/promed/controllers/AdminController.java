@@ -33,6 +33,7 @@ public class AdminController {
 
     @Resource(name = "newUserFormValidator")
     private Validator newUserFormValidator;
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -68,15 +69,20 @@ public class AdminController {
             spechSet.add(specialization);
 
         }
+
+        System.out.println("UserCOntroller.newMedic() before spechSet : " + spechSet);
+
         specializationRepository.save(spechSet);
-        
+
+        System.out.println("UserCOntroller.newMedic() after spechSet : " + spechSet);
 
         User u = userFormToUser.convert(userMedicForm);
 
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+        userRepository.save(u);
 
         u.addSpecializations(spechSet);
-        
+
         User savedUser = userRepository.save(u);
         return "redirect:/medic/show/" + savedUser.getId();
     }

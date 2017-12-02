@@ -31,9 +31,16 @@ public class Specialization extends AbstractDomainClass implements Serializable 
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "specialization", fetch = FetchType.EAGER, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
+    @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
 //    @JsonIgnore
     private Set<Service> services = new HashSet<>();
+
+    public Specialization() {
+    }
+
+    public Specialization(String name) {
+        this.name = name;
+    }
 
     public Set<Service> getServices() {
         return services;
@@ -41,10 +48,6 @@ public class Specialization extends AbstractDomainClass implements Serializable 
 
     public void setServices(Set<Service> services) {
         this.services = services;
-    }
-
-    public Specialization(String name) {
-        this.name = name;
     }
 
     public String getName() {
@@ -63,17 +66,15 @@ public class Specialization extends AbstractDomainClass implements Serializable 
         this.users = users;
     }
 
-    public Specialization() {
-    }
-
     public void addUser(User user) {
 
-        if (!users.contains(user)) {
-            this.users.add(user);
-        }
-        if (!user.getSpecializations().contains(this)) {
-            user.getSpecializations().add(this);
-        }
+//        if (!users.contains(user)) {
+        this.users.add(user);
+//        }
+//        if (!user.getSpecializations().contains(this)) {
+//        user.addSpecialization(this);
+        user.getSpecializations().add(this);
+//        }
     }
 
     public void removeUser(User user) {
@@ -99,6 +100,11 @@ public class Specialization extends AbstractDomainClass implements Serializable 
         }
         final Specialization other = (Specialization) obj;
         return Objects.equals(hashCode(), other.hashCode());
+    }
+
+    @Override
+    public String toString() {
+        return "Specialization{[ " + getId() + "] name=" + name + ", services=" + services + '}';
     }
 
 }
