@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -32,8 +33,10 @@ public class Specialization extends AbstractDomainClass implements Serializable 
             = //            new ArrayList<>();
             new HashSet<>();
 
-    
-    
+    @OneToMany(mappedBy = "Specializations", fetch = FetchType.LAZY, orphanRemoval = true)//cascade = CascadeType.REMOVE whill delete Product also !!!
+//    @JsonIgnore
+    private Set<Service> services = new HashSet<>();
+
     public Specialization(String name) {
         this.name = name;
     }
