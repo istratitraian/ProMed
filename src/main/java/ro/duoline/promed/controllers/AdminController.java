@@ -34,59 +34,10 @@ import ro.duoline.promed.jpa.UsersSpecializationsRepository;
 @Controller
 public class AdminController {
 
-    @Resource(name = "newUserFormValidator")
-    private Validator newUserFormValidator;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserFormToUser userFormToUser;
-
-    @Autowired
-    private SpecializationRepository specializationRepository;
-
-    @Autowired
-    private UsersSpecializationsRepository usersSpecializationsRepository;
-
-    @GetMapping("/admin/newmedic")
-    public String newMedic(Model model) {
-        model.addAttribute("medicForm", new UserMedicForm());
-        return "medic/medicform";
-    }
-
-    @PostMapping("/admin/newmedic")
-    public String newMedic(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
-
-        System.out.println("UserCOntroller.newMedic()" + userMedicForm);
-
-        newUserFormValidator.validate(userMedicForm, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            System.out.println("newMedic(/) hasErrors()" + bindingResult.hasErrors());
-            return "medic/medicform";
-        }
-
-        String[] spechs = userMedicForm.getSpecialization().split(",");
-
-        User u = userFormToUser.convert(userMedicForm);
-
-        u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
-        User savedUser = userRepository.save(u);
-
-        Set<UsersSpecializations> usersSpecializations = new HashSet<>();
-
-        for (String spech : spechs) {
-
-            Specialization specialization = new Specialization(spech);
-            specializationRepository.save(specialization);
-
-            usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
-        }
-
-        usersSpecializationsRepository.save(usersSpecializations);
-
-        return "redirect:/medic/show/" + savedUser.getId();
-    }
+    
+    
+    
+    
 
 }

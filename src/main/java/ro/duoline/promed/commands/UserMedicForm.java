@@ -13,6 +13,20 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class UserMedicForm extends UserForm {
 
+    public UserMedicForm() {
+    }
+
+    public UserMedicForm(UserForm userForm) {
+        this.setId(userForm.getId());
+        this.setVersion(userForm.getVersion());
+        this.setEmail(userForm.getEmail());
+        this.setFirstName(userForm.getFirstName());
+        this.setLastName(userForm.getLastName());
+        this.setPhoneNumber(userForm.getPhoneNumber());
+        this.setUserName(userForm.getUserName());
+
+    }
+
     public String getSpecialization() {
         return specialization;
     }

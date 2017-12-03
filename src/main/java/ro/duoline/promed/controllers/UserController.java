@@ -47,6 +47,7 @@ public class UserController {
         model.addAttribute("user", userRepository.findOne(id));
         return "user/show";
     }
+
     @GetMapping("/user/info/{userName}")
     public String userInfo(@PathVariable String userName, Model model) {
         model.addAttribute("user", userRepository.findByUsername(userName));
@@ -87,6 +88,12 @@ public class UserController {
 
     @GetMapping("/admin/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
+        model.addAttribute("userForm", userToUserForm.convert(userRepository.findOne(id)));
+        return "user/userformEdit";
+    }
+
+    @GetMapping("/user/edit/{id}")
+    public String editGet(@PathVariable Integer id, Model model) {
         model.addAttribute("userForm", userToUserForm.convert(userRepository.findOne(id)));
         return "user/userformEdit";
     }

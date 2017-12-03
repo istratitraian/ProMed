@@ -13,9 +13,9 @@ import javax.persistence.Temporal;
 public class AbstractDomainDateCreated extends AbstractDomain {
 
 
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastUpdated;
 
     public Date getDateCreated() {

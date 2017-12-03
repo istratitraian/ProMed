@@ -46,6 +46,10 @@
                                 <p class="form-control-static" th:text="${user.phoneNumber}">Image</p>
                             </div>
                         </div>
+
+                        <div sec:authorize="isAuthenticated()" >
+                            <a class="btn btn-lg btn-primary" th:href="@{'/user/edit/' + ${user.id}}">Edit</a> 
+                        </div>
                     </form>
                 </div>
             </div>

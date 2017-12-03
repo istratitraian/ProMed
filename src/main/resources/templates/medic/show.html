@@ -48,6 +48,10 @@
                             </div>
                         </div>
 
+                        <div sec:authorize="isAuthenticated()" >
+                            <a class="btn btn-lg btn-primary" th:href="@{'/medic/edit/' + ${medic.id}}">Edit</a> 
+                        </div>
+
                     </form>
                 </div>
             </div>

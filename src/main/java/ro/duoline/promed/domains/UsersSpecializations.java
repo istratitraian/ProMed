@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Users_x_Specializations")
-public class UsersSpecializations extends AbstractDomain{
+public class UsersSpecializations extends AbstractDomain {
 
     private static final long serialVersionUID = 1L;
 
@@ -74,6 +74,11 @@ public class UsersSpecializations extends AbstractDomain{
             return false;
         }
         return Objects.equals(this.hashCode(), ((UsersSpecializations) obj).hashCode());
+    }
+
+    @Override
+    public String toString() {
+        return specialization.getName();
     }
 
 }
