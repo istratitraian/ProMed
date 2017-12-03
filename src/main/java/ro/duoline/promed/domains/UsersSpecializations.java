@@ -18,7 +18,7 @@ import javax.persistence.Table;
  * @author I.T.W764
  */
 @Entity
-@Table(name = "Users_x_Specializations2")
+@Table(name = "Users_x_Specializations")
 public class UsersSpecializations extends AbstractDomainClass implements Serializable {
 
     private static final long serialVersionUID = 1L;
