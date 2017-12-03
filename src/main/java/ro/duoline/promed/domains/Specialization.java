@@ -1,15 +1,12 @@
 package ro.duoline.promed.domains;
 
-import java.io.Serializable;
+import ro.duoline.promed.domains.abs.AbstractDomain;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Specializations")
-public class Specialization extends AbstractDomainClass implements Serializable {
+public class Specialization extends AbstractDomain{
 
     private static final long serialVersionUID = 222L;
 

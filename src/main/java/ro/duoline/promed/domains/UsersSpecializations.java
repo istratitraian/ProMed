@@ -5,8 +5,8 @@
  */
 package ro.duoline.promed.domains;
 
+import ro.duoline.promed.domains.abs.AbstractDomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Users_x_Specializations")
-public class UsersSpecializations extends AbstractDomainClass implements Serializable {
+public class UsersSpecializations extends AbstractDomain{
 
     private static final long serialVersionUID = 1L;
 

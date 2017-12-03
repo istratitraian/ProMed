@@ -8,35 +8,23 @@ import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Version;
+import ro.duoline.promed.domains.abs.AbstractDomain;
 
 /**
  * @author I.T.W764
  */
 @Entity
 @Table(name = "Roles")
-public class Authority
-        //        extends AbstractDomainClass
-        implements Serializable {
+public class Authority extends AbstractDomain {
 
     private static final long serialVersionUID = 111L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-
     @Column(unique = true)
     private String authority;
-
-    @Version
-    private Integer version;
 
     @JoinTable(name = "Users_x_Roles",
             joinColumns = @JoinColumn(name = "RoleId"),
@@ -51,28 +39,12 @@ public class Authority
         this.authority = authority;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getAuthority() {
         return authority;
     }
 
     public void setAuthority(String role) {
         this.authority = role;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 
     public Set<User> getUsers() {

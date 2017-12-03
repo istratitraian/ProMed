@@ -1,5 +1,6 @@
 package ro.duoline.promed.domains;
 
+import ro.duoline.promed.domains.abs.AbstractDomainDateCreated;
 import ro.duoline.promed.domains.security.Authority;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "Users")
-public class User extends AbstractDomainClass implements Serializable {
+public class User extends AbstractDomainDateCreated{
 
     private static final long serialVersionUID = 1L;
 

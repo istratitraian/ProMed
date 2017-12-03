@@ -1,6 +1,6 @@
 package ro.duoline.promed.domains;
 
-import java.io.Serializable;
+import ro.duoline.promed.domains.abs.AbstractDomain;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "SERVICES")
-public class Service extends AbstractDomainClass implements Serializable {
+public class Service extends AbstractDomain{
 
     private static final long serialVersionUID = 333L;
 

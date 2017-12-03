@@ -1,4 +1,4 @@
-package ro.duoline.promed.domains;
+package ro.duoline.promed.domains.abs;
 
 /**
  * @author I.T.W764
