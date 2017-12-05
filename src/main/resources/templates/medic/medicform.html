@@ -9,7 +9,7 @@
 
             <h2>Medic Form</h2>
             <div>
-                <form class="form-horizontal" th:object="${medicForm}" th:action="@{/admin/newmedic}" method="post">
+                <form class="form-horizontal" th:object="${medicForm}" th:action="@{/admin/newmedic}" method="post" enctype="multipart/form-data">
 
                     <input type="hidden" th:field="*{id}"/>
                     <input type="hidden" th:field="*{version}"/>
@@ -92,6 +92,24 @@
                             <input type="text" class="form-control" th:field="*{specialization}"/>
                         </div>
                     </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="image">Upload Picture</label>
+                        <div class="col-sm-10">
+                            <input type="file" id="file" name="file"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            <img th:src="@{'/images/medics/'+${id}}"
+                                 alt="image"
+                                 style="width: 100%;"
+                                 />
+                        </div>
+                    </div>
+
 
 
                     <div class="form-group">

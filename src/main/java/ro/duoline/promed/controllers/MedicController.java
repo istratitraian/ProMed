@@ -5,11 +5,16 @@
  */
 package ro.duoline.promed.controllers;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +22,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 import ro.duoline.promed.SecurityConfig;
 import ro.duoline.promed.commands.UserMedicForm;
 import ro.duoline.promed.converters.UserFormToUser;
@@ -35,6 +41,11 @@ import ro.duoline.promed.jpa.UsersSpecializationsRepository;
  */
 @Controller
 public class MedicController {
+
+    private Path path;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -59,6 +70,12 @@ public class MedicController {
 
     @Autowired
     private UsersSpecializationsRepository usersSpecializationsRepository;
+
+    @GetMapping("/medic/info/{userName}")
+    public String userInfo(@PathVariable String userName, Model model) {
+        model.addAttribute("medic", userRepository.findByUsername(userName));
+        return "medic/show";
+    }
 
     @GetMapping("/medic/list")
     public String list(Model model) {
@@ -86,7 +103,7 @@ public class MedicController {
     @PostMapping("/medic/edit")
     public String editUser(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
 
-        System.out.println("UserController.editUser()" + userMedicForm);
+        System.out.println("MedicController.editUser()" + userMedicForm);
 
         editUserFormValidator.validate(userMedicForm, bindingResult);
 
@@ -105,7 +122,7 @@ public class MedicController {
     @PostMapping("/admin/newmedic")
     public String newMedic(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
 
-        System.out.println("UserCOntroller.newMedic()" + userMedicForm);
+        System.out.println("MedicController.newMedic()" + userMedicForm);
 
         newUserFormValidator.validate(userMedicForm, bindingResult);
 
@@ -141,7 +158,26 @@ public class MedicController {
 
         usersSpecializationsRepository.save(usersSpecializations);
 
+        String rootDir = getProperty("external.path");
+        Integer savedId = savedUser.getId();
+
+        path = Paths.get(rootDir + savedId);
+
+        MultipartFile image = userMedicForm.getFile();
+
+        if (image != null && !image.isEmpty()) {
+            try {
+                image.transferTo(path.toFile());
+            } catch (IOException | IllegalStateException e) {
+                throw new RuntimeException("Medic image saving failed :(" + image.getName()+" )");
+            }
+        }
+
         return "redirect:/medic/show/" + savedUser.getId();
+    }
+
+    private String getProperty(String prop) {
+        return messageSource.getMessage(prop, new Object[]{}, LocaleContextHolder.getLocale());
     }
 
 }

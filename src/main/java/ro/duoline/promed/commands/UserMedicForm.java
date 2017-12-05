@@ -6,12 +6,18 @@
 package ro.duoline.promed.commands;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
  * @author I.T.W764
  */
 public class UserMedicForm extends UserForm {
+
+    @NotEmpty
+    private String specialization;
+
+    private MultipartFile file;
 
     public UserMedicForm() {
     }
@@ -27,6 +33,14 @@ public class UserMedicForm extends UserForm {
 
     }
 
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
     public String getSpecialization() {
         return specialization;
     }
@@ -34,8 +48,5 @@ public class UserMedicForm extends UserForm {
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
     }
-
-    @NotEmpty
-    private String specialization;
 
 }

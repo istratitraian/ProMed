@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <a href="https://www.w3schools.com/html/html5_webstorage.asp"> HTML5 Web Storage</a>
+        <div id="result"></div>
+
+        <script>
+            // Check browser support
+            if (typeof (Storage) !== "undefined") {
+                // Store
+                localStorage.setItem("lastname", "Traian");
+                // Retrieve
+                document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+            } else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+            }
+        </script>
+
+    </body>
+</html>

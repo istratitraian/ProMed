@@ -5,7 +5,9 @@
  */
 package ro.duoline.promed;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -28,6 +30,27 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
+        
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/");
 
     }
+
+    @Bean(name = "messageSource")
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+        source.setBasenames(new String[]{
+            "messages",
+            "external-images"
+        });
+//        source.setUseCodeAsDefaultMessage(true);
+        return source;
+    }
+
+//    @Bean
+//    public MultipartResolver multipartResolver() {//for thymeleaf
+//        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+//        multipartResolver.setMaxUploadSize(500000000);
+//        return multipartResolver;
+//    }
 }
