@@ -50,16 +50,27 @@
                             </div>
                         </div>
 
-
-                        <div class="form-group">
-                            <div class="col-sm-4">
-                                <img th:src="@{'/images/medics/'+${medic.id}}"
-                                     alt="image"
-                                     style="width: 100%;"
-                                     />
+                        <div th:if="${not #lists.isEmpty(medic.pictures)}">
+                            <div class="form-group">
+                                <div class="col-sm-4">
+                                    <img th:src="@{'data:image/jpeg;base64,'+${medic.imageBase64}}"
+                                         alt="image"
+                                         style="width: 100%;"
+                                         />
+                                </div>
                             </div>
                         </div>
 
+                        <div th:if="${#lists.isEmpty(medic.pictures)}">
+                            <div class="form-group">
+                                <div class="col-sm-4">
+                                    <img th:src="@{/images/noImage.jpg}"
+                                         alt="image"
+                                         style="width: 100%;"
+                                         />
+                                </div>
+                            </div>
+                        </div>
 
 
                         <div sec:authorize="isAuthenticated()" >

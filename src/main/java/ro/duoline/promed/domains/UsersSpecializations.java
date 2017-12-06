@@ -59,7 +59,7 @@ public class UsersSpecializations extends AbstractDomain {
 
     @Override
     public int hashCode() {
-        return (user.hashCode() + ":" + specialization.hashCode()).hashCode();
+        return (specialization.hashCode() + ":" + user.hashCode()).hashCode();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UsersSpecializations extends AbstractDomain {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        return Objects.equals(this.hashCode(), ((UsersSpecializations) obj).hashCode());
+        return this.hashCode() == ((UsersSpecializations) obj).hashCode();
     }
 
     @Override

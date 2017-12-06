@@ -29,14 +29,8 @@ public class NewUserFormValidator implements Validator {
 
         UserForm userForm = (UserForm) target;
 
-        User user = userRepository.findByUsername(userForm.getUserName());
-        if (user != null) {
-            errors.rejectValue("userName", "error.customer.username.taken");
-            return;
-        }
+        System.out.println("UserFormValidator.validate() pass=" + userForm.getPassword() + " == " + userForm.getPasswordConfirm());
 
-        System.out.println("UserFormValidator.validate() pass="+userForm.getPassword()+" == "+userForm.getPasswordConfirm());
-        
         if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
             errors.rejectValue("password", "PasswordsDontMatch.customerForm.password", "Passwords Don't Match");
             errors.rejectValue("passwordConfirm", "PasswordsDontMatch.customerForm.passwordConfirm", "Passwords Don't Match");
@@ -46,6 +40,13 @@ public class NewUserFormValidator implements Validator {
         User existendUser = userRepository.findByEmail(userForm.getEmail());
         if (existendUser != null) {
             errors.rejectValue("email", "error.customer.email.exists");
+            return;
+
+        }
+
+        User user = userRepository.findByUsername(userForm.getUserName());
+        if (user != null) {
+            errors.rejectValue("userName", "error.customer.username.taken");
         }
 
     }

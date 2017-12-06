@@ -7,14 +7,12 @@ package ro.duoline.promed.controllers;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,9 +25,11 @@ import ro.duoline.promed.SecurityConfig;
 import ro.duoline.promed.commands.UserMedicForm;
 import ro.duoline.promed.converters.UserFormToUser;
 import ro.duoline.promed.converters.UserToUserForm;
+import ro.duoline.promed.domains.Picture;
 import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.domains.UsersSpecializations;
+import ro.duoline.promed.jpa.PictureRepository;
 import ro.duoline.promed.jpa.RoleRepository;
 import ro.duoline.promed.jpa.SpecializationRepository;
 import ro.duoline.promed.jpa.UserRepository;
@@ -73,6 +73,7 @@ public class MedicController {
 
     @GetMapping("/medic/info/{userName}")
     public String userInfo(@PathVariable String userName, Model model) {
+        System.out.println("MedicController.userInfo(" + userName + ") " + userRepository.findByUsername(userName));
         model.addAttribute("medic", userRepository.findByUsername(userName));
         return "medic/show";
     }
@@ -103,8 +104,6 @@ public class MedicController {
     @PostMapping("/medic/edit")
     public String editUser(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
 
-        System.out.println("MedicController.editUser()" + userMedicForm);
-
         editUserFormValidator.validate(userMedicForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -133,6 +132,9 @@ public class MedicController {
         return saveMedic(userMedicForm);
     }
 
+    @Autowired
+    private PictureRepository pictureRepository;
+
     private String saveMedic(UserMedicForm userMedicForm) {
 
         String[] spechs = userMedicForm.getSpecialization().split(",");
@@ -140,7 +142,30 @@ public class MedicController {
         User u = userFormToUser.convert(userMedicForm);
 
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+
         User savedUser = userRepository.save(u);
+
+        MultipartFile file = userMedicForm.getFile();
+
+        if (file != null && !file.isEmpty()) {
+//            try {
+//                file.transferTo(path.toFile());
+//            } catch (IOException | IllegalStateException e) {
+//                throw new RuntimeException("Medic image saving failed :(" + file.getName()+" )");
+//            }
+
+            Picture picture = new Picture();
+
+            try {
+                picture.setUser(u);
+                picture.setImage(file.getBytes());
+                pictureRepository.save(picture);
+                u.addPicture(picture);
+            } catch (IOException e) {
+                System.err.println("Unable to get byte array from uploaded file.");
+            }
+
+        }
 
         Set<UsersSpecializations> usersSpecializations = new HashSet<>();
 
@@ -152,32 +177,16 @@ public class MedicController {
                 specialization = new Specialization(spech);
                 specializationRepository.save(specialization);
             }
-
             usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
         }
 
+        System.out.println("MedicController.saveMedic() usersSpecializations " + usersSpecializations);
         usersSpecializationsRepository.save(usersSpecializations);
-
-        String rootDir = getProperty("external.path");
-        Integer savedId = savedUser.getId();
-
-        path = Paths.get(rootDir + savedId);
-
-        MultipartFile image = userMedicForm.getFile();
-
-        if (image != null && !image.isEmpty()) {
-            try {
-                image.transferTo(path.toFile());
-            } catch (IOException | IllegalStateException e) {
-                throw new RuntimeException("Medic image saving failed :(" + image.getName()+" )");
-            }
-        }
 
         return "redirect:/medic/show/" + savedUser.getId();
     }
 
-    private String getProperty(String prop) {
-        return messageSource.getMessage(prop, new Object[]{}, LocaleContextHolder.getLocale());
-    }
-
+//    private String getProperty(String prop) {
+//        return messageSource.getMessage(prop, new Object[]{}, LocaleContextHolder.getLocale());
+//    }
 }

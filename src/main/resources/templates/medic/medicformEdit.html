@@ -101,14 +101,17 @@
                     </div>
 
 
-                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <img th:src="@{'/images/medics/'+${id}}"
-                                 alt="image"
-                                 style="width: 100%;"
-                                 />
+                    <div th:if="${not #lists.isEmpty(pictures)}">
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <img th:src="@{'data:image/jpeg;base64,'+${imageBase64}}"
+                                     alt="image"
+                                     style="width: 100%;"
+                                     />
+                            </div>
                         </div>
                     </div>
+
 
 
                     <div class="form-group">

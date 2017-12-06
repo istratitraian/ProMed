@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
                 .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
                 .and().authorizeRequests().antMatchers("/static/**").permitAll()
-                .and().authorizeRequests().antMatchers("/images/**").permitAll()
+                .and().authorizeRequests().antMatchers("/image/**").permitAll()
                 .and().authorizeRequests().antMatchers("/images/medics/**").hasAuthority(AUTHORITY_MEDIC.getAuthority())
                 .and().authorizeRequests().antMatchers("/rest/**").permitAll()
                 .and().authorizeRequests().antMatchers("/js/**").permitAll()

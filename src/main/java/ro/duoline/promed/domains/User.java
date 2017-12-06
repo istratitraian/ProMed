@@ -1,5 +1,6 @@
 package ro.duoline.promed.domains;
 
+import java.io.UnsupportedEncodingException;
 import ro.duoline.promed.domains.abs.AbstractDomainDateCreated;
 import ro.duoline.promed.domains.security.Authority;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 /**
  *  * @author I.T.W764
@@ -57,6 +59,23 @@ public class User extends AbstractDomainDateCreated {
 
     public void setPictures(Set<Picture> pictures) {
         this.pictures = pictures;
+    }
+
+    @Transient
+    private Picture imageBase64;
+
+//    @Transient
+    public String getImageBase64() {
+        try {
+            if (imageBase64 == null) {
+                imageBase64 = pictures.iterator().next();
+            }
+
+            return new String(Base64.encodeBase64(imageBase64.getImage()), "UTF-8");
+
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return "";
     }
 
     public void addPicture(Picture picture) {

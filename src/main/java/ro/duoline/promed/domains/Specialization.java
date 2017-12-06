@@ -2,7 +2,6 @@ package ro.duoline.promed.domains;
 
 import ro.duoline.promed.domains.abs.AbstractDomain;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Specializations")
-public class Specialization extends AbstractDomain{
+public class Specialization extends AbstractDomain {
 
     private static final long serialVersionUID = 222L;
 
@@ -27,11 +26,9 @@ public class Specialization extends AbstractDomain{
 //            inverseJoinColumns = @JoinColumn(name = "UserId"))
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    private Set<User> users = new HashSet<>();
-
     @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
 
-    
     public Set<UsersSpecializations> getUsersSpecializations() {
         return usersSpecializations;
     }
@@ -84,7 +81,6 @@ public class Specialization extends AbstractDomain{
 //        this.users.remove(user);
 //        user.getSpecializations().remove(this);
 //    }
-
     @Override
     public int hashCode() {
         return name.hashCode();
@@ -102,7 +98,7 @@ public class Specialization extends AbstractDomain{
             return false;
         }
         final Specialization other = (Specialization) obj;
-        return Objects.equals(hashCode(), other.hashCode());
+        return hashCode() == other.hashCode();
     }
 
     @Override
