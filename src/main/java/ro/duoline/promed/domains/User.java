@@ -2,7 +2,6 @@ package ro.duoline.promed.domains;
 
 import ro.duoline.promed.domains.abs.AbstractDomainDateCreated;
 import ro.duoline.promed.domains.security.Authority;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +19,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "Users")
-public class User extends AbstractDomainDateCreated{
+public class User extends AbstractDomainDateCreated {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,6 +47,26 @@ public class User extends AbstractDomainDateCreated{
 //    private Set<Specialization> specializations = new HashSet<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
+    private Set<Picture> pictures = new HashSet<>();
+
+    public Set<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(Set<Picture> pictures) {
+        this.pictures = pictures;
+    }
+
+    public void addPicture(Picture picture) {
+        pictures.add(picture);
+        picture.setUser(this);
+    }
+
+    public void removePicture(Picture picture) {
+        pictures.add(picture);
+    }
 
     public void addSpecializations(Set<Specialization> spechSet) {
         for (Specialization specialization : spechSet) {
@@ -152,30 +171,6 @@ public class User extends AbstractDomainDateCreated{
         auth.getUsers().remove(this);
     }
 
-//    public Set<Specialization> getSpecializations() {
-//        return specializations;
-//    }
-//
-//    public void setSpecializations(Set<Specialization> specializations) {
-//        this.specializations = specializations;
-//    }
-//
-//    public void addSpecialization(Specialization specialization) {
-//
-//        this.specializations.add(specialization);
-//        specialization.getUsers().add(this);
-//    }
-//
-//    public void removeSpecialization(Specialization specialization) {
-//        this.specializations.remove(specialization);
-//        specialization.getUsers().remove(this);
-//    }
-//       public void addSpecializations(Set<Specialization> set) {
-//        this.specializations.addAll(set);
-//        set.forEach((specialization) -> {
-//            specialization.getUsers().add(this);
-//        });
-//    }
     public Integer getFailedLoginAttempts() {
         return failedLoginAttempts;
     }
