@@ -5,7 +5,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ro.duoline.promed.commands.UserForm;
+import ro.duoline.promed.commands.UserMedicForm;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.jpa.UserRepository;
 
@@ -13,7 +13,7 @@ import ro.duoline.promed.jpa.UserRepository;
  * @author I.T.W764
  */
 @Component
-public class NewUserFormValidator implements Validator {
+public class NewUserMedicFormValidator implements Validator {
 
     @Autowired
 //    @Resource(name="userServiceRepoImpl")
@@ -21,13 +21,13 @@ public class NewUserFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return UserForm.class.equals(aClass);
+        return UserMedicForm.class.equals(aClass);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
 
-        UserForm userForm = (UserForm) target;
+        UserMedicForm userForm = (UserMedicForm) target;
 
         if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
             errors.rejectValue("password", "PasswordsDontMatch.customerForm.password", "Passwords Don't Match");

@@ -9,7 +9,7 @@
 
             <h2>Medic Form</h2>
             <div>
-                <form class="form-horizontal" th:object="${medicForm}" th:action="@{/admin/newmedic}" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" th:object="${userMedicForm}" th:action="@{/admin/newmedic}" method="post" enctype="multipart/form-data">
 
                     <input type="hidden" th:field="*{id}"/>
                     <input type="hidden" th:field="*{version}"/>

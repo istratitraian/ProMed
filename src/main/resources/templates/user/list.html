@@ -9,11 +9,11 @@
 
             <div th:if="${not #lists.isEmpty(users)}">
                 <h2>User List</h2>
-                <div  sec:authorize="hasAuthority('ADMIN')" class="row">
+<!--                <div  sec:authorize="hasAuthority('ADMIN')" class="row">
                     <div class="col-sm-3">
                         <a href="" th:href="@{/admin/newmedic}">New Medic</a>
                     </div>
-                </div>
+                </div>-->
                 <table class="table table-striped">
                     <tr>
                         <th>Id</th>

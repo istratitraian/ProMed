@@ -103,7 +103,7 @@ public class Specialization extends AbstractDomain {
 
     @Override
     public String toString() {
-        return "Specialization{[ " + getId() + "] name=" + name + ", services=" + services + '}';
+        return  name;
     }
 
 }

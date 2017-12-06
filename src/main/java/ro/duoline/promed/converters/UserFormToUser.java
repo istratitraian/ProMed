@@ -30,6 +30,8 @@ public class UserFormToUser implements Converter<UserForm, User> {
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
         user.setPhoneNumber(userForm.getPhoneNumber());
+        user.setAuthorities(userForm.getAuthorities());
+        user.setProfileImage(userForm.getProfileImage());
 
         return user;
     }

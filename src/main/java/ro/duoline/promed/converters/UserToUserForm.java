@@ -1,8 +1,6 @@
 package ro.duoline.promed.converters;
 
-import javax.annotation.Resource;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ro.duoline.promed.commands.UserForm;
 import ro.duoline.promed.domains.User;
@@ -25,7 +23,8 @@ public class UserToUserForm implements Converter<User, UserForm> {
         userForm.setFirstName(user.getFirstName());
         userForm.setLastName(user.getLastName());
         userForm.setPhoneNumber(user.getPhoneNumber());
-
+        userForm.setAuthorities(user.getAuthorities());
+        userForm.setProfileImage(user.getProfileImage());
         
         return userForm;
     }

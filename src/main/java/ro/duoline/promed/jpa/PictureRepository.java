@@ -14,4 +14,6 @@ import ro.duoline.promed.domains.Picture;
  */
 public interface PictureRepository extends CrudRepository<Picture, Integer> {
 
+    public Picture findByUserId(Integer id);
+
 }

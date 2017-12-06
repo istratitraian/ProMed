@@ -42,10 +42,10 @@ import ro.duoline.promed.jpa.UsersSpecializationsRepository;
 @Controller
 public class MedicController {
 
-    private Path path;
-
-    @Autowired
-    private MessageSource messageSource;
+//    private Path path;
+//
+//    @Autowired
+//    private MessageSource messageSource;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -73,7 +73,6 @@ public class MedicController {
 
     @GetMapping("/medic/info/{userName}")
     public String userInfo(@PathVariable String userName, Model model) {
-        System.out.println("MedicController.userInfo(" + userName + ") " + userRepository.findByUsername(userName));
         model.addAttribute("medic", userRepository.findByUsername(userName));
         return "medic/show";
     }
@@ -94,34 +93,28 @@ public class MedicController {
     public String editGet(@PathVariable Integer id, Model model) {
         User user = userRepository.findOne(id);
         UserMedicForm userMedicForm = new UserMedicForm(userToUserForm.convert(user));
-
         userMedicForm.setSpecialization(user.getUsersSpecializations().toString().replaceFirst("\\[", "").replaceFirst("\\]", ""));
-
         model.addAttribute("userMedicForm", userMedicForm);
         return "medic/medicformEdit";
     }
 
     @PostMapping("/medic/edit")
     public String editUser(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
-
         editUserFormValidator.validate(userMedicForm, bindingResult);
-
         if (bindingResult.hasErrors()) {
             return "medic/medicformEdit";
         }
-        return saveMedic(userMedicForm);
+        return updateMedic(userMedicForm);
     }
 
     @GetMapping("/admin/newmedic")
     public String newMedic(Model model) {
-        model.addAttribute("medicForm", new UserMedicForm());
+        model.addAttribute("userMedicForm", new UserMedicForm());
         return "medic/medicform";
     }
 
     @PostMapping("/admin/newmedic")
     public String newMedic(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
-
-        System.out.println("MedicController.newMedic()" + userMedicForm);
 
         newUserFormValidator.validate(userMedicForm, bindingResult);
 
@@ -138,51 +131,79 @@ public class MedicController {
     private String saveMedic(UserMedicForm userMedicForm) {
 
         String[] spechs = userMedicForm.getSpecialization().split(",");
-
         User u = userFormToUser.convert(userMedicForm);
-
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
-
         User savedUser = userRepository.save(u);
-
         MultipartFile file = userMedicForm.getFile();
-
         if (file != null && !file.isEmpty()) {
-//            try {
-//                file.transferTo(path.toFile());
-//            } catch (IOException | IllegalStateException e) {
-//                throw new RuntimeException("Medic image saving failed :(" + file.getName()+" )");
-//            }
-
             Picture picture = new Picture();
-
             try {
                 picture.setUser(u);
                 picture.setImage(file.getBytes());
                 pictureRepository.save(picture);
-                u.addPicture(picture);
+                u.setProfileImage(picture);
             } catch (IOException e) {
                 System.err.println("Unable to get byte array from uploaded file.");
             }
-
         }
 
         Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+        Set<Specialization> existentRepoSpechiaSet = new HashSet<>();
+        specializationRepository.findAll().forEach(existentRepoSpechiaSet::add);
 
         for (String spech : spechs) {
 
-            Specialization specialization = specializationRepository.findByName(spech);
+            spech = spech.trim();
 
-            if (specialization == null) {
-                specialization = new Specialization(spech);
+            Specialization specialization = new Specialization(spech);
+            if (!existentRepoSpechiaSet.contains(specialization)) {
                 specializationRepository.save(specialization);
             }
             usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
         }
 
-        System.out.println("MedicController.saveMedic() usersSpecializations " + usersSpecializations);
         usersSpecializationsRepository.save(usersSpecializations);
+        return "redirect:/medic/show/" + savedUser.getId();
+    }
 
+    private String updateMedic(UserMedicForm userMedicForm) {
+
+        String[] spechs = userMedicForm.getSpecialization().split(",");
+        User u = userFormToUser.convert(userMedicForm);
+//        u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+        MultipartFile file = userMedicForm.getFile();
+        User savedUser;
+        if (file != null && !file.isEmpty()) {
+            savedUser = userRepository.save(u);
+            try {
+                Picture picture = new Picture();
+                picture.setUser(u);
+                picture.setImage(file.getBytes());
+                pictureRepository.save(picture);
+                u.setProfileImage(picture);
+            } catch (IOException e) {
+                System.err.println("Unable to get byte array from uploaded file.");
+            }
+        } else {
+
+            u.setProfileImage(pictureRepository.findByUserId(u.getId()));
+            savedUser = userRepository.save(u);
+        }
+
+        Set<UsersSpecializations> usersSpecializations = new HashSet<>();
+
+        for (String spech : spechs) {
+            spech = spech.trim();
+            Specialization specialization = specializationRepository.findByName(spech);
+            if (specialization == null) {
+                specialization = new Specialization(spech);
+                specializationRepository.save(specialization);
+            }
+
+            usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
+        }
+
+        usersSpecializationsRepository.save(usersSpecializations);
         return "redirect:/medic/show/" + savedUser.getId();
     }
 

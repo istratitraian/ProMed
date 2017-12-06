@@ -28,5 +28,10 @@ public class PictureController {
     public byte[] gifImage(@PathVariable Integer imgId) {
         return pictureRepository.findOne(imgId).getImage();
     }
+    @RequestMapping("/imageByUser/{userId}")
+    @ResponseBody
+    public byte[] getImageByUser(@PathVariable Integer userId) {
+        return pictureRepository.findByUserId(userId).getImage();
+    }
 
 }

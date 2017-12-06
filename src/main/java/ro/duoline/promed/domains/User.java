@@ -6,12 +6,14 @@ import ro.duoline.promed.domains.security.Authority;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -61,18 +63,22 @@ public class User extends AbstractDomainDateCreated {
         this.pictures = pictures;
     }
 
-    @Transient
-    private Picture imageBase64;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+    private Picture profileImage;
+
+    public Picture getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(Picture profileImage) {
+        this.profileImage = profileImage;
+    }
 
 //    @Transient
+//    private Picture imageBase64;
     public String getImageBase64() {
         try {
-            if (imageBase64 == null) {
-                imageBase64 = pictures.iterator().next();
-            }
-
-            return new String(Base64.encodeBase64(imageBase64.getImage()), "UTF-8");
-
+            return new String(Base64.encodeBase64(profileImage.getImage()), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
         }
         return "";

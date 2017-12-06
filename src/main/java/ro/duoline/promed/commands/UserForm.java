@@ -5,9 +5,13 @@
  */
 package ro.duoline.promed.commands;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import ro.duoline.promed.domains.Picture;
+import ro.duoline.promed.domains.security.Authority;
 
 /**
  *
@@ -17,6 +21,8 @@ public class UserForm {
 
     private Integer id;
     private Integer version;
+
+    private Set<Authority> authorities = new HashSet<>();
 
     @NotEmpty
     @Size(min = 2, max = 75)
@@ -36,6 +42,24 @@ public class UserForm {
     private String email;
 
     private String phoneNumber;
+
+    private Picture profileImage;
+
+    public Picture getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(Picture profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
 
     public Integer getId() {
         return id;

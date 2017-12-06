@@ -30,6 +30,9 @@ public class UserMedicForm extends UserForm {
         this.setLastName(userForm.getLastName());
         this.setPhoneNumber(userForm.getPhoneNumber());
         this.setUserName(userForm.getUserName());
+        this.setAuthorities(userForm.getAuthorities());
+        this.setProfileImage(userForm.getProfileImage());
+        
 
     }
 
