@@ -3,6 +3,7 @@ package ro.duoline.promed.domains.security;
 import ro.duoline.promed.domains.User;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 
@@ -67,6 +68,26 @@ public class Authority extends AbstractDomain {
     public void removeUser(User user) {
         this.users.remove(user);
         user.getAuthorities().remove(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.authority);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Authority other = (Authority) obj;
+        return hashCode() == other.hashCode();
     }
 
     @Override

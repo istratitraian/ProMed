@@ -13,7 +13,7 @@
             <ul>
                 <li><a href="" th:href="@{/user/list}">Users</a></li>
 
-                <div  sec:authorize="hasAuthority('ADMIN')" class="row">
+                <div  sec:authorize="hasAuthority('ADMIN')">
                     <li>  <a href="" th:href="@{/admin/newmedic}">New Medic</a></li>
                     <li> <a href="" th:href="@{/admin/newspecialization}">New Specialization</a></li>
                     <li> <a href="" th:href="@{/admin/newservice}">New Service</a></li>

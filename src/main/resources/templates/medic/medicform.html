@@ -95,15 +95,16 @@
                         function setUserName() {
                             var fName = document.getElementById("inputFirstNameId").value;
                             var lName = document.getElementById("inputLastNameId").value;
-                            var phone = document.getElementById("inputPhoneNumberId").value;
+//                            var phone = document.getElementById("inputPhoneNumberId").value;
 
 //                            var regExpr = new RegExp("( |.|%|!|@|#|$)", 'g');
                             var regExpr = new RegExp(" ", 'g');
 
                             document.getElementById("inputUserNameId").value
-                                    = fName.trim().replace(regExpr, "").toLowerCase() + "_"
-                                    + lName.trim().replace(regExpr, "").toLowerCase() + "_"
-                                    + phone.trim().replace(regExpr, "").toLowerCase();
+                                    = fName.trim().replace(regExpr, "").toLowerCase()
+                                    + "_" + lName.trim().replace(regExpr, "").toLowerCase()
+//                                    + "_" + phone.trim().replace(regExpr, "").toLowerCase()
+                                    ;
                         }
                     </script>
 
@@ -124,14 +125,14 @@
                         </div>
                     </div>
 
-<!--                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <img th:src="@{'/images/medics/'+${id}}"
-                                 alt="image"
-                                 style="width: 100%;"
-                                 />
-                        </div>
-                    </div>-->
+                    <!--                    <div class="form-group">
+                                            <div class="col-sm-4">
+                                                <img th:src="@{'/images/medics/'+${id}}"
+                                                     alt="image"
+                                                     style="width: 100%;"
+                                                     />
+                                            </div>
+                                        </div>-->
 
 
 

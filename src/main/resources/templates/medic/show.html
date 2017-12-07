@@ -40,7 +40,7 @@
 
                         <div th:if="${not #lists.isEmpty(medic.usersSpecializations)}">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Specializari</label>
+                                <label class="col-sm-2 control-label">Servicii</label>
 
                                 <ul class="col-sm-10">
                                     <li th:each="userSpecialization : ${medic.usersSpecializations}">
@@ -72,12 +72,15 @@
                             </div>
                         </div>
 
+                        <!--<h2>isAuthorized = [[${isAuthorized}]]</h2>-->
 
-                        <div sec:authorize="isAuthenticated()" >
-                            <div sec:authorize="hasAuthority('MEDIC')">
-                                <a class="btn btn-lg btn-primary" th:href="@{'/medic/edit/' + ${medic.id}}">Edit</a> 
-                            </div>
-                        </div>
+                        <!--<div sec:authorize="isAuthenticated()" >-->
+                            <!--<div sec:authorize="hasAuthority('MEDIC')">-->
+                                <div th:if="${isMedicAuthorized}">
+                                    <a class="btn btn-lg btn-primary" th:href="@{'/medic/edit/' + ${medic.id}}">Edit</a> 
+                                </div>
+                            <!--</div>-->
+                        <!--</div>-->
 
                     </form>
                 </div>

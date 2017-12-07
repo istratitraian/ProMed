@@ -6,13 +6,12 @@
 package ro.duoline.promed.controllers;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,7 +45,6 @@ public class MedicController {
 //
 //    @Autowired
 //    private MessageSource messageSource;
-
     @Autowired
     private RoleRepository roleRepository;
 
@@ -72,8 +70,13 @@ public class MedicController {
     private UsersSpecializationsRepository usersSpecializationsRepository;
 
     @GetMapping("/medic/info/{userName}")
-    public String userInfo(@PathVariable String userName, Model model) {
-        model.addAttribute("medic", userRepository.findByUsername(userName));
+    public String userInfo(@PathVariable String userName, Model model, Principal principal) {
+        User user = userRepository.findByUsername(userName);
+        boolean isAuthorized = principal != null
+                && principal.getName().equals(user.getUsername())
+                && user.getAuthorities().contains(SecurityConfig.AUTHORITY_MEDIC);
+        model.addAttribute("isMedicAuthorized", isAuthorized);
+        model.addAttribute("medic", user);
         return "medic/show";
     }
 
@@ -84,17 +87,34 @@ public class MedicController {
     }
 
     @GetMapping("/medic/show/{id}")
-    public String getUser(@PathVariable Integer id, Model model) {
-        model.addAttribute("medic", userRepository.findOne(id));
+    public String getUser(@PathVariable Integer id, Model model, Principal principal) {
+        User user = userRepository.findOne(id);
+
+        System.out.println("MedicController.getUser(" + id + ") user : " + user.getAuthorities()
+                + ", isMEdic=" + user.getAuthorities().contains(SecurityConfig.AUTHORITY_MEDIC)
+        );
+
+        boolean isAuthorized = principal != null
+                && principal.getName().equals(user.getUsername())
+                && user.getAuthorities().contains(SecurityConfig.AUTHORITY_MEDIC);
+
+        model.addAttribute("isMedicAuthorized", isAuthorized);
+        model.addAttribute("medic", user);
         return "medic/show";
     }
 
     @GetMapping("/medic/edit/{id}")
-    public String editGet(@PathVariable Integer id, Model model) {
+//    @PreAuthorize("#id == authentication.name")
+    public String editGet(@PathVariable Integer id, Model model, Principal principal) {
         User user = userRepository.findOne(id);
+        boolean isAuthorized = principal.getName().equals(user.getUsername());
+        if (!isAuthorized) {
+            return "redirect:/access_denied";
+        }
         UserMedicForm userMedicForm = new UserMedicForm(userToUserForm.convert(user));
         userMedicForm.setSpecialization(user.getUsersSpecializations().toString().replaceFirst("\\[", "").replaceFirst("\\]", ""));
         model.addAttribute("userMedicForm", userMedicForm);
+
         return "medic/medicformEdit";
     }
 
@@ -115,13 +135,10 @@ public class MedicController {
 
     @PostMapping("/admin/newmedic")
     public String newMedic(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
-
         newUserFormValidator.validate(userMedicForm, bindingResult);
-
         if (bindingResult.hasErrors()) {
             return "medic/medicform";
         }
-
         return saveMedic(userMedicForm);
     }
 
@@ -170,7 +187,7 @@ public class MedicController {
 
         String[] spechs = userMedicForm.getSpecialization().split(",");
         User u = userFormToUser.convert(userMedicForm);
-//        u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
+        u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
         MultipartFile file = userMedicForm.getFile();
         User savedUser;
         if (file != null && !file.isEmpty()) {
