@@ -73,7 +73,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             User user1 = new User();
             user1.addAuthority(SecurityConfig.AUTHORITY_PACIENT);
             user1.setUsername("pacient_" + i);
-            user1.setEncryptedPassword(passwordEncoder.encode("password"));
+            user1.setEncryptedPassword(passwordEncoder.encode("pass"));
             user1.setFirstName("Name" + i);
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "pacient@test.com");
@@ -110,7 +110,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
 
             usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
         }
-        for (int i = 17; i < 20; i++) {
+        for (int i = 17; i < 30; i++) {
             User user1 = new User();
             user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
             user1.addSpecialization(SPECIALIZATION_STOMATOLOG);

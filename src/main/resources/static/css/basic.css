@@ -1,3 +1,55 @@
+
+/*
+.pagenav-fit-content{
+    width: fit-content;
+    align-content: center;
+}*/
+
+
+.container{
+
+    background-color: #FFF;
+
+}
+
+.border-px-solid-bottom{
+    /*margin-top: 10px;*/
+    border-top:1px solid lightgray;
+    padding-top: 3px;
+    padding-bottom: 1px;
+    /*border-bottom:1px solid;*/
+
+    /*margin-bottom: 10px;*/
+}
+.border-px-solid{
+    background-color: #DDD;
+    /*margin-top: 10px;*/
+    padding-top: 3px;
+    padding-bottom: 1px;
+    /*border-top:1px solid;*/
+}
+
+.page-nav-text-center{
+    text-align: center;
+}
+
+/*.width_center-height_center{
+        position: absolute;
+        width: 300px;
+        height: 50px;
+        margin: auto 0 ;
+     
+        
+}*/
+
+.page-index-curent{
+    border: 1px dotted green;
+    font-size: xx-large;
+}
+.page-index-link{
+    font-size: xx-large;
+}
+
 .error{
     color:red;
 }
@@ -12,7 +64,7 @@
 
 
 body {
-    background-color: #eee;
+    background-color: #EEE;
 }
 
 .form-signin {

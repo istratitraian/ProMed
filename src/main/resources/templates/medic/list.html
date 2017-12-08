@@ -8,22 +8,26 @@
 
         <div class="container margin-top100-bottom150">
             <div th:if="${not #lists.isEmpty(medics)}">
-                <h2>Medic List</h2>
+                <!--<h2>Medic List</h2>-->
+
                 <div  sec:authorize="hasAuthority('ADMIN')" class="row">
                     <div class="col-sm-3">
                         <a href="" th:href="@{/admin/newmedic}">New Medic</a>
                     </div>
                 </div>
+
+                <nav th:replace="fragments/page-nav :: page-nav"></nav>
+
                 <!--<table class="table table-striped">-->
                 <table class="table table-responsive">
-                    <tr>
-                        <th></th>
-                        <th>Specializari</th>
-                        <th>Id</th>
-                        <th>First Name</th>
-                        <th>last Name</th>
-                        <th></th>
-                    </tr>
+                    <!--                    <tr>
+                                            <th></th>
+                                            <th>Specializari</th>
+                                            <th>Id</th>
+                                            <th>First Name</th>
+                                            <th>last Name</th>
+                                            <th></th>
+                                        </tr>-->
                     <tr th:each="medic : ${medics}">
 
                         <td>
@@ -51,6 +55,10 @@
                             </div>
                         </td>
 
+                        <!--<td th:text="${medic.id}"></td>-->
+                        <td th:text="${medic.firstName}+'  '+${medic.lastName}"></td>
+                        <!--<td th:text="${medic.lastName}"></td>-->
+
                         <td>
                             <div th:if="${not #lists.isEmpty(medic.usersSpecializations)}">
                                 <ul  th:each="userSpec : ${medic.usersSpecializations}">
@@ -59,13 +67,12 @@
                             </div>
                         </td>
 
-
-                        <td th:text="${medic.id}"></td>
-                        <td th:text="${medic.firstName}"></td>
-                        <td th:text="${medic.lastName}"></td>
                         <td><a th:href="@{'/medic/show/' + ${medic.id}}">Details</a> </td>
                     </tr>
                 </table>
+                
+                 <nav th:replace="fragments/page-nav :: page-nav-bottom"></nav>
+                
             </div>
 
         </div>

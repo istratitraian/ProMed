@@ -7,11 +7,21 @@ package ro.duoline.promed.controllers;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -80,10 +90,52 @@ public class MedicController {
         return "medic/show";
     }
 
-    @GetMapping("/medic/list")
-    public String list(Model model) {
-        model.addAttribute("medics", roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
+    public static final int USERS_PER_PAGE_COUNT = 10;
+
+    @GetMapping("/medic/list/{page}")
+//    @GetMapping("/medic/list")
+//    public String list(Model model, Pageable pageable) {
+    public String list(Model model, @PathVariable(name = "page", required = false) Integer pageIndex) {
+//        PageRequest request = new PageRequest(page, 1);
+//        PageRequest pageRequest = new PageRequest(page, pageSize, Sort.Direction.ASC);
+
+//        pageIndex = 1;
+        List<User> userList = new ArrayList<>(roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
+
+        sortUsersById(userList);
+
+        int pageCount;
+
+        if (userList.size() % USERS_PER_PAGE_COUNT != 0) {
+            pageCount = userList.size() / USERS_PER_PAGE_COUNT + 1;
+        } else {
+            pageCount = userList.size() / USERS_PER_PAGE_COUNT;
+        }
+
+        int begin = 0;
+        if (pageIndex > 1) {
+            begin = (pageIndex * USERS_PER_PAGE_COUNT) - USERS_PER_PAGE_COUNT + 1;
+        }
+        int end = begin + USERS_PER_PAGE_COUNT;
+
+        if (end > userList.size()) {
+            end = userList.size();
+        }
+
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("pageIndex", pageIndex);
+
+//        model.addAttribute("userListSize", userList.size());
+//        model.addAttribute("pageSize", USERS_PER_PAGE_COUNT);
+//        Page<User> users = repository.findAll(new PageRequest(1, 20));
+        model.addAttribute("medics", userList.subList(begin, end));
+//        model.addAttribute("medics", roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
         return "medic/list";
+    }
+
+    public static List<User> sortUsersById(List<User> list) {
+        Collections.sort(list, (User o1, User o2) -> o1.getId() > o2.getId() ? 1 : -1);
+        return list;
     }
 
     @GetMapping("/medic/show/{id}")
