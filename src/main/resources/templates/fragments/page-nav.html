@@ -1,101 +1,52 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <head lang="en" th:replace="fragments/head-resources :: resources">
 
     </head>
     <body>
 
-    <navbar th:fragment="page-nav">
-
-        <div class="page-nav-text-center border-px-solid">
-
-            <span th:if="${pageIndex == 1}" class="page-index-curent">1</span>
-            <a th:if="${pageIndex != 1}" th:href="@{/medic/list/1}" href="#" class="page-index-link">1</a>
-            &nbsp;
-
-            <span th:if="${pageIndex - 4 > 0}" class="page-index-link">..</span>
-            <span th:unless="${pageIndex - 4 > 0}">
-                <span th:if="${pageIndex == 2}" class="page-index-curent">2</span>
-                <a    th:if="${pageIndex != 2}" th:href="@{/medic/list/2}" href="#" class="page-index-link">2</a>
-            </span>
-            &nbsp;
-            &nbsp;
-
-            <span th:each="page : ${#numbers.sequence(3, pageCount - 2)}" >
-
-                <span th:if="${page == pageIndex}" class="page-index-curent" th:text="${page}"></span>
-                <a    th:if="${page != pageIndex}" class="page-index-link" 
-                      th:href="@{'/medic/list/'+ ${page}}" href="#" th:text="${page}"></a>
-                &nbsp;
-                &nbsp;
-
-            </span>
-
-            <span th:if="${(pageIndex + 4) &lt;( pageCount - 1)}" class="page-index-link">..</span>
-            <span th:if="${pageIndex + 4 &gt;= pageCount - 1}">
-                <span th:if="${pageIndex == pageCount - 1}" class="page-index-curent" th:text="${pageCount - 1}"></span>
-                <a    th:if="${pageIndex != pageCount - 1}" class="page-index-link" 
-                      th:href="@{'/medic/list/'+ ${pageCount - 1}}" href="#" th:text="${pageCount - 1}"></a>
-            </span>
-
-            &nbsp;
-            &nbsp;
 
 
-            <span th:if="${pageIndex == pageCount}" class="page-index-curent" th:text="${pageCount}"></span>
-            <a th:if="${pageIndex != pageCount}" class="page-index-link"
-               th:href="@{'/medic/list/' + ${pageCount}}" href="#" th:text="${pageCount}" ></a>
+        <div th:fragment="page-nav-top">
+
+            <div class="page-nav-text-center border-px-solid">
+                <div  sec:authorize="hasAuthority('ADMIN')" >
+                    <a href="" th:href="@{/admin/newmedic}" class="font-l nav-left margin-left font-color-admin font-bold btn  btn-default">New Medic</a>
+                </div>
+
+                <span th:each="pageElement : ${pageElementList}">
+                    <span th:if="${pageElement.isNull()}" class="font-xxl">..</span>
+                    <span th:if="${pageElement.isEqPageIndex()}" class="page-index-curent" th:text="${pageElement.element}"></span>
+                    <a    th:if="${!pageElement.isEqPageIndex()}" class="font-xxl" 
+                          th:href="@{'/medic/list/'+ ${pageElement.element}}" href="#" th:text="${pageElement.element}"></a>
+                    &nbsp;
+                    &nbsp;
+
+                </span>
+            </div><!--pageNav-->
         </div>
 
-    </navbar>
 
 
+        <div th:fragment="page-nav-bottom">
 
-    <navbar th:fragment="page-nav-bottom">
+            <div class="page-nav-text-center border-px-solid-bottom">
+                <span th:each="pageElement : ${pageElementList}">
+                    <span th:if="${pageElement.isNull()}" class="font-xxl">..</span>
+                    <span th:if="${pageElement.isEqPageIndex()}" class="page-index-curent" th:text="${pageElement.element}"></span>
+                    <a    th:if="${!pageElement.isEqPageIndex()}" class="font-xxl" 
+                          th:href="@{'/medic/list/'+ ${pageElement.element}}" href="#" th:text="${pageElement.element}"></a>
+                    &nbsp;
+                    &nbsp;
 
-        <div class="page-nav-text-center border-px-solid-bottom">
+                </span>
+            </div>
 
-            <span th:if="${pageIndex == 1}" class="page-index-curent">1</span>
-            <a th:if="${pageIndex != 1}" th:href="@{/medic/list/1}" href="#" class="page-index-link">1</a>
-            &nbsp;
-
-            <span th:if="${pageIndex - 4 > 0}" class="page-index-link">..</span>
-            <span th:unless="${pageIndex - 4 > 0}">
-                <span th:if="${pageIndex == 2}" class="page-index-curent">2</span>
-                <a    th:if="${pageIndex != 2}" th:href="@{/medic/list/2}" href="#" class="page-index-link">2</a>
-            </span>
-            &nbsp;
-            &nbsp;
-
-            <span th:each="page : ${#numbers.sequence(3, pageCount - 2)}" >
-
-                <span th:if="${page == pageIndex}" class="page-index-curent" th:text="${page}"></span>
-                <a    th:if="${page != pageIndex}" class="page-index-link" 
-                      th:href="@{'/medic/list/'+ ${page}}" href="#" th:text="${page}"></a>
-                &nbsp;
-                &nbsp;
-
-            </span>
-
-            <span th:if="${(pageIndex + 4) &lt;( pageCount - 1)}" class="page-index-link">..</span>
-            <span th:if="${pageIndex + 4 &gt;= pageCount - 1}">
-                <span th:if="${pageIndex == pageCount - 1}" class="page-index-curent" th:text="${pageCount - 1}"></span>
-                <a    th:if="${pageIndex != pageCount - 1}" class="page-index-link" 
-                      th:href="@{'/medic/list/'+ ${pageCount - 1}}" href="#" th:text="${pageCount - 1}"></a>
-            </span>
-
-            &nbsp;
-            &nbsp;
-
-
-            <span th:if="${pageIndex == pageCount}" class="page-index-curent" th:text="${pageCount}"></span>
-            <a th:if="${pageIndex != pageCount}" class="page-index-link"
-               th:href="@{'/medic/list/' + ${pageCount}}" href="#" th:text="${pageCount}" ></a>
         </div>
 
-    </navbar>
 
-
-</body>
+    </body>
 </html>

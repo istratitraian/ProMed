@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -92,24 +93,92 @@ public class MedicController {
 
     public static final int USERS_PER_PAGE_COUNT = 10;
 
+    private static class PageNavElement {
+
+        private Integer element = null;
+
+        private boolean pageIndex = false;
+
+        public boolean isEqPageIndex() {
+            return pageIndex;
+        }
+
+        public boolean isNull() {
+            return element == null;
+        }
+
+        public Integer getElement() {
+            return element;
+        }
+
+        public PageNavElement() {
+        }
+
+        public PageNavElement(int el, Integer pageIndex) {
+            this.element = el;
+            this.pageIndex = Objects.equals(element, pageIndex);
+        }
+
+    }
+
     @GetMapping("/medic/list/{page}")
-//    @GetMapping("/medic/list")
-//    public String list(Model model, Pageable pageable) {
     public String list(Model model, @PathVariable(name = "page", required = false) Integer pageIndex) {
-//        PageRequest request = new PageRequest(page, 1);
-//        PageRequest pageRequest = new PageRequest(page, pageSize, Sort.Direction.ASC);
-
-//        pageIndex = 1;
         List<User> userList = new ArrayList<>(roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
-
         sortUsersById(userList);
-
         int pageCount;
-
         if (userList.size() % USERS_PER_PAGE_COUNT != 0) {
             pageCount = userList.size() / USERS_PER_PAGE_COUNT + 1;
         } else {
             pageCount = userList.size() / USERS_PER_PAGE_COUNT;
+        }
+
+        final int PAGE_NAV_SIZE = pageCount > 7 ? 6 : pageCount;
+
+        List<PageNavElement> pageElementList = new ArrayList<>(PAGE_NAV_SIZE);
+        pageElementList.add(new PageNavElement(1, pageIndex));
+
+        if (PAGE_NAV_SIZE > 1) {
+
+            int begin;
+            int end;
+
+            boolean isPageIndexPl3LtPcMin1 = pageIndex + 3 < pageCount;
+
+            if (pageIndex - 4 > 0) {
+
+                pageElementList.add(new PageNavElement());
+
+                if (isPageIndexPl3LtPcMin1) {
+                    begin = pageIndex - 1;
+                    end = pageIndex + 2;
+                } else {
+                    begin = pageCount - 4;
+                    end = pageCount - 1;
+                }
+
+            } else {
+                begin = 3;
+                end = PAGE_NAV_SIZE;
+                pageElementList.add(new PageNavElement(2, pageIndex));
+            }
+
+            if (PAGE_NAV_SIZE > 2) {
+                for (; begin < end; begin++) {
+                    PageNavElement pageNavElement = new PageNavElement(begin, pageIndex);
+                    pageElementList.add(pageNavElement);
+                }
+
+                if (pageCount > 5) {
+                    if (isPageIndexPl3LtPcMin1) {
+                        pageElementList.add(new PageNavElement());
+                    } else {
+                        pageElementList.add(new PageNavElement(pageCount - 1, pageIndex));
+                    }
+                    if (pageCount > 6) {
+                        pageElementList.add(new PageNavElement(pageCount, pageIndex));
+                    }
+                }
+            }
         }
 
         int begin = 0;
@@ -122,12 +191,7 @@ public class MedicController {
             end = userList.size();
         }
 
-        model.addAttribute("pageCount", pageCount);
-        model.addAttribute("pageIndex", pageIndex);
-
-//        model.addAttribute("userListSize", userList.size());
-//        model.addAttribute("pageSize", USERS_PER_PAGE_COUNT);
-//        Page<User> users = repository.findAll(new PageRequest(1, 20));
+        model.addAttribute("pageElementList", pageElementList);
         model.addAttribute("medics", userList.subList(begin, end));
 //        model.addAttribute("medics", roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
         return "medic/list";

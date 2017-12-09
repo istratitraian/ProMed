@@ -1,5 +1,7 @@
 package ro.duoline.promed;
 
+import java.util.ArrayList;
+import java.util.List;
 import ro.duoline.promed.jpa.SpecializationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,7 +43,14 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         loadRoles();
         loadSpecializations();
-        loadUsersAndUsers();
+        new Thread(
+                new Runnable() {
+            @Override
+            public void run() {
+                loadUsersAndUsers();
+            }
+        }
+        ).start();
     }
 
     private void loadRoles() {
@@ -57,6 +66,9 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     }
 
     public void loadUsersAndUsers() {
+
+        List<User> userList = new ArrayList<>();
+        List<UsersSpecializations> usersSpechsList = new ArrayList<>();
 
         User user0 = new User();
         user0.addAuthority(SecurityConfig.AUTHORITY_SU_ADMIN);
@@ -78,7 +90,8 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "pacient@test.com");
             user1.setPhoneNumber("074800000" + i);
-            userRepository.save(user1);
+//            userRepository.save(user1);
+            userList.add(user1);
 
         }
         for (int i = 10; i < 14; i++) {
@@ -91,9 +104,10 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "medic@test.com");
             user1.setPhoneNumber("074800000" + i);
-            userRepository.save(user1);
-
-            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
+//            userRepository.save(user1);
+//            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
+            userList.add(user1);
+            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
 
         }
         for (int i = 14; i < 17; i++) {
@@ -106,11 +120,13 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "medic@test.com");
             user1.setPhoneNumber("074800000" + i);
-            userRepository.save(user1);
+//            userRepository.save(user1);
+//            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
 
-            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
+            userList.add(user1);
+            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
         }
-        for (int i = 17; i < 30; i++) {
+        for (int i = 17; i < 23; i++) {
             User user1 = new User();
             user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
             user1.addSpecialization(SPECIALIZATION_STOMATOLOG);
@@ -120,10 +136,14 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "medic@test.com");
             user1.setPhoneNumber("074800000" + i);
-            userRepository.save(user1);
-            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_STOMATOLOG));
-
+//            userRepository.save(user1);
+//            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_STOMATOLOG));
+            userList.add(user1);
+            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
         }
+
+        userRepository.save(userList);
+        usersSpecializationsRepository.save(usersSpechsList);
 
     }
 
