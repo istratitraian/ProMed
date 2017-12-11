@@ -23,7 +23,7 @@
                     <tr th:each="spech : ${specializations}">
                         <!--<td th:text="${spech.id}"></td>-->
                         <td th:text="${spech.name}"></td>
-                        <td><a th:href="@{'/specialization/services/' + ${spech.id}}">Servicii</a> </td>
+                        <td><a th:href="@{'/specialization/services/' + ${spech.id}}">Servicii</a></td>
                         <td><a th:href="@{'/specialization/medics/' + ${spech.id}}">Medici</a> </td>
                     </tr>
                 </table>

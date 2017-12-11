@@ -5,6 +5,7 @@
  */
 package ro.duoline.promed.jpa;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import ro.duoline.promed.domains.Specialization;
 
@@ -15,5 +16,5 @@ import ro.duoline.promed.domains.Specialization;
 public interface SpecializationRepository extends CrudRepository<Specialization, Integer> {
 
     public Specialization findByName(String string);
-    
+    public List<Specialization> findByNameContaining(String text);
 }

@@ -49,9 +49,10 @@
                                             </ul>-->
 
                         <div class="col-sm-3 col-md-3">
-                            <form class="navbar-form" role="search">
+                            <!--th:object="${userMedicForm}"-->
+                            <form class="navbar-form" role="search" method="post"  th:action="@{/search}">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Cauta Doctor, Serviciu" name="q"/>
+                                    <input type="text" class="form-control" placeholder="Cauta Doctor, Specializare, Serviciu" name="searchText"/>
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
                                     </div>

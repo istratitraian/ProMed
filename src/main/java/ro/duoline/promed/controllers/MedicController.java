@@ -73,7 +73,6 @@ public class MedicController {
     @Autowired
     private UsersSpecializationsRepository usersSpecializationsRepository;
 
-
     @GetMapping("/medic/info/{userName}")
     public String userInfo(@PathVariable String userName, Model model, Principal principal) {
         User user = userRepository.findByUsername(userName);
@@ -85,14 +84,14 @@ public class MedicController {
         return "medic/show";
     }
 
-    private final PageNav pageNav = new PageNav(5, "/medic/list/");
+    private final PageNav pageNav = new PageNav(3, "/medic/list/");
     private List<User> userList;
 
     @GetMapping("/medic/list/{page}")
     public String list(Model model, @PathVariable(name = "page", required = false) Integer pageIndex) {
 //        if (userList == null) {
-            userList = new ArrayList<>(roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
-            sortUsersById(userList);
+        userList = new ArrayList<>(roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
+        sortUsersById(userList);
 //        }
 
         model.addAttribute("medics", pageNav.buildPageNav(model, pageIndex, userList));
@@ -183,17 +182,15 @@ public class MedicController {
         }
 
         Set<UsersSpecializations> usersSpecializations = new HashSet<>();
-        Set<Specialization> existentRepoSpechiaSet = new HashSet<>();
-        specializationRepository.findAll().forEach(existentRepoSpechiaSet::add);
 
         for (String spech : spechs) {
-
             spech = spech.trim();
-
-            Specialization specialization = new Specialization(spech);
-            if (!existentRepoSpechiaSet.contains(specialization)) {
+            Specialization specialization = specializationRepository.findByName(spech);
+            if (specialization == null) {
+                specialization = new Specialization(spech);
                 specializationRepository.save(specialization);
             }
+
             usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
         }
 

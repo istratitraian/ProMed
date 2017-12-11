@@ -9,28 +9,23 @@ import java.util.Date;
 import ro.duoline.promed.domains.json.JsonObj;
 
 @Controller
-public class MainController {
-
+public class IndexController {
 
     @GetMapping("/")
-    public String index(Model model){
+    public String index(Model model) {
 
-        model.addAttribute("time",new Date());
+        model.addAttribute("time", new Date());
         return "index";
     }
 
 
-
-
     @GetMapping("/rest")
     @ResponseBody
-    public JsonObj rest(Model model){
+    public JsonObj rest(Model model) {
         JsonObj obj = new JsonObj();
         obj.setId("1A");
         obj.setName("Name SecondName");
         return obj;
     }
-
-
 
 }
