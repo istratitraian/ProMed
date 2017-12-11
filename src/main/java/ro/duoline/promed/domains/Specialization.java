@@ -26,7 +26,7 @@ public class Specialization extends AbstractDomain {
 //            inverseJoinColumns = @JoinColumn(name = "UserId"))
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    private Set<User> users = new HashSet<>();
-    @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
+    @OneToMany(mappedBy = "specialization", fetch = FetchType.EAGER, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
 
     public Set<UsersSpecializations> getUsersSpecializations() {

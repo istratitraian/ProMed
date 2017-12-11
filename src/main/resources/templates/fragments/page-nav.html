@@ -18,10 +18,10 @@
                 </div>
 
                 <span th:each="pageElement : ${pageElementList}">
-                    <span th:if="${pageElement.isNull()}" class="font-xxl">..</span>
-                    <span th:if="${pageElement.isEqPageIndex()}" class="page-index-curent" th:text="${pageElement.element}"></span>
-                    <a    th:if="${!pageElement.isEqPageIndex()}" class="font-xxl" 
-                          th:href="@{'/medic/list/'+ ${pageElement.element}}" href="#" th:text="${pageElement.element}"></a>
+                    <span th:if="${pageElement.isNull()}" class="font-xl">..</span>
+                    <span th:if="${pageElement.isEqPageIndex()}" class="page-index-curent font-xl" th:text="${pageElement.element}"></span>
+                    <a    th:if="${!pageElement.isEqPageIndex()}" class="font-xl" 
+                          th:href="@{${pageElement.href}}" href="#" th:text="${pageElement.element}"></a>
                     &nbsp;
                     &nbsp;
 
@@ -35,10 +35,11 @@
 
             <div class="page-nav-text-center border-px-solid-bottom">
                 <span th:each="pageElement : ${pageElementList}">
-                    <span th:if="${pageElement.isNull()}" class="font-xxl">..</span>
-                    <span th:if="${pageElement.isEqPageIndex()}" class="page-index-curent" th:text="${pageElement.element}"></span>
-                    <a    th:if="${!pageElement.isEqPageIndex()}" class="font-xxl" 
-                          th:href="@{'/medic/list/'+ ${pageElement.element}}" href="#" th:text="${pageElement.element}"></a>
+                    <span th:if="${pageElement.isNull()}" class="font-xl">..</span>
+                    <span th:if="${pageElement.isEqPageIndex()}" class="page-index-curent font-xl" th:text="${pageElement.element}"></span>
+                    <a    th:if="${!pageElement.isEqPageIndex()}" class="font-xl" 
+                          th:href="@{${pageElement.href}}" href="#" th:text="${pageElement.element}"></a>
+                          <!--th:href="@{'/medic/list/'+ ${pageElement.element}}" href="#" th:text="${pageElement.element}"></a>-->
                     &nbsp;
                     &nbsp;
 

@@ -8,7 +8,12 @@
 
         <div class="container container-promed margin-top100-bottom150 padding-botom-30px">
 
+
+            <!--<div th:text="${medics}"></div>-->
             <div th:if="${not #lists.isEmpty(medics)}">
+
+                <!--<h3 th:text="'Lista '+${medics.get(0).getUsersSpecializations().iterator().next()}+'i'"></h3>-->
+                <h2 th:text="${specialization}+'i'"></h2>
 
                 <div th:include="fragments/page-nav :: page-nav-top"></div>
 
@@ -46,19 +51,22 @@
                                 <tr> <td><a th:href="@{'/medic/show/' + ${medic.id}}">Detalii</a> </td></tr>
                             </table>
                         </td>
-                        <!--<td th:text="${medic.lastName}"></td>-->
 
                         <td>
+
                             <div th:if="${not #lists.isEmpty(medic.usersSpecializations)}">
                                 <ul  th:each="userSpec : ${medic.usersSpecializations}">
+                                    <!--<li th:text="${userSpec}"></li>-->
                                     <li th:text="${userSpec.specialization.name}"></li>
                                 </ul>
                             </div>
+                            <!--</div>-->
                         </td>
 
 
                     </tr>
-                </table>
+                </table> 
+
 
                 <div th:include="fragments/page-nav :: page-nav-bottom"></div>
 

@@ -5,7 +5,7 @@
     </head>
     <body>
         <footer th:replace="fragments/navbar :: navbar"></footer>
-        <div class="container" id="margin-top50-bottom150">
+        <div class="container container-promed margin-top100-bottom150" >
 
             <h2>Medic Form</h2>
             <div>
@@ -89,7 +89,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Specialization:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" th:field="*{specialization}"/>
+                            <input type="text" class="form-control" th:field="*{specialization}" placeholder="Stomatolog, Chirurg,  ,"/>
                         </div>
                     </div>
 

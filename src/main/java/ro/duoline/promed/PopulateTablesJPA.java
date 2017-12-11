@@ -43,14 +43,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         loadRoles();
         loadSpecializations();
-        new Thread(
-                new Runnable() {
-            @Override
-            public void run() {
-                loadUsersAndUsers();
-            }
-        }
-        ).start();
+        new Thread(this::loadUsersAndUsers).start();
     }
 
     private void loadRoles() {
@@ -94,6 +87,8 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             userList.add(user1);
 
         }
+        
+        
         for (int i = 10; i < 14; i++) {
             User user1 = new User();
             user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
@@ -124,7 +119,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
 //            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
 
             userList.add(user1);
-            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
+            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
         }
         for (int i = 17; i < 23; i++) {
             User user1 = new User();
@@ -139,7 +134,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
 //            userRepository.save(user1);
 //            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_STOMATOLOG));
             userList.add(user1);
-            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
+            usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_STOMATOLOG));
         }
 
         userRepository.save(userList);

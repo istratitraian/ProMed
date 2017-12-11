@@ -5,20 +5,20 @@
     </head>
     <body>
         <footer th:replace="fragments/navbar :: navbar"></footer>
-        <div class="container" id="margin-top50-bottom150">
+        <div class="container container-promed margin-top100-bottom150" >
 
             <div th:if="${not #lists.isEmpty(services)}">
-                <h2>Services List</h2>
+                <h2>Lista Servicii</h2>
                 <div  sec:authorize="hasAuthority('ADMIN')" class="row">
                     <div class="col-sm-3">
                         <a href="" th:href="@{/admin/newservice}">New Service</a>
                     </div>
                 </div>
                 <table class="table table-striped">
-                    <tr>
-                        <!--<th>Id</th>-->
+<!--                    <tr>
+                        <th>Id</th>
                         <th>Service</th>
-                    </tr>
+                    </tr>-->
                     <tr th:each="service : ${services}">
                         <!--<td th:text="${service.id}"></td>-->
                         <td th:text="${service}"></td>

@@ -8,21 +8,13 @@ package ro.duoline.promed.controllers;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import ro.duoline.promed.SecurityConfig;
 import ro.duoline.promed.commands.UserMedicForm;
+import ro.duoline.promed.controllers.pagenav.PageNav;
 import ro.duoline.promed.converters.UserFormToUser;
 import ro.duoline.promed.converters.UserToUserForm;
 import ro.duoline.promed.domains.Picture;
@@ -80,6 +73,7 @@ public class MedicController {
     @Autowired
     private UsersSpecializationsRepository usersSpecializationsRepository;
 
+
     @GetMapping("/medic/info/{userName}")
     public String userInfo(@PathVariable String userName, Model model, Principal principal) {
         User user = userRepository.findByUsername(userName);
@@ -91,109 +85,17 @@ public class MedicController {
         return "medic/show";
     }
 
-    public static final int USERS_PER_PAGE_COUNT = 10;
-
-    private static class PageNavElement {
-
-        private Integer element = null;
-
-        private boolean pageIndex = false;
-
-        public boolean isEqPageIndex() {
-            return pageIndex;
-        }
-
-        public boolean isNull() {
-            return element == null;
-        }
-
-        public Integer getElement() {
-            return element;
-        }
-
-        public PageNavElement() {
-        }
-
-        public PageNavElement(int el, Integer pageIndex) {
-            this.element = el;
-            this.pageIndex = Objects.equals(element, pageIndex);
-        }
-
-    }
+    private final PageNav pageNav = new PageNav(5, "/medic/list/");
+    private List<User> userList;
 
     @GetMapping("/medic/list/{page}")
     public String list(Model model, @PathVariable(name = "page", required = false) Integer pageIndex) {
-        List<User> userList = new ArrayList<>(roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
-        sortUsersById(userList);
-        int pageCount;
-        if (userList.size() % USERS_PER_PAGE_COUNT != 0) {
-            pageCount = userList.size() / USERS_PER_PAGE_COUNT + 1;
-        } else {
-            pageCount = userList.size() / USERS_PER_PAGE_COUNT;
-        }
+//        if (userList == null) {
+            userList = new ArrayList<>(roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
+            sortUsersById(userList);
+//        }
 
-        final int PAGE_NAV_SIZE = pageCount > 7 ? 6 : pageCount;
-
-        List<PageNavElement> pageElementList = new ArrayList<>(PAGE_NAV_SIZE);
-        pageElementList.add(new PageNavElement(1, pageIndex));
-
-        if (PAGE_NAV_SIZE > 1) {
-
-            int begin;
-            int end;
-
-            boolean isPageIndexPl3LtPcMin1 = pageIndex + 3 < pageCount;
-
-            if (pageIndex - 4 > 0) {
-
-                pageElementList.add(new PageNavElement());
-
-                if (isPageIndexPl3LtPcMin1) {
-                    begin = pageIndex - 1;
-                    end = pageIndex + 2;
-                } else {
-                    begin = pageCount - 4;
-                    end = pageCount - 1;
-                }
-
-            } else {
-                begin = 3;
-                end = PAGE_NAV_SIZE;
-                pageElementList.add(new PageNavElement(2, pageIndex));
-            }
-
-            if (PAGE_NAV_SIZE > 2) {
-                for (; begin < end; begin++) {
-                    PageNavElement pageNavElement = new PageNavElement(begin, pageIndex);
-                    pageElementList.add(pageNavElement);
-                }
-
-                if (pageCount > 5) {
-                    if (isPageIndexPl3LtPcMin1) {
-                        pageElementList.add(new PageNavElement());
-                    } else {
-                        pageElementList.add(new PageNavElement(pageCount - 1, pageIndex));
-                    }
-                    if (pageCount > 6) {
-                        pageElementList.add(new PageNavElement(pageCount, pageIndex));
-                    }
-                }
-            }
-        }
-
-        int begin = 0;
-        if (pageIndex > 1) {
-            begin = (pageIndex * USERS_PER_PAGE_COUNT) - USERS_PER_PAGE_COUNT + 1;
-        }
-        int end = begin + USERS_PER_PAGE_COUNT;
-
-        if (end > userList.size()) {
-            end = userList.size();
-        }
-
-        model.addAttribute("pageElementList", pageElementList);
-        model.addAttribute("medics", userList.subList(begin, end));
-//        model.addAttribute("medics", roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers());
+        model.addAttribute("medics", pageNav.buildPageNav(model, pageIndex, userList));
         return "medic/list";
     }
 

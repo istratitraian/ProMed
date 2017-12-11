@@ -49,11 +49,22 @@ public class User extends AbstractDomainDateCreated {
 //            inverseJoinColumns = @JoinColumn(name = "SpecializationId"))
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    private Set<Specialization> specializations = new HashSet<>();
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<Picture> pictures = new HashSet<>();
+
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
+//    private Set<User> patients = new HashSet<>();
+//
+//    public Set<User> getPatients() {
+//        return patients;
+//    }
+//
+//    public void setPatients(Set<User> patients) {
+//        this.patients = patients;
+//    }
 
     public Set<Picture> getPictures() {
         return pictures;
@@ -226,8 +237,12 @@ public class User extends AbstractDomainDateCreated {
 
     @Override
     public String toString() {
-        return "User{" + "failedLoginAttempts=" + failedLoginAttempts + ", username=" + username + ", password=" + password + ", encryptedPassword=" + encryptedPassword + ", enabled=" + enabled + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", phoneNumber=" + phoneNumber + ", authorities=" + authorities + '}';
+        return "User{ username=" + username  + ", firstName=" + firstName + ", lastName=" + lastName+'}';
     }
+//    @Override
+//    public String toString() {
+//        return "User{" + "failedLoginAttempts=" + failedLoginAttempts + ", username=" + username + ", password=" + password + ", encryptedPassword=" + encryptedPassword + ", enabled=" + enabled + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", phoneNumber=" + phoneNumber + ", authorities=" + authorities + '}';
+//    }
 
     public void addLoginFailAttempt() {
         failedLoginAttempts++;
