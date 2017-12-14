@@ -12,7 +12,7 @@
 
         <div th:fragment="page-nav-top">
 
-            <div class="page-nav-text-center border-px-solid">
+            <div class="page-nav-text-center ">
                 <div  sec:authorize="hasAuthority('ADMIN')" >
                     <a href="" th:href="@{/admin/newmedic}" class="font-l nav-left margin-left font-color-admin font-bold btn  btn-default">New Medic</a>
                 </div>

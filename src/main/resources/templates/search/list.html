@@ -5,12 +5,15 @@
     </head>
     <body>
         <footer th:replace="fragments/navbar :: navbar"></footer>
-        <div class="container container-promed margin-top100-bottom150 padding-botom-30px">
+        <div class="container container-shadowed margin-top100-bottom150 padding-botom-30px">
 
             <h3 th:text="'Rezultate Cautare \''+${searchedText}+'\''"></h3>
             <div th:if="${#lists.isEmpty(medicsFounded) and #lists.isEmpty(specializations)}">
                 Nici un rezultat.
             </div>
+        </div>
+        
+        <div class="container container-shadowed padding-botom-30px">
             <div th:if="${not #lists.isEmpty(medicsFounded)}">
                 <h4>Medici</h4>
                 <table class="table table-striped">
@@ -20,7 +23,9 @@
                     </tr>
                 </table>
             </div>
+        </div>
 
+        <div class="container container-shadowed  padding-botom-30px margin-top-30">
             <div th:if="${not #lists.isEmpty(specializations)}">
                 <h4>Specializari</h4>
 
@@ -31,8 +36,8 @@
                     </tr>
                 </table>
             </div>
-
         </div>
+
         <footer th:replace="fragments/footer :: footer"></footer>
     </body>
 </html>

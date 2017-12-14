@@ -36,26 +36,26 @@ public class SearchController {
 //    private UsersSpecializationsRepository usersSpecializationsRepository;
     @PostMapping("/search")
     public String search(String searchText, Model model) {
-        searchText = searchText.toLowerCase();
+        String text = searchText.toLowerCase();
 
         List<Specialization> specializationsFounded = new ArrayList<>();
 
         Iterable<Specialization> allSpechs = specializationRepository.findAll();
         for (Specialization spech : allSpechs) {
-            if (spech.getName().toLowerCase().contains(searchText)) {
+            if (spech.getName().toLowerCase().contains(text)) {
                 specializationsFounded.add(spech);
             }
         }
 
 //                specializationRepository.findByNameContaining(searchText);
-        System.out.println("SearchConteroller.search(" + searchText + ")");
+        System.out.println("SearchConteroller.search(" + text + ")");
 
         Set<User> users = roleRepository.findByAuthority(SecurityConfig.AUTHORITY_MEDIC.getAuthority()).getUsers();
 
         List<User> medicsFounded = new ArrayList<>();
 
         for (User user : users) {
-            if (user.getFirstName().toLowerCase().contains(searchText) || user.getLastName().toLowerCase().contains(searchText)) {
+            if (user.getFirstName().toLowerCase().contains(text) || user.getLastName().toLowerCase().contains(text)) {
                 medicsFounded.add(user);
             }
         }

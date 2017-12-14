@@ -4,6 +4,27 @@
     width: fit-content;
     align-content: center;
 }*/
+.googlemaps-window{
+    width: 348px;
+    height: 200px;
+    /*background-color: grey;*/
+}
+
+.margin-top-20{
+    margin-top: 20px;
+}
+
+
+.margin-right-20{
+    margin-right: 20px;
+}
+.margin-left-20{
+    margin-left: 20px;
+}
+
+.margin-botom-20{
+    margin-bottom: 20px;
+}
 
 
 .padding-top-20px{
@@ -19,16 +40,16 @@
     padding-bottom: 30px;
 }
 
-.container-promed{
+.container-shadowed{
     /*padding-top: 30px;*/
     /*padding-bottom: 50px;*/
     background-color: #FFF;
-    border-radius: 4px 4px 0 0;
+    /*border-radius: 4px 4px 0 0;*/
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .box-shadow-r{
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .border-px-solid-bottom{
@@ -43,9 +64,9 @@
 .border-px-solid{
     /*background-color: #DDD;*/
     /*margin-top: 10px;*/
-    padding-top: 3px;
-    padding-bottom: 1px;
-    /*border-top:1px solid;*/
+    /*padding-top: 3px;*/
+    /*padding-bottom: 1px;*/
+    border:1px solid;
 }
 
 .page-nav-text-center{
@@ -104,7 +125,7 @@
 
 
 body {
-    background-color: #EEE;
+    background-color: #999999;
 }
 
 .form-signin {
