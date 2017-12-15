@@ -2,13 +2,14 @@
 
 <html lang="en"  xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <head >
+    <head>
         <title lang="en" th:replace="fragments/head-resources :: resources"></title>
     </head>
     <body>
 
-        <div th:fragment="navbar">
-            <nav class="navbar navbar-inverse   navbar-fixed-top"  role="navigation" th:fragment="navbar">
+        <!--<div th:fragment="navbar" >-->
+            <nav class="navbar navbar-expand-md navbar-inverse navbar-fixed-top "  role="navigation" th:fragment="navbar">
+                <!--<nav class="navbar navbar-inverse navbar-fixed-top"  role="navigation" th:fragment="navbar">-->
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbarId">
@@ -22,59 +23,24 @@
                             </span>
                         </a>
                     </div>
-                    <div class="collapse navbar-collapse" >
+                    <div class="collapse navbar-collapse" id="myNavbarId" >
                         <ul class="nav navbar-nav">
                             <li><a href="#" th:href="@{/specialization/list}">Specializari</a></li>
                             <li><a href="#" th:href="@{/medic/list/1}">Doctori</a></li>
                         </ul>
-                        <!--                    <ul class="nav navbar-nav">
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"  >Specializari<span class="caret"></span></a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#">ORL</a></li>
-                                                        <li><a href="#">Cardiologie</a></li>
-                                                        <li><a href="#">Stomatologie</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                            <ul class="nav navbar-nav">
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"  >Doctori<span class="caret"></span></a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#">Dan Deleanu Cardiolog</a></li>
-                                                        <li><a href="#">Marian Postu Cardiolog</a></li>
-                                                        <li><a href="#">Dan Rares Nechifor Radiolog</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>-->
 
+                        
                         <div class="col-sm-3 col-md-3">
                             <!--th:object="${userMedicForm}"-->
                             <form class="navbar-form" role="search" method="post"  th:action="@{/search}">
                                 <div class="input-group">
                                     <input type="text" name="searchText" id="searchText" class="form-control" placeholder="Cauta Doctor, Specializare, Serviciu" />
                                     <div class="input-group-btn">
-                                        <!--<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>-->
                                         <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                                        <!--<input  type="submit" class="btn btn-primary glyphicon glyphicon-search" aria-hidden="true"/>-->
                                     </div>
                                 </div>
                             </form>
                         </div>
-
-                        <!--<div th:fragment="searchbar" class="search-bar container">-->
-                        <!--                        <div class="row">
-                                                    <div class="col s12">
-                                                        <form th:action="@{/search}" method="get">
-                                                            <div class="input-field">
-                                                                <input name="q" type="search" placeholder="Search all gifs..." required="required" autocomplete="off"/>
-                                                                <i class="material-icons">search</i>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>-->
-                        <!--</div>-->
-
 
 
                         <ul class="nav navbar-nav navbar-right">
@@ -106,6 +72,10 @@
                     </div>
                 </div>
             </nav>
-        </div>
+
+
+        <!--</div>-->
+
+
     </body>
 </html>

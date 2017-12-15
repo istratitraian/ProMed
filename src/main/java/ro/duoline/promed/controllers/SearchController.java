@@ -17,7 +17,6 @@ import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.jpa.RoleRepository;
 import ro.duoline.promed.jpa.SpecializationRepository;
-import ro.duoline.promed.jpa.UsersSpecializationsRepository;
 
 /**
  *
@@ -36,6 +35,13 @@ public class SearchController {
 //    private UsersSpecializationsRepository usersSpecializationsRepository;
     @PostMapping("/search")
     public String search(String searchText, Model model) {
+
+        if (searchText.length() < 2) {
+//            model.addAttribute("searchedText", "");
+
+            return "search/list";
+        }
+
         String text = searchText.toLowerCase();
 
         List<Specialization> specializationsFounded = new ArrayList<>();

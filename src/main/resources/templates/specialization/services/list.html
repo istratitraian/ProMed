@@ -4,7 +4,7 @@
         <title>List Services</title>
     </head>
     <body>
-        <footer th:replace="fragments/navbar :: navbar"></footer>
+        <div th:replace="fragments/navbar :: navbar"></div>
         <div class="container container-shadowed margin-top100-bottom150" >
 
             <div th:if="${not #lists.isEmpty(services)}">
@@ -15,15 +15,15 @@
                     </div>
                 </div>
                 <table class="table table-striped">
-<!--                    <tr>
-                        <th>Id</th>
-                        <th>Service</th>
-                    </tr>-->
+                    <!--                    <tr>
+                                            <th>Id</th>
+                                            <th>Service</th>
+                                        </tr>-->
                     <tr th:each="service : ${services}">
                         <!--<td th:text="${service.id}"></td>-->
                         <td th:text="${service}"></td>
-<!--                        <td><a th:href="@{'/specialization/services/' + ${service.id}}">Services</a> </td>
-                        <td><a th:href="@{'/specialization/services/' + ${service.id}}">Services</a> </td>-->
+                        <!--                        <td><a th:href="@{'/specialization/services/' + ${service.id}}">Services</a> </td>
+                                                <td><a th:href="@{'/specialization/services/' + ${service.id}}">Services</a> </td>-->
                     </tr>
                 </table>
             </div>

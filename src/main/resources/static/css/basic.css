@@ -13,7 +13,9 @@
 .margin-top-20{
     margin-top: 20px;
 }
-
+.margin-top-100{
+    margin-top: 100px;
+}
 
 .margin-right-20{
     margin-right: 20px;
@@ -22,15 +24,18 @@
     margin-left: 20px;
 }
 
-.margin-botom-20{
+.margin-bottom-20{
     margin-bottom: 20px;
+}
+.margin-bottom-100{
+    margin-bottom: 100px;
 }
 
 
 .padding-top-20px{
     padding-top: 20px;
 }
-.padding-botom-20px{
+.padding-botom-20{
     padding-bottom: 20px;
 }
 .padding-botom-25px{
@@ -114,10 +119,7 @@
 .error{
     color:red;
 }
-#margin-top50-bottom150{
-    margin-top: 50px; 
-    margin-bottom: 150px; 
-}
+
 .margin-top100-bottom150{
     margin-top: 100px; 
     margin-bottom: 150px; 
@@ -125,7 +127,11 @@
 
 
 body {
-    background-color: #999999;
+    background-color: #E9E9E9;
+
+}
+main{
+
 }
 
 .form-signin {
@@ -166,6 +172,8 @@ body {
     text-shadow: 2px 3px 6px #222;
     /*, 7px 7px 0px rgba(0, 0, 0, 0.2);*/
 }
+
+
 
 #appNameId1{
     color:white;

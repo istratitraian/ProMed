@@ -4,7 +4,7 @@
         <title>List Speciaizations</title>
     </head>
     <body>
-        <footer th:replace="fragments/navbar :: navbar"></footer>
+        <div th:replace="fragments/navbar :: navbar"></div>
         <div class="container container-shadowed margin-top100-bottom150" >
 
             <div th:if="${not #lists.isEmpty(specializations)}">
@@ -15,11 +15,11 @@
                     </div>
                 </div>
                 <table class="table table-striped">
-<!--                    <tr>
-                        <th>Id</th>
-                        <th>Specialization</th>
-                        <th></th>
-                    </tr>-->
+                    <!--                    <tr>
+                                            <th>Id</th>
+                                            <th>Specialization</th>
+                                            <th></th>
+                                        </tr>-->
                     <tr th:each="spech : ${specializations}">
                         <!--<td th:text="${spech.id}"></td>-->
                         <td th:text="${spech.name}"></td>

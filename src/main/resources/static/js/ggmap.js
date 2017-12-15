@@ -32,8 +32,8 @@ function setCurentLocation() {
             map.setCenter(pos);
             map.setZoom(16);
 
-            document.getElementById('map_street').value = map.
-                    infoWindow.setPosition(pos);
+//            document.getElementById('map_street').value = map.
+            infoWindow.setPosition(pos);
             infoWindow.setContent('Locatia Ta?');
             infoWindow.open(map);
 

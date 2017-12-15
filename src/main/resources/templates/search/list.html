@@ -4,40 +4,57 @@
         <title>List Users</title>
     </head>
     <body>
-        <footer th:replace="fragments/navbar :: navbar"></footer>
-        <div class="container container-shadowed margin-top100-bottom150 padding-botom-30px">
+        <nav th:replace="fragments/navbar :: navbar"></nav>
 
-            <h3 th:text="'Rezultate Cautare \''+${searchedText}+'\''"></h3>
-            <div th:if="${#lists.isEmpty(medicsFounded) and #lists.isEmpty(specializations)}">
-                Nici un rezultat.
+        <main class="container margin-top-100">
+
+            <div th:if="${ #strings.isEmpty(searchedText)}" class="container alert alert-danger" style="width: fit-content;">
+                Pentru cautare e nevoie de min 2 caractere!
             </div>
-        </div>
-        
-        <div class="container container-shadowed padding-botom-30px">
-            <div th:if="${not #lists.isEmpty(medicsFounded)}">
-                <h4>Medici</h4>
-                <table class="table table-striped">
-                    <tr th:each="medic : ${medicsFounded}">
-                        <td th:text="${medic.firstName}+' - '+${medic.lastName}"></td>
-                        <td><a th:href="@{'/medic/show/' + ${medic.id}}">View</a> </td>
-                    </tr>
-                </table>
+
+            <div th:if="${not #strings.isEmpty(searchedText)}" >
+                <div class="container  alert alert-success" style="width: fit-content;">
+                    <h3 th:text="'Rezultate Cautare \''+${searchedText}+'\''"></h3>
+                    <div th:if="${#lists.isEmpty(medicsFounded) and #lists.isEmpty(specializations)}" class="error" >
+                        Nici un rezultat.
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="container container-shadowed  padding-botom-30px margin-top-30">
-            <div th:if="${not #lists.isEmpty(specializations)}">
-                <h4>Specializari</h4>
+            <!--<div class="row">-->
+            <div class="container">
 
-                <table class="table table-striped">
-                    <tr th:each="spech : ${specializations}">
-                        <td th:text="${spech.name}"></td>
-                        <td><a th:href="@{'/specialization/medics/' + ${spech.id}}">Medici</a> </td>
-                    </tr>
-                </table>
+                <div th:if="${not #lists.isEmpty(medicsFounded)}" class="">
+                    <!--<div class="col-md-5 ml-md-auto container-shadowed-basic padding-top-20px margin-top-20 padding-botom-20px">-->
+                    <div class="container-shadowed-basic padding-top-20px margin-top-20 padding-botom-20">
+                        <h4>Medici</h4>
+                        <table class="table table-striped">
+                            <tr th:each="medic : ${medicsFounded}">
+                                <td th:text="${medic.firstName}+' - '+${medic.lastName}"></td>
+                                <td><a th:href="@{'/medic/show/' + ${medic.id}}">View</a> </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-1"></div>
+
+                <div th:if="${not #lists.isEmpty(specializations)}" class="">
+                    <!--<div class="col-md-5 ml-md-auto container-shadowed-basic  padding-top-20px padding-botom-20px margin-top-20">-->
+                    <div class="container-shadowed-basic  padding-top-20px padding-botom-20 margin-top-20">
+                        <h4>Specializari</h4>
+
+                        <table class="table table-striped">
+                            <tr th:each="spech : ${specializations}">
+                                <td th:text="${spech.name}"></td>
+                                <td><a th:href="@{'/specialization/medics/' + ${spech.id}}">Medici</a> </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
             </div>
-        </div>
-
+        </main>
         <footer th:replace="fragments/footer :: footer"></footer>
     </body>
 </html>
