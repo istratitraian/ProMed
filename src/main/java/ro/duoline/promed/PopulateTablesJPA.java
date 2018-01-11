@@ -1,6 +1,8 @@
 package ro.duoline.promed;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import ro.duoline.promed.jpa.SpecializationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import ro.duoline.promed.domains.DayTimeEvent;
 import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.domains.UsersSpecializations;
+import ro.duoline.promed.enums.EvenStatus;
+import ro.duoline.promed.jpa.DateTimeEventRepository;
 import ro.duoline.promed.jpa.RoleRepository;
 import ro.duoline.promed.jpa.UserRepository;
 import ro.duoline.promed.jpa.UsersSpecializationsRepository;
@@ -38,6 +43,9 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private SpecializationRepository specializationRepository;
 
+    @Autowired
+    private DateTimeEventRepository dateTimeEventRepository;
+
     @Override
 //    @PostConstruct
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -49,7 +57,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
     private void loadRoles() {
         roleRepository.save(SecurityConfig.AUTHORITY_SU_ADMIN);
         roleRepository.save(SecurityConfig.AUTHORITY_MEDIC);
-        roleRepository.save(SecurityConfig.AUTHORITY_PACIENT);
+        roleRepository.save(SecurityConfig.AUTHORITY_CLIENT);
     }
 
     private void loadSpecializations() {
@@ -76,19 +84,17 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
 
         for (int i = 0; i < 10; i++) {
             User user1 = new User();
-            user1.addAuthority(SecurityConfig.AUTHORITY_PACIENT);
+            user1.addAuthority(SecurityConfig.AUTHORITY_CLIENT);
             user1.setUsername("pacient_" + i);
             user1.setEncryptedPassword(passwordEncoder.encode("pass"));
             user1.setFirstName("Name" + i);
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "pacient@test.com");
             user1.setPhoneNumber("074800000" + i);
-//            userRepository.save(user1);
             userList.add(user1);
 
         }
-        
-        
+
         for (int i = 10; i < 14; i++) {
             User user1 = new User();
             user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
@@ -99,12 +105,11 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "medic@test.com");
             user1.setPhoneNumber("074800000" + i);
-//            userRepository.save(user1);
-//            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
             userList.add(user1);
             usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_CARDIOLOG));
 
         }
+
         for (int i = 14; i < 17; i++) {
             User user1 = new User();
             user1.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
@@ -115,8 +120,6 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "medic@test.com");
             user1.setPhoneNumber("074800000" + i);
-//            userRepository.save(user1);
-//            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
 
             userList.add(user1);
             usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_RADIOLOG));
@@ -131,8 +134,6 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             user1.setLastName("LastName" + i);
             user1.setEmail(i + "medic@test.com");
             user1.setPhoneNumber("074800000" + i);
-//            userRepository.save(user1);
-//            usersSpecializationsRepository.save(new UsersSpecializations(user1, SPECIALIZATION_STOMATOLOG));
             userList.add(user1);
             usersSpechsList.add(new UsersSpecializations(user1, SPECIALIZATION_STOMATOLOG));
         }
@@ -140,10 +141,90 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         userRepository.save(userList);
         usersSpecializationsRepository.save(usersSpechsList);
 
+        addDayEventsToMedic(13, 2, "2018-01-05");
+
+        addDayEventsToMedic(13, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        addDayEventsToMedic(12, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+
+        addDayEventsToMedic(12, 2, "2018-01-01");
+        addDayEventsToMedic(12, 2, "2018-01-02");
+
+        addDayEventsToMedic(12, 2, "2018-03-01");
+        addDayEventsToMedic(12, 2, "2018-04-01");
+        addDayEventsToMedic(12, 2, "2018-05-01");
+
     }
 
     public static final Specialization SPECIALIZATION_CARDIOLOG = new Specialization("Cardiolog");
     public static final Specialization SPECIALIZATION_RADIOLOG = new Specialization("Radiolog");
     public static final Specialization SPECIALIZATION_STOMATOLOG = new Specialization("Stomatolog");
+
+    private void addDayEventsToMedic(int medicId, int pacientId, String day) {
+
+        try {
+            User medic = userRepository.findOne(medicId);
+            User client = userRepository.findOne(pacientId);
+
+            medic.addClient(client);
+            userRepository.save(medic);
+
+            List<DayTimeEvent> dateEvents = new ArrayList<>();
+
+            java.text.Format dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+            java.util.Date date = (java.util.Date) dateFormat.parseObject(day + " 09:00");
+
+            long time30min = (30 * 60 * 1000);
+
+            DayTimeEvent event = new DayTimeEvent();
+            event.setUser(medic);
+            event.setClient(client);
+//            event.getUsers().add(client);
+            event.setDescription("Pacient1 Descriere");
+            event.setStatus(EvenStatus.REZERVED);
+
+            Date start = new Date(date.getTime());
+            Date end = new Date(start.getTime() + time30min);
+            
+//            event.setStart(dateFormat.format(start));
+//            event.setEnd(dateFormat.format(end));
+
+            event.setStartDate(start);
+            event.setEndDate(end);
+
+
+            dateEvents.add(event);
+
+            start = end;
+//            System.out.println(" begin " + event.getStart() + " - " + event.getEnd());
+
+            for (int i = 1; i < 20; i++) {
+                event = new DayTimeEvent();
+                event.setDescription("");
+                event.setStatus(EvenStatus.ACTIVE);
+
+//                Date date1 = new Date(date.getTime() + time30min);
+//                event.setStart(dateFormat.format(start));
+
+                end = new Date(start.getTime() + time30min);
+//                event.setEnd(dateFormat.format(end));
+
+                event.setStartDate(start);
+                event.setEndDate(end);
+
+                start = end;
+
+                event.setUser(medic);
+                event.setClient(null);
+                dateEvents.add(event);
+
+//                System.out.println(" begin " + event.getStart() + " - " + event.getEnd());
+            }
+
+            dateTimeEventRepository.save(dateEvents);
+        } catch (ParseException ex) {
+
+            System.out.println("PopulateDB ERROR : " + ex);
+        }
+    }
 
 }

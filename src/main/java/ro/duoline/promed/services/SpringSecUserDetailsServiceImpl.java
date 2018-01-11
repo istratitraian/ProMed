@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ro.duoline.promed.domains.User;
 
-@Service("userDetailsService")
+@Service("springSecUserDetailsServiceImpl")
 public class SpringSecUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired

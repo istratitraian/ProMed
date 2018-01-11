@@ -1,0 +1,30 @@
+<div id="cal">
+    <div class="header">
+        <span class="left button"  ng-click="previous()">&lang;</span>
+        <span class="month-year">{{month.format("MMMM, YYYY")}}</span>
+        <span class="right button"  ng-click="next()">&rang;</span>
+    </div>
+    <table id="days">
+
+        <td style="color:red;font-weight: bold;">Duminica</td>
+        <td>Luni</td>
+        <td>Marti</td>
+        <td>Miercuri</td>
+        <td>Joi</td>
+        <td>Vineri</td>
+        <td>Sambata</td>
+    </table>
+    <div class="curr">
+        <table  id="cal-frame">
+            <tr  ng-repeat="week in weeks">
+                <td  ng-click="select(day)" ng-repeat="day in week.days">
+                    <i ng-class="{ 'today' : day.isToday,
+                                'different-month': !day.isCurrentMonth,
+                             'selected' : day.date.isSame(selected)}">
+                        {{day.number}}
+                    </i>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

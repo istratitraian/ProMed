@@ -1,4 +1,10 @@
 
+.ui-draggable{
+    
+    color:black;
+    background-color: lightgray;
+}
+
 /*
 .pagenav-fit-content{
     width: fit-content;
@@ -128,10 +134,6 @@
 
 body {
     background-color: #E9E9E9;
-
-}
-main{
-
 }
 
 .form-signin {

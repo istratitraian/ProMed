@@ -1,0 +1,50 @@
+<div class="time-container" >
+    <div ng-repeat="sub in  program" >
+
+        <!--class='badge' .list-group-item-success, list-group-item-info, list-group-item-warning, and .list-group-item-danger-->
+        <!--    <a class=" row list-group-item margin-left-20 margin-right-20 "
+               ng-class="{'list-group-item-warning' : sub.reserved ,
+                        'list-group-item-success' : sub.active}" 
+               href="#">
+                <a  class=" row list-group-item margin-left-20 margin-right-20" href="#">
+                <div class="col-sm-3 " > {{sub.eventBegin.split(" ")[1]}} - {{sub.eventEnd.split(" ")[1]}}</div>
+                <div class="col-sm-4" >{{sub.status}}</div>
+                <div class="col-sm-5" >{{sub.description}} </div>
+        
+            </a>-->
+  <!--'list-group-item-success' : sub.active-->
+                <!--ng-class="{'list-group-item-warning' : sub.reserved}"--> 
+        <div id="dragDiv{{sub.id}}" 
+             class="drag-drop-container"
+         
+             ondrop="drop(event)" 
+             ondragover="allowDrop(event)"
+             ondragenter="onDragEnter(event)"
+             ondragleave="dragLeave(event)">
+
+            
+            
+            <div ng-if="sub.reserved" 
+                 id="dragE{{sub.id}}"
+                 class="row draggable-element" style="background-color: orange" 
+                 draggable="true" ondragstart="drag(event)" class="drag-element ">
+                <span class="col-sm-3 " > 
+                    {{sub.eventBegin.split(" ")[1]}} - {{sub.eventEnd.split(" ")[1]}}
+                </span>
+                <span class="col-sm-4" >{{sub.status}}</span>
+                <span class="col-sm-5" >{{sub.description}} </span>
+
+            </div>
+            <div ng-if="!sub.reserved" class="noselect">
+<!--                   <span class="col-sm-3 " > 
+                    {{sub.eventBegin.split(" ")[1]}} - {{sub.eventEnd.split(" ")[1]}}
+                </span>
+                <span class="col-sm-4" >{{sub.status}}</span>
+                <span class="col-sm-5" >{{sub.description}} </span>-->
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

@@ -6,7 +6,7 @@
     </head>
 
     <body>
-         <div th:replace="fragments/navbar :: navbar"></div>
+        <div th:replace="fragments/navbar :: navbar"></div>
 
         <div class="container container-shadowed margin-top100-bottom150 padding-botom-20"  >
 
@@ -30,7 +30,9 @@
                     <label class="sr-only" for="passwordId" >Password:</label>
                     <input id="passwordId" type="password"  class="form-control" name="password" placeholder="Parola"/>
                 </div>
+                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
 
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <!--
                                 <div class="checkbox">
                                     <label>

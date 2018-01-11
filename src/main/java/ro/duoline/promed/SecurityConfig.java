@@ -12,19 +12,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ro.duoline.promed.domains.security.Authority;
 
 @Configuration
-  //ro.duoline.promed.jpa
+//ro.duoline.promed.jpa
 @EnableWebSecurity
 @EnableJpaRepositories("ro.duoline.promed.jpa")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final Authority AUTHORITY_SU_ADMIN = new Authority("ADMIN");
     public static final Authority AUTHORITY_MEDIC = new Authority("MEDIC");
-    public static final Authority AUTHORITY_PACIENT = new Authority("PACIENT");
+    public static final Authority AUTHORITY_CLIENT = new Authority("CLIENT");
 
-    @Resource(name = "userDetailsService")
+    @Resource(name = "springSecUserDetailsServiceImpl")
     private UserDetailsService userDetailsService;
 
     @Bean(name = "passwordEncoder")
@@ -58,9 +61,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/rest/**").permitAll()
                 .and().authorizeRequests().antMatchers("/js/**").permitAll()
                 .and().authorizeRequests().antMatchers("/user/**").permitAll()
+                .and().authorizeRequests().antMatchers("/logout").permitAll()
                 .and().formLogin().loginPage("/login").permitAll()
+                .and().logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))//mandatory for csrf
+                .logoutSuccessUrl("/login")
                 .and().authorizeRequests().antMatchers("/admin/**").hasAuthority(AUTHORITY_SU_ADMIN.getAuthority())//hasRole(ROLE_ADMIN.getRole()).anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedPage("/access_denied");
 
+        
+        //custom login 
+//        http.formLogin()
+//                .loginPage("/login")
+//                .defaultSuccessUrl("/home") // redirect to home page
+//                .failureUrl("/login?error") // redirect to error page
+//                .permitAll()
+//                .and()
+//                // logout and redirect to login page
+//                .logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/login");
+
+        http.csrf().csrfTokenRepository(csrfTokenRepository());
+
     }
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
+        repository.setHeaderName("X-XSRF-TOKEN");
+        repository.setCookieHttpOnly(false);
+
+        return repository;
+    }
+
 }

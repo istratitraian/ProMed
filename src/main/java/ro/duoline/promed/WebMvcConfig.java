@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -32,9 +33,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
-        
+
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("classpath:/static/images/");
+//        registry.addResourceHandler("/img/**")
+//                .addResourceLocations("classpath:/static/img/");
 
     }
 
@@ -47,6 +50,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         });
 //        source.setUseCodeAsDefaultMessage(true);
         return source;
+    }
+
+    @Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        configurer.enable();
     }
 
 //    @Bean

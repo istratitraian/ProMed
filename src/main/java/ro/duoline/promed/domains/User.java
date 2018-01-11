@@ -38,44 +38,57 @@ public class User extends AbstractDomainDateCreated {
     private String phoneNumber;
     private Integer failedLoginAttempts = 0;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+//    @JoinTable(name = "User_x_Event",
+//            joinColumns = @JoinColumn(name = "UserId"),
+//            inverseJoinColumns = @JoinColumn(name = "EventId"))
+//    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<DayTimeEvent> events = new HashSet<>();
+
+    @JoinTable(name = "Users_x_Clients",
+            joinColumns = @JoinColumn(name = "UserId"),
+            inverseJoinColumns = @JoinColumn(name = "ClientId"))
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<User> clients = new HashSet<>();
+
     @JoinTable(name = "Users_x_Roles",
             joinColumns = @JoinColumn(name = "UserId"),
             inverseJoinColumns = @JoinColumn(name = "RoleId"))
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-//    @JoinTable(name = "Users_x_Specializations",
-//            joinColumns = @JoinColumn(name = "UserId"),
-//            inverseJoinColumns = @JoinColumn(name = "SpecializationId"))
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    private Set<Specialization> specializations = new HashSet<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
     private Set<UsersSpecializations> usersSpecializations = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
-    private Set<Picture> pictures = new HashSet<>();
-
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)//, cascade = CascadeType.REMOVE whill delete Cart AND Customer also !!!!
-//    private Set<User> patients = new HashSet<>();
-//
-//    public Set<User> getPatients() {
-//        return patients;
-//    }
-//
-//    public void setPatients(Set<User> patients) {
-//        this.patients = patients;
-//    }
-
-    public Set<Picture> getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(Set<Picture> pictures) {
-        this.pictures = pictures;
-    }
-
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     private Picture profileImage;
+
+    public User() {
+    }
+
+    public void addClient(User client) {
+        clients.add(client);
+    }
+
+    public void removeClient(User client) {
+        clients.remove(client);
+    }
+
+    public Set<User> getClients() {
+        return clients;
+    }
+
+    public void setClients(Set<User> clients) {
+        this.clients = clients;
+    }
+
+    public Set<DayTimeEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<DayTimeEvent> events) {
+        this.events = events;
+    }
 
     public Picture getProfileImage() {
         return profileImage;
@@ -85,8 +98,6 @@ public class User extends AbstractDomainDateCreated {
         this.profileImage = profileImage;
     }
 
-//    @Transient
-//    private Picture imageBase64;
     public String getImageBase64() {
         try {
             return new String(Base64.encodeBase64(profileImage.getImage()), "UTF-8");
@@ -95,19 +106,10 @@ public class User extends AbstractDomainDateCreated {
         return "";
     }
 
-    public void addPicture(Picture picture) {
-        pictures.add(picture);
-        picture.setUser(this);
-    }
-
-    public void removePicture(Picture picture) {
-        pictures.add(picture);
-    }
-
     public void addSpecializations(Set<Specialization> spechSet) {
-        for (Specialization specialization : spechSet) {
+        spechSet.forEach((specialization) -> {
             usersSpecializations.add(new UsersSpecializations(this, specialization));
-        }
+        });
     }
 
     public void addSpecialization(Specialization specialization) {
@@ -120,9 +122,6 @@ public class User extends AbstractDomainDateCreated {
 
     public void setUsersSpecializations(Set<UsersSpecializations> usersSpecializations) {
         this.usersSpecializations = usersSpecializations;
-    }
-
-    public User() {
     }
 
     public String getFirstName() {
@@ -237,12 +236,8 @@ public class User extends AbstractDomainDateCreated {
 
     @Override
     public String toString() {
-        return "User{ username=" + username  + ", firstName=" + firstName + ", lastName=" + lastName+'}';
+        return "User{ username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + '}';
     }
-//    @Override
-//    public String toString() {
-//        return "User{" + "failedLoginAttempts=" + failedLoginAttempts + ", username=" + username + ", password=" + password + ", encryptedPassword=" + encryptedPassword + ", enabled=" + enabled + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", phoneNumber=" + phoneNumber + ", authorities=" + authorities + '}';
-//    }
 
     public void addLoginFailAttempt() {
         failedLoginAttempts++;

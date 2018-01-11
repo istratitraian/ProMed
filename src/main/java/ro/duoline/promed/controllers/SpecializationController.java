@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ro.duoline.promed.commands.SpecializationForm;
-import static ro.duoline.promed.controllers.MedicController.sortUsersById;
+import static ro.duoline.promed.controllers.ServerController.sortUsersById;
 import ro.duoline.promed.controllers.pagenav.PageNav;
 import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;

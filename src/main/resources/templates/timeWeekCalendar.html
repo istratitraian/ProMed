@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <link rel='stylesheet' href='../static/css/bootstrap.css' />
+        <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
+        <script src='../static/js/angular/moment.min.js'></script>
+        <script src='../static/js/jquery.js'></script>
+        <script src='../static/js/timeline/fullcalendar.js'></script>
+        <script>
+
+            $(document).ready(function () {
+                var isMontSelected = false;
+                $('#calendar').fullCalendar({
+
+//                    dayRender: function (date, cell) {
+//                    //executes before day, week month are loaded
+//                        console.log("dayRender date = " + date + ", cell = " + cell);
+//                    },
+
+                    dayClick: function (time, mouseEvent, calendar) {
+                        if (calendar.name !== 'month') {
+                            console.log("fullCalendar.name : " + calendar.name + ", " + this.select);//agendaDay,agendaWeek,month
+                            isMontSelected = false;
+                        }
+                        else {
+
+                            $.getJSON('http://localhost:8080//medic/calendar/jsonrest/' + time, function (data) {
+                                console.log(data);
+                                this.events = data;
+
+//                                 
+//                                   var items = [];
+//                                $.each(data, function (key, val) {
+//                                    items.push("<li id='" + key + "'>" + val + "</li>");
+//                                });
+//
+//                                $("<ul/>", {
+//                                    "class": "my-new-list",
+//                                    html: items.join("")
+//                                }).appendTo("body");
+                            });
+
+
+                            isMontSelected = true;
+                        }
+//                 
+//                        console.log("cell : "+cell);//MouseEvent
+//                        console.log("fullCalendar._props : "+fullCalendar._props);
+//                        console.log("fullCalendar._props.title : "+fullCalendar._props.title);
+//                        console.log("fullCalendar._watchers : "+fullCalendar._watchers.initialEvents);
+//                        for(var op in fullCalendar._watchers.title){
+//                            console.log("op : "+op);
+//                        }
+
+//                        for (var field in fullCalendar) {
+//                            console.log(field);
+//                        }
+
+                    },
+                    events: 'http://localhost:8080//medic/calendar/jsonrest/0',
+
+                    select: function (start, end) {
+                        if (isMontSelected) {
+                            isMontSelected = false;
+
+                        }
+                        else {
+                            var title = prompt('Event Title:');
+                            var eventData;
+                            if (title) {
+                                eventData = {
+                                    title: title,
+                                    start: start,
+                                    end: end
+                                };
+                                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                            }
+                            $('#calendar').fullCalendar('unselect');
+                        }
+                    },
+
+                    timezone: "local",
+                    height: 650,
+                    handleWindowResize: true,
+//                    contentHeight: 500,
+                    header: {
+                        left: 'prev,today,next myCustomButton',
+                        center: 'prevYear title nextYear',
+                        right: 'agendaDay,agendaFiveDay,agendaWeek,month'
+                    },
+                    footer: {
+                        left: 'prev,today,next',
+                        center: 'prevYear title nextYear',
+                        right: 'agendaDay,agendaFiveDay,agendaWeek,month'
+                    },
+                    firstDay: 1, //Luni
+//                    weekends: false, // sat, sun remove
+//                    weekNumbers: false,
+                    hiddenDays: [0],
+                    weekNumbersWithinDays: true,
+                    minTime: '08:00:00',
+                    maxTime: '21:00:00',
+                    businessHours: [
+                        {
+                            dow: [1, 2, 3, 4], // Mon, Tue, Wed,Thu
+                            start: '08:00',
+                            end: '18:00'
+                        },
+                        {
+                            dow: [5], // Friday
+                            start: '08:00',
+                            end: '16:00'
+                        }
+                    ],
+//                    fixedWeekCount:true,
+
+//                    customButtons: {
+//                        myCustomButton: {
+//                            text: 'custom!',
+//                            click: function () {
+//                                alert('clicked the custom button!');
+//                            }
+//                        }
+//                    },
+
+//                    eventLimit: true, // for all non-agenda views
+                    views: {
+//                        agenda: {//eventLimit: true
+//                            eventLimit: 6 // adjust to 6 only for agendaWeek/agendaDay
+//                        },
+                        month: {// name of view
+                            titleFormat: 'MMMM YYYY'
+                        },
+                        day: {// name of view
+                            titleFormat: 'DD MMMM YYYY'
+                        },
+                        week: {// name of view
+                            titleFormat: 'MMMM YYYY'
+                        }
+                    },
+
+//                    views: {
+//
+//                        agendaFiveDay: {//custom view
+//                            type: 'agenda',
+//                            duration: {days: 5},
+//                            buttonText: '5 zile'
+//                        }
+//                    },
+                    defaultDate: new Date(), //'2017-12-12',
+                    defaultView: "agendaDay", //https://fullcalendar.io/docs/views/Available_Views/
+                    navLinks: true, // can click day/week names to navigate views
+                    selectable: true,
+                    selectHelper: true,
+
+                    editable: true,
+                    eventLimit: true, // allow "more" link when too many events
+
+                    slotDuration: "00:15",
+                    slotLabelFormat: [
+                        'HH:mm'
+                    ],
+                    eventResize: function (event, delta, revertFunc) {
+                        if (!confirm(event.title + " \n" + event.start.format("DD/MMMM/YYYY HH:mm")
+                                + "\n" + event.end.format("DD/MMMM/YYYY HH:mm")
+                                + "\n EVENIMENT MODIFICAT ")) {
+                            revertFunc();
+                        }
+
+                    },
+                    eventDrop: function (event, delta, revertFunc) {
+                        if (!confirm("id : " + event.id + "\n" + event.title + " \n" + event.start.format("DD/MMMM/YYYY HH:mm")
+                                + "\n" + event.end.format("DD/MMMM/YYYY HH:mm")
+                                + "\n A FOST MODIFICAT ")) {
+                            revertFunc();
+                        }
+
+                    }, eventOverlap: function (stillEvent, movingEvent) {
+                        return stillEvent.allDay && movingEvent.allDay;
+                    }
+//                   , events: [
+//                        {
+//                            googleCalendarId: 'bitmd000@group.calendar.google.com',
+//                            title: 'All Day Event',
+//                            start: '2018-01-03',
+//                            className: 'alert alert-warning'
+//                            color: 'black', // an option!
+//                            textColor: 'yellow' // an option!
+//                        },{
+//                            title: 'Click for Google',
+//                            url: 'http://google.com/',
+//                            start: '2018-01-08T08:30:00'
+//                        }
+//                    ]
+                });
+            });
+
+
+        </script>
+        <style>
+
+            body {
+                margin: 40px 10px;
+                padding: 0;
+                font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+                font-size: 14px;
+            }
+
+            #calendar {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id='calendar'></div>
+    </body>
+</html>

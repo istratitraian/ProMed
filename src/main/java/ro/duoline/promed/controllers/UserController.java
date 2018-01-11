@@ -80,7 +80,7 @@ public class UserController {
         }
         User u = userFormToUser.convert(userForm);
 
-        u.addAuthority(SecurityConfig.AUTHORITY_PACIENT);
+        u.addAuthority(SecurityConfig.AUTHORITY_CLIENT);
 
         User savedUser = userRepository.save(u);
         return "redirect:/user/show/" + savedUser.getId();
@@ -110,7 +110,7 @@ public class UserController {
         }
         User u = userFormToUser.convert(userForm);
 
-        u.addAuthority(SecurityConfig.AUTHORITY_PACIENT);
+        u.addAuthority(SecurityConfig.AUTHORITY_CLIENT);
 
         User savedUser = userRepository.save(u);
         return "redirect:/user/show/" + savedUser.getId();

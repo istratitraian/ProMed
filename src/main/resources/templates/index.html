@@ -8,70 +8,195 @@
     <body>
         <nav  id="navbar" th:replace="fragments/navbar :: navbar"></nav>
 
-        <main class=" margin-top100-bottom150">
+        <main class=" margin-top100-bottom150" >
             <div class="container container-shadowed padding-botom-20 padding-top-20px"  >
 
                 <!--<h2>Index page.</h2>-->
+
+                <div>
+                    <input type="submit" value="Login" id="loginTestId"/>
+                    <input type="submit" value="logout" id="logioutTestId"/>
+                    <script src='../static/js/loginCrsrfTest.js'></script>
+                </div>
+
 
                 <ul>
                     <li><a href="" th:href="@{/user/list}">Users</a></li>
 
                     <div  sec:authorize="hasAuthority('ADMIN')">
-                        <li>  <a href="" th:href="@{/admin/newmedic}">New Medic</a></li>
-                        <li> <a href="" th:href="@{/admin/newspecialization}">New Specialization</a></li>
-                        <li> <a href="" th:href="@{/admin/newservice}">New Service</a></li>
+                        <li><a href="" th:href="@{/admin/newmedic}">New Medic</a></li>
+                        <li><a href="" th:href="@{/admin/newspecialization}">New Specialization</a></li>
+                        <li><a href="" th:href="@{/admin/newservice}">New Service</a></li>
                     </div>
                 </ul>
 
-            </div>
+                <div  sec:authorize="hasAuthority('MEDIC')" ng-app="serviceUserApp" >
+
+                    <script src='../static/js/angular/moment.min.js'></script>
+                    <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
+                    <!--<script src='../static/js/jquery.js'></script>-->
+                    <script src='../static/js/timeline/fullcalendar.js'></script>
+                    <script src="../static/js/timeline/calndar-init.js"></script>
+
+                    <div id='calendar'></div>
+
+
+                    <div id="fullCalModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <!--                                    <button type="button" class="close" data-dismiss="modal">
+                                                                            <span aria-hidden="true">×</span>
+                                                                            <span class="sr-only">close</span>
+                                                                        </button>-->
+                                    <h4  class="modal-title">
+                                        <label >Descriere</label>
+                                        <!--<input type="text" id="modalTitle"/>-->
+                                        <textarea id="modalTitle" rows="4" cols="50"></textarea>
+
+                                    </h4>
+
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" id="modalStart"/>
+                                    <input type="text" id="modalEnd"/>
+                                    <!--<input type="text" id="modalEnd"/>-->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-info" data-dismiss="modal" id="editBtn" >Edit</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Renunta</button>
+                                    <!--<button class="btn btn-primary"><a id="eventUrl" target="_blank">Delete</a></button>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
 
-            <div class="container margin-top-20">
-                <div class="row border-px-solid"  >
-                    <input type="text"  minlength="1" required="" id="map_street" />
-                    <button onclick="setCurentLocation()" class="container-shadowed font-bold " >Locatia Relativ                        Curenta</button>
-                    <div id="map"  class=" container-shadowed  googlemaps-window"></div>
+
+                    <!--
+                     <script src="../static/js/angular/moment.js" ></script>
+                    <script  th:src="@{/webjars/angularjs/1.6.6/angular.min.js}"></script>-->
+                    <!--                    <link rel="stylesheet" href="../static/css/calendar.css" />
+                    
+                                        <div  ng-controller="servUserCalendarCtrl" >
+                    
+                                            <calendar selected="day"></calendar>
+                    
+                                            <h3 style="text-align: center;">Program pentru <b> {{day.format(' D MMMM YYYY')}}</b></h3>
+                    
+                                            <work-program program="workProgramObj"></work-program>
+                    
+                                        </div>
+                                        <script src="../static/js/angular/serviceUser.js" th:src="@{/static/js/angular/serviceUser.js}"></script>-->
+
+
+                    <!--                    <link rel="stylesheet" href="../static/css/calendar/bootstrap-responsive.min.css" />
+                                        <link rel="stylesheet" href="../static/css/calendar/bootstrap.cal.css" />
+                                        <link rel="stylesheet" href="../static/css/calendar/fullcalendar.css" />
+                                        <link rel="stylesheet" href="../static/css/calendar/matrix-style.css" />
+                                        <link rel="stylesheet" href="../static/css/calendar/matrix-media.css" />
+                                        <link rel="stylesheet" href="../static/css/font/font-awesome.css" />
+                    
+                    
+                                        <div id="content">
+                                                                    <div id="content-header">
+                                                                        <h1>Calendar</h1>
+                                                                    </div>
+                                            <div class="container-fluid">
+                                                <hr/>
+                                                <div class="row-fluid">
+                                                    <div class="span12">
+                                                        <div class="widget-box widget-calendar">
+                                                            <div class="widget-title"> <span class="icon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                                <h5>Calendar</h5>
+                                                                <div class="buttons"> 
+                                                                    <a id="add-event" data-toggle="modal" href="#modal-add-event" class="btn btn-primary btn-mini">
+                                                                        <i class="glyphicon glyphicon-plus"></i> 
+                                                                        Add new event
+                                                                    </a>
+                                                                    <div class="modal  modal-content modal-dialog"  id="modal-add-event">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal">×</button>
+                                                                            <h3>Add a new event</h3>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Enter event name:</p>
+                                                                            <p>
+                                                                                <input id="event-name" type="text" />
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="modal-footer"> 
+                                                                            <a href="#" class="btn" data-dismiss="modal">Cancel</a> 
+                                                                            <a href="#" id="add-event-submit" class="btn btn-primary">Add event</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="widget-content">
+                                                                <div class="panel-left">
+                                                                    <div id="fullcalendar"></div>
+                                                                </div>
+                                                                <div id="external-events" class="panel-right">
+                                                                    <div class="panel-title">
+                                                                        <h5>Drag Events to the calander</h5>
+                                                                    </div>
+                                                                    <div class="panel-content">
+                                                                        <div class="external-event ui-draggable label label-inverse">My Event 1</div>
+                                                                        <div class="external-event ui-draggable label label-inverse">My Event 2</div>
+                                                                        <div class="external-event ui-draggable label label-inverse">My Event 3</div>
+                                                                        <div class="external-event ui-draggable label label-inverse">My Event 4</div>
+                                                                        <div class="external-event ui-draggable label label-inverse">My Event 5</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                    
+                                        <script src="../static/js/calendar/jquery.min.calendar.js" ></script>
+                                        <script src="../static/js/calendar/jquery.ui.custom.js" ></script>
+                                        <script src="../static/js/calendar/fullcalendar.min.js" ></script>
+                                        <script src="../static/js/calendar/matrix.js" ></script>
+                                        <script src="../static/js/calendar/matrix.calendar.js" ></script>
+                    
+                    
+                                        <script>
+                                            //IT IS NOT DEFINED 
+                                            $.curCSS = function (element, prop, val) {
+                                                return $(element).css(prop, val);
+                                            };
+                    
+                                        </script>-->
+
+
                 </div>
-
-                <script src="../static/js/googlemap-places_lib.js" th:src="@{/static/js/googlemap-places_lib.js}"></script>
-                <script src="../static/js/ggmap.js" th:src="@{/static/js/ggmap.js}"></script>
+                <!--MEDIC_AUTHORITY-->
             </div>
 
-            <div class="container" style="margin-top: 50px;">
-
-                <link rel="stylesheet" type="text/css" href="../static/css/datepicker.css" th:href="@{/static/css/datepicker.css}"/>
-                <script type="text/javascript" src="../static/js/bootstrap-datepicker.js" th:src="@{/static/js/bootstrap-datepicker.js}"></script>
-                <style type="text/css">
-                    #datepicker{
-                        width: 180px; margin: 0 20px 20px 20px;
-                    }
-                    #datepicker > span:hover{
-                        cursor: pointer;
-                    }
-                </style> 
-
-                <div id="datepicker" class="input-group date" data-date-format="dd - mm - yyyy">
-                    <input class="form-control" type="text" name=""/>
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                </div>
 
 
-                <script type="text/javascript">
-                        $(function () {
-                            $("#datepicker").datepicker({
-                                autoclose: true,
-                                todayHighlight: true
-                            }).datepicker('update', new Date());
-                        });
-                </script>
+            <!--            <div class="container margin-top-20">
+                            <script src="../static/js/googlemap-places_lib.js" th:src="@{/static/js/googlemap-places_lib.js}"></script>
+                            <div class="row border-px-solid"  >
+                                <input type="text"  minlength="1" required="" id="map_street" />
+                                <button onclick="setCurentLocation()" class="container-shadowed font-bold " >Locatia Relativ                        Curenta</button>
+                                <div id="map"  class=" container-shadowed  googlemaps-window"></div>
+                            </div>
 
-            </div>
+                            <script src="../static/js/ggmap.js" th:src="@{/static/js/ggmap.js}"></script>
+                        </div>-->
+
+
 
         </main>
 
-       
+
 
         <footer th:replace="fragments/footer :: footer"></footer>
     </body>
+
 </html>

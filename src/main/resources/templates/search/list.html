@@ -6,19 +6,18 @@
     <body>
         <nav th:replace="fragments/navbar :: navbar"></nav>
 
-        <main class="container margin-top-100">
+        <main class="container margin-top100-bottom150">
 
             <div th:if="${ #strings.isEmpty(searchedText)}" class="container alert alert-danger" style="width: fit-content;">
                 Pentru cautare e nevoie de min 2 caractere!
             </div>
 
-            <div th:if="${not #strings.isEmpty(searchedText)}" >
-                <div class="container  alert alert-success" style="width: fit-content;">
-                    <h3 th:text="'Rezultate Cautare \''+${searchedText}+'\''"></h3>
-                    <div th:if="${#lists.isEmpty(medicsFounded) and #lists.isEmpty(specializations)}" class="error" >
-                        Nici un rezultat.
-                    </div>
+            <div th:if="${not #strings.isEmpty(searchedText)}" class="container">
+                <div class=" alert alert-success" th:text="'Rezultate Cautare \''+${searchedText}+'\''"></div>
+                <div th:if="${#lists.isEmpty(medicsFounded) and #lists.isEmpty(specializations)}" class="alert alert-danger" >
+                    Nici un rezultat.
                 </div>
+
             </div>
 
             <!--<div class="row">-->
@@ -30,8 +29,8 @@
                         <h4>Medici</h4>
                         <table class="table table-striped">
                             <tr th:each="medic : ${medicsFounded}">
-                                <td th:text="${medic.firstName}+' - '+${medic.lastName}"></td>
-                                <td><a th:href="@{'/medic/show/' + ${medic.id}}">View</a> </td>
+                                <!--<td th:text="${medic.firstName}+' - '+${medic.lastName}"></td>-->
+                                <td><a th:href="@{'/medic/show/' + ${medic.id}}" th:text="${medic.firstName}+' - '+${medic.lastName}">View</a> </td>
                             </tr>
                         </table>
                     </div>
