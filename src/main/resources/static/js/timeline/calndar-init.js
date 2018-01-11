@@ -1,4 +1,6 @@
 
+/* global moment */
+
 $(document).ready(function () {
 
     var isMontSelected = false;
@@ -15,19 +17,16 @@ $(document).ready(function () {
                 end: moment(e.end).format("YYYY-MM-DD HH:mm")
             }),
             contentType: "application/json",
-            dataType: 'text',//to get success use text
+            dataType: 'text', //to get success use text
             success: function (result, status, xhr) {
-                console.log(e.title + " CREATED : ");
-//                CALR.fullCalendar('removeEvents', event.id);
+                console.log(e.id+", "+e.title + " CREATED : ");
+                CALR.fullCalendar('updateEvent', e);
+                CALR.fullCalendar('removeEvents');
+                CALR.fullCalendar('refetchEvents');
             }
         });
-//                .done(function () {
-//            console.log(e.title + " CREATED : ");
-//        });
 
-        CALR.fullCalendar('updateEvent', e);
-        CALR.fullCalendar('removeEvents');
-        CALR.fullCalendar('refetchEvents');
+//         location.reload();
     }
 
 
@@ -71,7 +70,7 @@ $(document).ready(function () {
                     url: "http://localhost:8080/server/calendar/jsonrest/delete",
                     type: "delete",
                     contentType: "application/json",
-                    dataType: 'text',//to get success use text
+                    dataType: 'text', //to get success use text
                     data: JSON.stringify({id: event.id}),
                     success: function (result, status, xhr) {
                         console.log(event.id + " DELETED : ");
