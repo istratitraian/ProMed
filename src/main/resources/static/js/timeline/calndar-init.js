@@ -2,19 +2,28 @@
 $(document).ready(function () {
 
     var isMontSelected = false;
+    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content')}});
 
 
     function saveEvent(e) {
 
         $.ajax({
-            type: 'POST',
-            url: 'http://localhost:8080/server/calendar/jsonrest/save',
+            type: 'post',
+            url: 'http://localhost:8080/server/calendar/jsonrest/save', //'?_csrf=' + $('meta[name="_csrf"]').attr('content'),
             data: JSON.stringify({id: e.id, title: e.title,
                 start: moment(e.start).format("YYYY-MM-DD HH:mm"),
-                end: moment(e.end).format("YYYY-MM-DD HH:mm")}),
+                end: moment(e.end).format("YYYY-MM-DD HH:mm")
+            }),
             contentType: "application/json",
-            dataType: 'json'
+            dataType: 'text',//to get success use text
+            success: function (result, status, xhr) {
+                console.log(e.title + " CREATED : ");
+//                CALR.fullCalendar('removeEvents', event.id);
+            }
         });
+//                .done(function () {
+//            console.log(e.title + " CREATED : ");
+//        });
 
         CALR.fullCalendar('updateEvent', e);
         CALR.fullCalendar('removeEvents');
@@ -47,7 +56,6 @@ $(document).ready(function () {
             delBtn.unbind();
             editBtn.unbind();
 
-
             var title = $('#modalTitle');
             title.css('width', '100%').val(event.title);
             var start = $('#modalStart');
@@ -56,16 +64,16 @@ $(document).ready(function () {
             end.css('width', '100%').val(event.end.format('YYYY-MM-DD HH:mm'));
 
 
-
-
             $('#fullCalModal').modal();
-
 
             delBtn.click(function () {
                 $.ajax({
+                    url: "http://localhost:8080/server/calendar/jsonrest/delete",
                     type: "delete",
-                    url: "http://localhost:8080/server/calendar/jsonrest/delete/" + event.id,
-                    success: function () {
+                    contentType: "application/json",
+                    dataType: 'text',//to get success use text
+                    data: JSON.stringify({id: event.id}),
+                    success: function (result, status, xhr) {
                         console.log(event.id + " DELETED : ");
                         CALR.fullCalendar('removeEvents', event.id);
                     }
