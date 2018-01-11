@@ -50,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//.ignoringAntMatchers("/nocsrf","/ignore/startswith/**")
         http
                 .authorizeRequests().antMatchers("/h2/**", "/h2-console/**").permitAll()
                 .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
