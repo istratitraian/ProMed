@@ -50,10 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+//.ignoringAntMatchers("/nocsrf","/ignore/startswith/**")
         http
-                .csrf().ignoringAntMatchers("/h2-console/**").disable().headers().frameOptions().disable()
-                .and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
+                .authorizeRequests().antMatchers("/h2/**", "/h2-console/**").permitAll()
                 .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
                 .and().authorizeRequests().antMatchers("/static/**").permitAll()
                 .and().authorizeRequests().antMatchers("/image/**").permitAll()
@@ -69,7 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/admin/**").hasAuthority(AUTHORITY_SU_ADMIN.getAuthority())//hasRole(ROLE_ADMIN.getRole()).anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedPage("/access_denied");
 
-        
         //custom login 
 //        http.formLogin()
 //                .loginPage("/login")
@@ -81,18 +79,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .logout()
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //                .logoutSuccessUrl("/login");
-
-        http.csrf().csrfTokenRepository(csrfTokenRepository());
-
+//        http.csrf().csrfTokenRepository(csrfTokenRepository());
+        http.csrf().ignoringAntMatchers("/h2/**", "/h2-console/**", "/nocsrf");//.disable();
+        http.headers().frameOptions().disable();
     }
 
-    @Bean
-    public CsrfTokenRepository csrfTokenRepository() {
-        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
-        repository.setCookieHttpOnly(false);
-
-        return repository;
-    }
+//    @Bean
+//    public CsrfTokenRepository csrfTokenRepository() {
+//        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
+//        repository.setHeaderName("X-XSRF-TOKEN");
+//        repository.setCookieHttpOnly(false);
+//
+//        return repository;
+//    }
 
 }
