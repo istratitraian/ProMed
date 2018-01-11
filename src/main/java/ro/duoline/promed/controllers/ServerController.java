@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -139,24 +140,27 @@ public class ServerController {
         return new EventsToJson(dateEvents).getJsonEvents();
     }
 
-    @CrossOrigin
-    @DeleteMapping("/server/calendar/jsonrest/delete/{id}")
+//    @CrossOrigin
+    @DeleteMapping("/server/calendar/jsonrest/delete")
     @ResponseStatus(value = HttpStatus.OK)
-    public void deleteEvent(@PathVariable Integer id, Principal principal) {
-        System.out.println("deleteEvent(" + id + ")");
+//    public ResponseEntity<Void> deleteEvent(@RequestBody JsonEvent ev, Principal principal) {
+    public void deleteEvent(@RequestBody JsonEvent ev, Principal principal) {
+        System.out.println("deleteEvent(" + ev.getId() + ")");
         if (principal != null) {
             User user = userRepository.findByUsername(principal.getName());
-            DayTimeEvent event = dateTimeEventRepository.findOne(id);
+            DayTimeEvent event = dateTimeEventRepository.findOne(ev.getId());
 
             if (Objects.equals(event.getUser().getId(), user.getId())) {
 
-                System.out.println("user " + user.getUsername() + ", event = " + id + " : DELETED");
-                dateTimeEventRepository.delete(id);
+                System.out.println("user " + user.getUsername() + ", event = " + ev.getId() + " : DELETED");
+                dateTimeEventRepository.delete(ev.getId());
+//                return ResponseEntity.status(HttpStatus.OK).build();
             }
         }
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @PostMapping("/server/calendar/jsonrest/save")
     @ResponseStatus(value = HttpStatus.OK)
     public void saveEvent(@RequestBody JsonEvent event, Principal principal) throws ParseException {
