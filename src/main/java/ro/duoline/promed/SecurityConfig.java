@@ -80,7 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //                .logoutSuccessUrl("/login");
 //        http.csrf().csrfTokenRepository(csrfTokenRepository());
-        http.csrf().ignoringAntMatchers("/h2/**", "/h2-console/**", "/nocsrf");//.disable();
+
+        http.csrf().ignoringAntMatchers("/h2/**", "/h2-console/**");//.disable();
         http.headers().frameOptions().disable();
     }
 
