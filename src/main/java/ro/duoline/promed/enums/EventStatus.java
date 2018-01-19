@@ -9,6 +9,6 @@ package ro.duoline.promed.enums;
  *
  * @author I.T.W764
  */
-public enum EvenStatus {
+public enum EventStatus {
     REZERVED, ACTIVE, CANCELED, NULL, BREAK
 }

@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import ro.duoline.promed.domains.abs.AbstractDomain;
-import ro.duoline.promed.enums.EvenStatus;
+import ro.duoline.promed.enums.EventStatus;
 
 /**
  *
@@ -23,14 +23,14 @@ import ro.duoline.promed.enums.EvenStatus;
 @Table(name = "day_time_events")
 public class DayTimeEvent extends AbstractDomain {
 
-    private EvenStatus status;
+    private EventStatus status;
 
     public boolean isActive() {
-        return status.equals(EvenStatus.ACTIVE);
+        return status.equals(EventStatus.ACTIVE);
     }
 
     public boolean isReserved() {
-        return status.equals(EvenStatus.REZERVED);
+        return status.equals(EventStatus.REZERVED);
     }
 
 //    @Column(name = "DESCRIPTION", length = 65535)
@@ -88,11 +88,11 @@ public class DayTimeEvent extends AbstractDomain {
         this.client = client;
     }
 
-    public EvenStatus getStatus() {
+    public EventStatus getStatus() {
         return status;
     }
 
-    public void setStatus(EvenStatus status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 

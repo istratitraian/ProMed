@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ro.duoline.promed.commands;
+package ro.duoline.promed.converters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,15 @@ public class EventsToJson {
 
         return jsonEvents;
     }
-    
-   
-    
+
+    public List<JsonEvent> getJsonClientEvents() {
+
+        jsonEvents = new ArrayList<>(events.size());
+        events.forEach((event) -> {
+            jsonEvents.add(new JsonEvent(event, true));
+        });
+
+        return jsonEvents;
+    }
 
 }

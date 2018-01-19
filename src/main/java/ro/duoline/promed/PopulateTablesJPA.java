@@ -16,7 +16,7 @@ import ro.duoline.promed.domains.DayTimeEvent;
 import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.domains.UsersSpecializations;
-import ro.duoline.promed.enums.EvenStatus;
+import ro.duoline.promed.enums.EventStatus;
 import ro.duoline.promed.jpa.DateTimeEventRepository;
 import ro.duoline.promed.jpa.RoleRepository;
 import ro.duoline.promed.jpa.UserRepository;
@@ -144,7 +144,7 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         addDayEventsToMedic(13, 2, "2018-01-05");
 
         addDayEventsToMedic(13, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        addDayEventsToMedic(12, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+//        addDayEventsToMedic(12, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
         addDayEventsToMedic(12, 2, "2018-01-01");
         addDayEventsToMedic(12, 2, "2018-01-02");
@@ -164,60 +164,35 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         try {
             User medic = userRepository.findOne(medicId);
             User client = userRepository.findOne(pacientId);
-
             medic.addClient(client);
             userRepository.save(medic);
-
             List<DayTimeEvent> dateEvents = new ArrayList<>();
-
             java.text.Format dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
             java.util.Date date = (java.util.Date) dateFormat.parseObject(day + " 09:00");
-
             long time30min = (30 * 60 * 1000);
-
             DayTimeEvent event = new DayTimeEvent();
             event.setUser(medic);
             event.setClient(client);
-//            event.getUsers().add(client);
             event.setDescription("Pacient1 Descriere");
-            event.setStatus(EvenStatus.REZERVED);
-
+            event.setStatus(EventStatus.REZERVED);
             Date start = new Date(date.getTime());
             Date end = new Date(start.getTime() + time30min);
-            
-//            event.setStart(dateFormat.format(start));
-//            event.setEnd(dateFormat.format(end));
-
             event.setStartDate(start);
             event.setEndDate(end);
-
-
             dateEvents.add(event);
 
-            start = end;
-//            System.out.println(" begin " + event.getStart() + " - " + event.getEnd());
 
-            for (int i = 1; i < 20; i++) {
+            for (int i = 1; i < 5; i++) {
                 event = new DayTimeEvent();
-                event.setDescription("");
-                event.setStatus(EvenStatus.ACTIVE);
-
-//                Date date1 = new Date(date.getTime() + time30min);
-//                event.setStart(dateFormat.format(start));
-
+                event.setDescription("Pacient" + i + " Descriere");
+                event.setStatus(EventStatus.REZERVED);
+                start = new Date(end.getTime() + time30min);
                 end = new Date(start.getTime() + time30min);
-//                event.setEnd(dateFormat.format(end));
-
                 event.setStartDate(start);
                 event.setEndDate(end);
-
-                start = end;
-
                 event.setUser(medic);
-                event.setClient(null);
+                event.setClient(client);
                 dateEvents.add(event);
-
-//                System.out.println(" begin " + event.getStart() + " - " + event.getEnd());
             }
 
             dateTimeEventRepository.save(dateEvents);

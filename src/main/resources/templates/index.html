@@ -16,7 +16,45 @@
                 <div>
                     <input type="submit" value="Login" id="loginTestId"/>
                     <input type="submit" value="logout" id="logioutTestId"/>
-                    <script src='../static/js/loginCrsrfTest.js'></script>
+                    <!--<script src='../static/js/loginCrsrfTest.js'></script>-->
+                </div>
+
+                <script src='../static/js/angular/moment.min.js'></script>
+                <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
+                <script src='../static/js/timeline/fullcalendar.js'></script>
+                <div sec:authorize="!isAuthenticated()" >
+
+                    <script src="../static/js/timeline/calndar-client.js"></script>
+                    <div id='calendar'></div>
+
+
+                    <div id="fullCalClient" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4  class="modal-title">
+                                        <label >Descriere</label>
+                                        <textarea id="modalTitle" rows="4" cols="50"></textarea>
+
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" placeholder="Nume"  id="modalFirstName"/>
+                                    <input type="text" placeholder="Prenume"  id="modalLastName"/>
+                                    <input type="text" placeholder="Telefon"  id="modalPhone"/>
+                                    <input type="text" placeholder="Email"  id="modalEmail"/>
+                                    <input type="text" placeholder="De la"  id="modalStart"/>
+                                    <input type="text" placeholder="Pana la"  id="modalEnd"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-info" data-dismiss="modal" id="editBtn" >Edit</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Renunta</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
 
@@ -30,14 +68,17 @@
                     </div>
                 </ul>
 
-                <div  sec:authorize="hasAuthority('MEDIC')" ng-app="serviceUserApp" >
 
-                    <script src='../static/js/angular/moment.min.js'></script>
-                    <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
-                    <!--<script src='../static/js/jquery.js'></script>-->
-                    <script src='../static/js/timeline/fullcalendar.js'></script>
-                    <script src="../static/js/timeline/calndar-init.js"></script>
-
+                <div sec:authorize="isAuthenticated()" >
+                    <!--                    <script src='../static/js/angular/moment.min.js'></script>
+                                        <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
+                                        <script src='../static/js/timeline/fullcalendar.js'></script>-->
+                    <div sec:authorize="hasAuthority('MEDIC')" >
+                        <script src="../static/js/timeline/calndar-server.js"></script>
+                    </div>
+                    <!--    <div sec:authorize="hasAuthority('CLIENT')" >
+                          <script src="../static/js/timeline/calndar-client.js"></script>
+                      </div>-->
                     <div id='calendar'></div>
 
 
@@ -45,28 +86,24 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <!--                                    <button type="button" class="close" data-dismiss="modal">
-                                                                            <span aria-hidden="true">×</span>
-                                                                            <span class="sr-only">close</span>
-                                                                        </button>-->
                                     <h4  class="modal-title">
                                         <label >Descriere</label>
-                                        <!--<input type="text" id="modalTitle"/>-->
                                         <textarea id="modalTitle" rows="4" cols="50"></textarea>
 
                                     </h4>
-
                                 </div>
                                 <div class="modal-body">
-                                    <input type="text" id="modalStart"/>
-                                    <input type="text" id="modalEnd"/>
-                                    <!--<input type="text" id="modalEnd"/>-->
+                                    <input type="text" placeholder="Nume"  id="modalFirstName"/>
+                                    <input type="text" placeholder="Prenume"  id="modalLastName"/>
+                                    <input type="text" placeholder="Telefon"  id="modalPhone"/>
+                                    <input type="text" placeholder="Email"  id="modalEmail"/>
+                                    <input type="text" placeholder="Din"  id="modalStart"/>
+                                    <input type="text" placeholder="Pina"  id="modalEnd"/>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-info" data-dismiss="modal" id="editBtn" >Edit</button>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Renunta</button>
-                                    <!--<button class="btn btn-primary"><a id="eventUrl" target="_blank">Delete</a></button>-->
                                 </div>
                             </div>
                         </div>

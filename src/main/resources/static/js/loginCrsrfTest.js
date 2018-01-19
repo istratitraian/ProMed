@@ -14,7 +14,8 @@ function loginTest() {
         console.log("login post SUCCESS :  csrf = " + csrf_token + ", header = " + header);
         location.reload();
     });
-};
+}
+;
 
 $("#loginTestId").click(loginTest);
 $("#logioutTestId").click(function () {
@@ -23,6 +24,15 @@ $("#logioutTestId").click(function () {
         location.reload();
     });
 });
+
+//(function testPorts() {
+//    for (var i = 1000; i < 9999; i++) {
+//        $.get('http://localhost:' + i, function (response) {
+//            console.log("test port:"+i+" = "+response);
+//        });
+//    }
+//})();
+
 
 
 // this works TO

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 import org.springframework.data.repository.CrudRepository;
 import ro.duoline.promed.domains.DayTimeEvent;
+import ro.duoline.promed.enums.EventStatus;
 
 /**
  *
@@ -23,11 +24,15 @@ public interface DateTimeEventRepository extends CrudRepository<DayTimeEvent, In
 //    public List<DayTimeEvent> findByStartDateLike(Date date);
 //    public List<DayTimeEvent> findByUserIdAndStarDatetLike(Integer userId, Date date);
 //    public List<DayTimeEvent> findWhereEventBeginLike(String date);
-
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartGreaterThanEqual(Integer id, String start);
 //    public Collection<? extends DayTimeEvent> findTop10ByUserIdAndStartGreaterThanEqual(Integer id, String start);
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartGreaterThanEqualAndEndLessThanEqual(Integer id, String start,String end);
-    public Collection<? extends DayTimeEvent> findByUserIdAndStartDateBetween(Integer id, Date start,Date end);
+    public Collection<? extends DayTimeEvent> findByUserIdAndStartDateBetween(Integer id, Date start, Date end);
+
+//    public Collection<? extends DayTimeEvent> findByUserIdAndClientIdAndStartDateBetween(Integer id, Integer clientId, Date start, Date end);
+
+    public Collection<? extends DayTimeEvent> findByUserIdAndStatusAndStartDateBetween(Integer id, EventStatus status, Date start, Date end);
+//    public Collection<? extends DayTimeEvent> findByUserIdAndClientIdAndStartDateBetween(Integer id, Integer clientId, Date start, Date end);
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartDBetween(Integer id, String start,String end);
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartLikeOrEndLike(Integer id, String start, String end);
 //    public Collection<? extends DayTimeEvent> findBetweenByUserIdAndStartLikeAndEndLike(Integer id, String start, String end);
@@ -35,6 +40,7 @@ public interface DateTimeEventRepository extends CrudRepository<DayTimeEvent, In
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartLikeLimit(Integer id, String start, Integer limit);
 
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartGreaterThanEqualAndEndLesThanEqual(Integer id, String start, String end);
+    public Collection<? extends DayTimeEvent> findByStartDateBetween(Date sD, Date eD);
 
-
+//    public Collection<? extends DayTimeEvent> findByUserIdAndClientIdAndStartDateBetween(Integer id, Date sD, Date eD);
 }

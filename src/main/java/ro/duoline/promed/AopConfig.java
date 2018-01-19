@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *
  * @author I.T.W764
  */
+//@ComponentScan  = @Include(MyConfig.class)
 @Configuration
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = true)//AOP

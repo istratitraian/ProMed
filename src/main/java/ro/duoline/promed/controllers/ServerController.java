@@ -12,16 +12,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import ro.duoline.promed.SecurityConfig;
-import ro.duoline.promed.commands.EventsToJson;
+import ro.duoline.promed.converters.EventsToJson;
 import ro.duoline.promed.commands.UserMedicForm;
 import ro.duoline.promed.controllers.pagenav.PageNav;
 import ro.duoline.promed.converters.UserFormToUser;
@@ -48,7 +51,7 @@ import ro.duoline.promed.domains.Specialization;
 import ro.duoline.promed.domains.User;
 import ro.duoline.promed.domains.UsersSpecializations;
 import ro.duoline.promed.domains.json.JsonEvent;
-import ro.duoline.promed.enums.EvenStatus;
+import ro.duoline.promed.enums.EventStatus;
 import ro.duoline.promed.jpa.DateTimeEventRepository;
 import ro.duoline.promed.jpa.PictureRepository;
 import ro.duoline.promed.jpa.RoleRepository;
@@ -76,6 +79,9 @@ public class ServerController {
     @Resource(name = "newUserFormValidator")
     private Validator newUserFormValidator;
 
+    @Resource(name = "passwordEncoder")
+    PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserToUserForm userToUserForm;
 
@@ -93,6 +99,9 @@ public class ServerController {
 
     @Autowired
     private DateTimeEventRepository dateTimeEventRepository;
+    public static final long SERVER_CLIENT_TIME = 1800000;//30 min in mls
+    public static final int MAX_WORK_HOUR = 18;
+    public static final int START_WORK_HOUR = 9;
 
     @CrossOrigin
     @GetMapping("/server/calendar/jsonrest/get/{eventId}")
@@ -109,13 +118,11 @@ public class ServerController {
         return null;
     }
 
-    @CrossOrigin
     @GetMapping("/server/calendar/jsonrest")
     @ResponseBody
     public List<JsonEvent> getJsonEvents(Principal principal,
             @RequestParam(required = false) String start,
-            @RequestParam(required = false) String end
-    ) {
+            @RequestParam(required = false) String end) {
         List<DayTimeEvent> dateEvents = new ArrayList<>();
         if (principal != null) {
             User user = userRepository.findByUsername(principal.getName());
@@ -138,6 +145,157 @@ public class ServerController {
         System.out.println("- - - - " + start + " dateEvents : " + dateEvents.size());
 
         return new EventsToJson(dateEvents).getJsonEvents();
+    }
+
+//    @CrossOrigin
+    @GetMapping("/server/calendar/jsonclient/{serverId}")
+    @ResponseBody
+    public List<JsonEvent> getJsonClientEvents(
+            @PathVariable Integer serverId,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end) throws ParseException {
+
+        List<DayTimeEvent> dateEvents = new ArrayList<>();
+
+        User server = userRepository.findOne(serverId);
+        if (server != null) {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date dStart = new Date();
+
+            Date sD = (Date) dateFormat.parse(dateFormat.format(dStart));
+            Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
+
+            dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), sD, eD));
+
+            Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
+
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            });
+
+            List<DayTimeEvent> clientEvents = new ArrayList<>();
+
+            System.out.println("dStart.getHours() = " + dStart.getHours());
+            if (dateEvents.isEmpty()) {
+                for (int i = 0; i < 20 && dStart.getHours() < MAX_WORK_HOUR && dStart.getHours() >= START_WORK_HOUR; i++) {
+                    DayTimeEvent event = new DayTimeEvent();
+                    event.setDescription("Consultatie Nume Prenume");
+                    event.setStartDate(dStart);
+                    Date dEnd = new Date(dStart.getTime() + SERVER_CLIENT_TIME);
+                    event.setEndDate(dEnd);
+                    event.setUser(server);
+                    event.setStatus(EventStatus.ACTIVE);
+                    clientEvents.add(event);
+                    dStart = dEnd;
+                }
+            } else {
+                Date dNextStart = dateEvents.get(0).getStartDate();
+                long diff = dNextStart.getTime() - dStart.getTime();
+
+                while (diff >= SERVER_CLIENT_TIME && dStart.getHours() < MAX_WORK_HOUR && dStart.getHours() >= START_WORK_HOUR) {
+                    DayTimeEvent event = new DayTimeEvent();
+                    event.setDescription("Consultatie Nume Prenume");
+                    event.setStartDate(dStart);
+                    Date dNextEnd = new Date(dStart.getTime() + SERVER_CLIENT_TIME);
+                    event.setEndDate(dNextEnd);
+                    event.setUser(server);
+                    event.setStatus(EventStatus.ACTIVE);
+                    clientEvents.add(event);
+                    diff -= SERVER_CLIENT_TIME;
+                    dStart = dNextEnd;
+                }
+
+                Date dNextEnd = dateEvents.get(0).getEndDate();
+
+                for (int i = 1; i < dateEvents.size(); i++) {
+                    dNextStart = dateEvents.get(i).getStartDate();
+                    diff = dNextStart.getTime() - dNextEnd.getTime();
+                    while (diff >= SERVER_CLIENT_TIME && dNextEnd.getHours() < MAX_WORK_HOUR && dNextEnd.getHours() >= START_WORK_HOUR) {
+                        DayTimeEvent event = new DayTimeEvent();
+                        event.setDescription("Consultatie Nume Prenume");
+                        event.setStartDate(dNextEnd);
+                        Date dEnd = new Date(dNextEnd.getTime() + SERVER_CLIENT_TIME);
+                        event.setEndDate(dEnd);
+                        event.setUser(server);
+                        event.setStatus(EventStatus.ACTIVE);
+                        clientEvents.add(event);
+                        diff -= SERVER_CLIENT_TIME;
+                        dNextEnd = dEnd;
+                    }
+                    dNextEnd = dateEvents.get(i).getEndDate();
+                }
+            }
+
+            dateTimeEventRepository.save(clientEvents);
+
+            clientEvents = new ArrayList<>();
+            
+            clientEvents.addAll(dateTimeEventRepository.findByUserIdAndStatusAndStartDateBetween(server.getId(),EventStatus.ACTIVE, sD, eD));
+            
+            System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
+            return new EventsToJson(clientEvents).getJsonEvents();
+        }
+        return null;
+    }
+
+    @PostMapping("/server/calendar/jsonclient/save/{serverId}")
+//    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Void> saveClientEvent(@RequestBody JsonEvent event, @PathVariable Integer serverId) throws ParseException {
+
+        User server = userRepository.findOne(serverId);
+
+        if (server != null) {
+
+            DayTimeEvent dayTimeEvent = dateTimeEventRepository.findOne(event.getId());
+            System.out.println("saveClientEvent(" + event + ") exists = " + (dayTimeEvent != null));
+            User client = null;
+
+            if (dayTimeEvent != null) {
+                client = dayTimeEvent.getClient();
+                dateTimeEventRepository.delete(event.getId());
+            }
+            dayTimeEvent = new DayTimeEvent();
+            dayTimeEvent.setDescription(
+                    String.format("%s%n%s %s%n%s%n%s",
+                            event.getTitle(), event.getFirstName(), event.getLastName(),
+                            event.getPhoneNumber(), event.getEmail()));
+
+            Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date sD = (Date) dateFormat.parseObject(event.getStart());
+            Date eD = (Date) dateFormat.parseObject(event.getEnd());
+            dayTimeEvent.setStartDate(sD);
+            dayTimeEvent.setEndDate(eD);
+            dayTimeEvent.setStatus(EventStatus.REZERVED);
+            dayTimeEvent.setUser(server);
+
+            if (client == null) {
+                client = new User();
+                client.setPhoneNumber(event.getPhoneNumber());
+                client.setEncryptedPassword(passwordEncoder.encode("pass"));
+                String userName = event.getFirstName() + event.getLastName() + event.getId();
+                client.setUsername(userName);
+                client.setFirstName(event.getFirstName());
+                client.setLastName(event.getLastName());
+                client.addAuthority(SecurityConfig.AUTHORITY_CLIENT);
+                client.setEmail(event.getEmail());
+                System.out.println("new Client " + client);
+
+            } else {
+                System.out.println("existentClient " + client);
+                client.setPhoneNumber(event.getPhoneNumber());
+                client.setFirstName(event.getFirstName());
+                client.setLastName(event.getLastName());
+                client.setEmail(event.getEmail());
+            }
+            userRepository.save(client);
+
+            dayTimeEvent.setClient(client);
+
+            dateTimeEventRepository.save(dayTimeEvent);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
 //    @CrossOrigin
@@ -183,7 +341,7 @@ public class ServerController {
             dayTimeEvent.setEndDate(eD);
 //            dayTimeEvent.setStart(event.getStart());
 //            dayTimeEvent.setEnd(event.getEnd());
-            dayTimeEvent.setStatus(EvenStatus.REZERVED);
+            dayTimeEvent.setStatus(EventStatus.REZERVED);
             dayTimeEvent.setUser(user);
 //          dayTimeEvent.setClient(client);
             dateTimeEventRepository.save(dayTimeEvent);

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ro.duoline.promed.commands.EventsToJson;
+import ro.duoline.promed.converters.EventsToJson;
 import ro.duoline.promed.domains.json.JsonEvent;
 
 @Controller
