@@ -24,9 +24,9 @@ $(document).ready(function () {
             dataType: 'text', //to get success use text
             success: function (result, status, xhr) {
                 console.log(e.id + ", " + e.title + " CREATED : ");
-                CALR.fullCalendar('updateEvent', e);
+//                CALR.fullCalendar('updateEvent', e);
                 CALR.fullCalendar('removeEvents');
-                CALR.fullCalendar('refetchEvents');
+//                CALR.fullCalendar('refetchEvents');
             }
         });
 
@@ -53,12 +53,14 @@ $(document).ready(function () {
             var isEdited = false;
             var editBtn = $('#editBtn');
             editBtn.unbind();
+            editBtn.text("Rezerva");
             editBtn.attr('disabled', true);
             var delBtn = $('#delBtn');
+            delBtn.hide();
             delBtn.unbind();
 
             var title = $('#modalTitle');
-            title.css('width', '100%').val(event.title);
+            title.css('width', '100%').val(event.id+" "+event.title);
             var start = $('#modalStart');
             start.css('width', '100%').attr("readonly", '').val(event.start.format('YYYY-MM-DD HH:mm'));
             var end = $('#modalEnd');
@@ -76,20 +78,20 @@ $(document).ready(function () {
 
             $('#fullCalClient').modal();
 
-            delBtn.click(function () {
-                $.ajax({
-                    url: "http://localhost:8080/server/calendar/jsonrest/delete",
-                    type: "delete",
-                    contentType: "application/json",
-                    dataType: 'text', //to get success use text
-                    data: JSON.stringify({id: event.id}),
-                    success: function (result, status, xhr) {
-                        console.log(event.id + " DELETED : ");
-                        CALR.fullCalendar('removeEvents', event.id);
-                    }
-                });
-                isEdited = false;
-            });
+//            delBtn.click(function () {
+//                $.ajax({
+//                    url: "http://localhost:8080/server/calendar/jsonrest/delete",
+//                    type: "delete",
+//                    contentType: "application/json",
+//                    dataType: 'text', //to get success use text
+//                    data: JSON.stringify({id: event.id}),
+//                    success: function (result, status, xhr) {
+//                        console.log(event.id + " DELETED : ");
+//                        CALR.fullCalendar('removeEvents', event.id);
+//                    }
+//                });
+//                isEdited = false;
+//            });
 
 
             editBtn.click(function () {
@@ -111,7 +113,8 @@ $(document).ready(function () {
             function edit() {
                 editBtn.attr('disabled', false);
                 isEdited = true;
-            };
+            }
+            ;
 
             title.keyup(edit);
             start.keyup(edit);
@@ -154,6 +157,7 @@ $(document).ready(function () {
                 $('#calendar').fullCalendar('unselect');
             }
         },
+        timeFormat: 'H(:mm)',
         allDaySlot: false,
         nowIndicator: true,
         lazyFetching: true, //default true 
@@ -202,7 +206,8 @@ $(document).ready(function () {
                 titleFormat: 'DD MMMM YYYY'
             },
             week: {// name of view
-                titleFormat: 'MMMM YYYY'
+                titleFormat: 'MMMM YYYY',
+                columnFormat: 'ddd D - M'
             },
             listYear: {
                 titleFormat: 'YYYY'

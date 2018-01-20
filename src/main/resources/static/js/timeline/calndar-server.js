@@ -19,7 +19,7 @@ $(document).ready(function () {
             contentType: "application/json",
             dataType: 'text', //to get success use text
             success: function (result, status, xhr) {
-                console.log(e.id+", "+e.title + " CREATED : ");
+                console.log(e.id + ", " + e.title + " CREATED : ");
                 CALR.fullCalendar('updateEvent', e);
                 CALR.fullCalendar('removeEvents');
                 CALR.fullCalendar('refetchEvents');
@@ -180,6 +180,7 @@ $(document).ready(function () {
                 $('#calendar').fullCalendar('unselect');
             }
         },
+        timeFormat: 'H(:mm)',
         allDaySlot: false,
         nowIndicator: true,
         lazyFetching: true, //default true 
@@ -228,7 +229,8 @@ $(document).ready(function () {
                 titleFormat: 'DD MMMM YYYY'
             },
             week: {// name of view
-                titleFormat: 'MMMM YYYY'
+                titleFormat: 'MMMM YYYY',
+                columnFormat:'ddd D - M'
             },
             listYear: {
                 titleFormat: 'YYYY'

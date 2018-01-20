@@ -42,5 +42,7 @@ public interface DateTimeEventRepository extends CrudRepository<DayTimeEvent, In
 //    public Collection<? extends DayTimeEvent> findByUserIdAndStartGreaterThanEqualAndEndLesThanEqual(Integer id, String start, String end);
     public Collection<? extends DayTimeEvent> findByStartDateBetween(Date sD, Date eD);
 
+    public void deleteByClientId(Integer id);
+    
 //    public Collection<? extends DayTimeEvent> findByUserIdAndClientIdAndStartDateBetween(Integer id, Date sD, Date eD);
 }

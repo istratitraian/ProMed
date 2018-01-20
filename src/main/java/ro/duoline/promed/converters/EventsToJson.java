@@ -27,21 +27,23 @@ public class EventsToJson {
     public List<JsonEvent> getJsonEvents() {
 
         jsonEvents = new ArrayList<>(events.size());
-        events.forEach((event) -> {
-            jsonEvents.add(new JsonEvent(event));
-        });
+        try {
+            events.forEach((event) -> {
+                jsonEvents.add(new JsonEvent(event));
+            });
+        } catch (Exception e) {
+        }
 
         return jsonEvents;
     }
 
-    public List<JsonEvent> getJsonClientEvents() {
-
-        jsonEvents = new ArrayList<>(events.size());
-        events.forEach((event) -> {
-            jsonEvents.add(new JsonEvent(event, true));
-        });
-
-        return jsonEvents;
-    }
-
+//    public List<JsonEvent> getJsonClientEvents() {
+//
+//        jsonEvents = new ArrayList<>(events.size());
+//        events.forEach((event) -> {
+//            jsonEvents.add(new JsonEvent(event, true));
+//        });
+//
+//        return jsonEvents;
+//    }
 }

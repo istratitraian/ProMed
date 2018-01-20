@@ -25,23 +25,26 @@ public class JsonEvent implements Serializable {
     }
 
     public JsonEvent(DayTimeEvent event) {
-        this(event, false);
+        Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        this.start = dateFormat.format(event.getStartDate());
+        this.end = dateFormat.format(event.getEndDate());
+        this.id = event.getId();
         this.title = event.getDescription();
 
     }
 
-    public JsonEvent(DayTimeEvent event, boolean isClient) {
-
-        Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        this.title = "";
-        this.start = dateFormat.format(event.getStartDate());
-        this.end = dateFormat.format(event.getEndDate());
-        this.id = event.getId();
-//        this.phoneNumber = event.getClient().getPhoneNumber();
-//        this.firstName = event.getClient().getFirstName();
-//        this.lastName = event.getClient().getLastName();
-//        this.email = event.getClient().getEmail();
-    }
+//    public JsonEvent(DayTimeEvent event, boolean isClient) {
+//
+//        Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        this.start = dateFormat.format(event.getStartDate());
+//        this.end = dateFormat.format(event.getEndDate());
+//        this.id = event.getId();
+//        this.title = "";
+////        this.phoneNumber = event.getClient().getPhoneNumber();
+////        this.firstName = event.getClient().getFirstName();
+////        this.lastName = event.getClient().getLastName();
+////        this.email = event.getClient().getEmail();
+//    }
 
     public String getFirstName() {
         return firstName;

@@ -1,7 +1,13 @@
 package ro.duoline.promed;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import java.text.Format;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import ro.duoline.promed.jpa.SpecializationRepository;
@@ -141,10 +147,20 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
         userRepository.save(userList);
         usersSpecializationsRepository.save(usersSpechsList);
 
-        addDayEventsToMedic(13, 2, "2018-01-05");
+        LocalDate localDate = LocalDate.now();//today.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        addDayEventsToMedic(13, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-//        addDayEventsToMedic(12, 2, new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        if (localDate.getDayOfWeek().getValue() == 7) {
+            localDate = localDate.plusDays(1);
+        } else if (localDate.getDayOfWeek().getValue() == 6) {
+            localDate = localDate.plusDays(2);
+        }
+        String pattern = "yyyy-MM-dd";
+
+        addDayEventsToMedic(13, 2, localDate.format(DateTimeFormatter.ofPattern(pattern)));
+        addDayEventsToMedic(13, 2, localDate.plusDays(1).format(DateTimeFormatter.ofPattern(pattern)));
+        addDayEventsToMedic(13, 2, localDate.plusDays(2).format(DateTimeFormatter.ofPattern(pattern)));
+        addDayEventsToMedic(13, 2, localDate.plusDays(3).format(DateTimeFormatter.ofPattern(pattern)));
+        addDayEventsToMedic(13, 2, localDate.plusDays(4).format(DateTimeFormatter.ofPattern(pattern)));
 
         addDayEventsToMedic(12, 2, "2018-01-01");
         addDayEventsToMedic(12, 2, "2018-01-02");
@@ -180,7 +196,6 @@ public class PopulateTablesJPA implements ApplicationListener<ContextRefreshedEv
             event.setStartDate(start);
             event.setEndDate(end);
             dateEvents.add(event);
-
 
             for (int i = 1; i < 5; i++) {
                 event = new DayTimeEvent();
