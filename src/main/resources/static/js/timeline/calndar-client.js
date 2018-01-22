@@ -53,18 +53,14 @@ $(document).ready(function () {
             var isEdited = false;
             var editBtn = $('#editBtn');
             editBtn.unbind();
-            editBtn.text("Rezerva");
             editBtn.attr('disabled', true);
-            var delBtn = $('#delBtn');
-            delBtn.hide();
-            delBtn.unbind();
 
             var title = $('#modalTitle');
             title.css('width', '100%').val(event.id+" "+event.title);
             var start = $('#modalStart');
-            start.css('width', '100%').attr("readonly", '').val(event.start.format('YYYY-MM-DD HH:mm'));
+            start.text(event.start.format('YYYY-MM-DD HH:mm'));
             var end = $('#modalEnd');
-            end.css('width', '100%').attr("readonly", '').val(event.end.format('YYYY-MM-DD HH:mm'));
+            end.text(event.end.format('YYYY-MM-DD HH:mm'));
 
             var firstName = $('#modalFirstName');
             firstName.css('width', '100%').val(event.firstName);
@@ -77,21 +73,6 @@ $(document).ready(function () {
 
 
             $('#fullCalClient').modal();
-
-//            delBtn.click(function () {
-//                $.ajax({
-//                    url: "http://localhost:8080/server/calendar/jsonrest/delete",
-//                    type: "delete",
-//                    contentType: "application/json",
-//                    dataType: 'text', //to get success use text
-//                    data: JSON.stringify({id: event.id}),
-//                    success: function (result, status, xhr) {
-//                        console.log(event.id + " DELETED : ");
-//                        CALR.fullCalendar('removeEvents', event.id);
-//                    }
-//                });
-//                isEdited = false;
-//            });
 
 
             editBtn.click(function () {

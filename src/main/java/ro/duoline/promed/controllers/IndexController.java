@@ -8,12 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 import java.util.List;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import ro.duoline.promed.converters.EventsToJson;
 import ro.duoline.promed.domains.json.JsonEvent;
 
 @Controller
@@ -27,22 +21,22 @@ public class IndexController {
     }
 
 //    @CrossOrigin
-//    @GetMapping("/rest")
-//    @ResponseBody
-//    public List<JsonEvent> rest(Model model) {
-//
-//        List<JsonEvent> objs = new ArrayList<>();
-//
-//        for (int i = 0; i < 5; i++) {
-//            JsonEvent obj = new JsonEvent();
-//            obj.setTitle("obj " + i);
-//            obj.setStart("2018-01-0" + i + "T1" + i + ":00:00");
-//            obj.setEnd("2018-01-0" + i + "T1" + i + ":30:00");
-//
-//            objs.add(obj);
-//        }
-//        return objs;
-//    }
+    @GetMapping("/rest")
+    @ResponseBody
+    public List<JsonEvent> rest(Model model) {
+
+        List<JsonEvent> objs = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            JsonEvent obj = new JsonEvent();
+            obj.setTitle("obj " + i);
+            obj.setStart("2018-01-0" + i + "T1" + i + ":00:00");
+            obj.setEnd("2018-01-0" + i + "T1" + i + ":30:00");
+
+            objs.add(obj);
+        }
+        return objs;
+    }
 
 //    @CrossOrigin
 //    @PostMapping("/rest")

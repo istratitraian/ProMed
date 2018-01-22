@@ -15,4 +15,6 @@ public class ProMedApplication
     public static void main(String[] args) {
         SpringApplication.run(ProMedApplication.class, args);
     }
+    
+    
 }
