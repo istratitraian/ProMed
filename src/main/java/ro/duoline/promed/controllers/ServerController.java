@@ -11,17 +11,14 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,7 +163,7 @@ public class ServerController {
     public List<JsonEvent> getJsonClientEvents(
             @PathVariable Integer serverId,
             @RequestParam(required = false) String start,
-            @RequestParam(required = false) String end) {
+            @RequestParam(required = false) String end) throws ParseException {
 
         List<DayTimeEvent> clientEvents = new ArrayList<>();
 
@@ -174,86 +171,67 @@ public class ServerController {
         List<DayTimeEvent> dateEvents = new ArrayList<>();
         User server = userRepository.findOne(serverId);
 
-        try {
+        if (server != null) {
 
-            if (server != null) {
+            Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-                Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dNow = new Date();
 
-                Date dNow = new Date();
+            Date sD = (Date) dateFormat.parseObject(dateFormat.format(dNow));
+            Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
 
-                Date sD = (Date) dateFormat.parseObject(dateFormat.format(dNow));
-                Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
+            dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), sD, eD));
 
-                dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), sD, eD));
+            Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
 
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            });
 
-                Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
-
-                    return o1.getStartDate().compareTo(o2.getStartDate());
-                });
-
-                if (dateEvents.isEmpty()) {
-                } else {
+            if (dateEvents.isEmpty()) {
+            } else {
 //                String pattern = "yyyy-MM-dd";
 //                localDate.format(DateTimeFormatter.ofPattern(pattern));
 
-                    long diff;
-                    Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
-                            dateFormat.format(dNow) + " 9:00"
-                    ) : dNow;
+                long diff;
+                Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
+                        dateFormat.format(dNow) + " 9:00"
+                ) : dNow;
 
-                    for (DayTimeEvent dateEvent : dateEvents) {
-                        Date dStart = dateEvent.getStartDate();
+                for (DayTimeEvent dateEvent : dateEvents) {
+                    Date dStart = dateEvent.getStartDate();
 
 //                    if(isWorkingDay(dStart.toString())){
-                        diff = dStart.getTime() - dEnd.getTime();
+                    diff = dStart.getTime() - dEnd.getTime();
 //                        System.out.println(" ---->>>" + dStart + " dEnd = " + dEnd);
 
-                        while (diff >= SERVER_CLIENT_TIME) {
-                            DayTimeEvent event = new DayTimeEvent();
-                            event.setStartDate(dEnd);
-                            event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
+                    while (diff >= SERVER_CLIENT_TIME) {
+                        DayTimeEvent event = new DayTimeEvent();
+                        event.setStartDate(dEnd);
+                        event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
 
-                            Calendar calendarStart = Calendar.getInstance();
-                            calendarStart.setTime(event.getStartDate());
-                            Calendar calendarEnd = Calendar.getInstance();
-                            calendarEnd.setTime(event.getEndDate());
+                        Calendar calendarStart = Calendar.getInstance();
+                        calendarStart.setTime(event.getStartDate());
+                        Calendar calendarEnd = Calendar.getInstance();
+                        calendarEnd.setTime(event.getEndDate());
 
-                            if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
-                                    && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
+                        if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
+                                && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
 //                            System.out.println("while diff = " + diff + ", start = " + event.getStartDate() + ", end = " + event.getEndDate());
-                                event.setDescription("Consultatie Nume Prenume pre");
-                                event.setUser(server);
-                                event.setStatus(EventStatus.ACTIVE);
-                                clientEvents.add(event);
-                            }
-                            diff -= SERVER_CLIENT_TIME;
-                            dEnd = event.getEndDate();
+                            event.setDescription("Consultatie Nume Prenume pre");
+                            event.setUser(server);
+                            event.setStatus(EventStatus.ACTIVE);
+                            clientEvents.add(event);
                         }
-                        dEnd = dateEvent.getEndDate();
+                        diff -= SERVER_CLIENT_TIME;
+                        dEnd = event.getEndDate();
                     }
-//                }
+                    dEnd = dateEvent.getEndDate();
                 }
-//            if (tempEvents != null) {
-//                dateTimeEventRepository.delete(tempEvents);
-//            }
-////
-//            dateTimeEventRepository.save(clientEvents);
-//            tempEvents = new ArrayList<>(clientEvents);
-//
-//            clientEvents.clear();
-//////
-//            clientEvents.addAll(dateTimeEventRepository.findByUserIdAndStatusAndStartDateBetween(server.getId(), EventStatus.ACTIVE, sD, eD));
-                System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
             }
-        } catch (Exception e) {
-            System.err.println("getJSonClient " + e);
+            System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
         }
-//        }
 
         return new EventsToJson(clientEvents).getJsonEvents();
-//        return new EventsToJson(dateEvents).getJsonEvents();
     }
 
     @CrossOrigin
