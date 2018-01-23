@@ -42,7 +42,7 @@ $(document).ready(function () {
 
         eventRender: function (event, element, view) {
             if (event !== null) {
-                element.css('background-color', 'green');
+                element.css('background-color', '#090');
 //                element.hide();
 //                element.disable(true);
 //                element.attr('disabled','true');
@@ -57,7 +57,8 @@ $(document).ready(function () {
             editBtn.attr('disabled', true);
 
             var title = $('#modalTitle');
-            title.css('width', '100%').val(event.id+" "+event.title);
+            title.css('width', '100%').val("");//.val(event.title);
+//            title.attr("placeholder","Cosnsultatie Descriere");
             var start = $('#modalStart');
             start.text(event.start.format('YYYY-MM-DD HH:mm'));
             var end = $('#modalEnd');
@@ -124,22 +125,22 @@ $(document).ready(function () {
                 $('#calendar').fullCalendar('changeView', 'agendaDay', date.format('YYYY-MM-DD'));
             }
         },
-        select: function (start, end) {
-            if (!isMontSelected) {
-                var title = prompt('Event Title:');
-                var ev;
-                if (title) {
-                    ev = {
-                        title: title,
-                        start: start,
-                        end: end
-                    };
-                    saveEvent(ev);
-//                    CALR.fullCalendar('renderEvent', ev, false); // stick? = true
-                }
-                $('#calendar').fullCalendar('unselect');
-            }
-        },
+//        select: function (start, end) {
+//            if (!isMontSelected) {
+//                var title = prompt('Event Title:');
+//                var ev;
+//                if (title) {
+//                    ev = {
+//                        title: title,
+//                        start: start,
+//                        end: end
+//                    };
+//                    saveEvent(ev);
+////                    CALR.fullCalendar('renderEvent', ev, false); // stick? = true
+//                }
+//                $('#calendar').fullCalendar('unselect');
+//            }
+//        },
         timeFormat: 'H(:mm)',
         allDaySlot: false,
         nowIndicator: true,

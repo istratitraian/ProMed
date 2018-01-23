@@ -193,39 +193,40 @@ public class ServerController {
 //                localDate.format(DateTimeFormatter.ofPattern(pattern));
 
                 long diff;
-                Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
-                        dateFormat.format(dNow) + " 9:00"
-                ) : dNow;
-
+//                Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
+//                        dateFormat.format(dNow) + " 9:00"
+//                ) : dNow;
+                Date dEnd = dNow;
                 for (DayTimeEvent dateEvent : dateEvents) {
                     Date dStart = dateEvent.getStartDate();
 
-//                    if(isWorkingDay(dStart.toString())){
-                    diff = dStart.getTime() - dEnd.getTime();
+                    if (dStart.getTime() > new Date().getTime()) {
+                        diff = dStart.getTime() - dEnd.getTime();
 //                        System.out.println(" ---->>>" + dStart + " dEnd = " + dEnd);
 
-                    while (diff >= SERVER_CLIENT_TIME) {
-                        DayTimeEvent event = new DayTimeEvent();
-                        event.setStartDate(dEnd);
-                        event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
+                        while (diff >= SERVER_CLIENT_TIME) {
+                            DayTimeEvent event = new DayTimeEvent();
+                            event.setStartDate(dEnd);
+                            event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
 
-                        Calendar calendarStart = Calendar.getInstance();
-                        calendarStart.setTime(event.getStartDate());
-                        Calendar calendarEnd = Calendar.getInstance();
-                        calendarEnd.setTime(event.getEndDate());
+                            Calendar calendarStart = Calendar.getInstance();
+                            calendarStart.setTime(event.getStartDate());
+                            Calendar calendarEnd = Calendar.getInstance();
+                            calendarEnd.setTime(event.getEndDate());
 
-                        if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
-                                && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
+                            if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
+                                    && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
 //                            System.out.println("while diff = " + diff + ", start = " + event.getStartDate() + ", end = " + event.getEndDate());
-                            event.setDescription("Consultatie Nume Prenume pre");
-                            event.setUser(server);
-                            event.setStatus(EventStatus.ACTIVE);
-                            clientEvents.add(event);
+                                event.setDescription("Consultatie Nume Prenume pre");
+                                event.setUser(server);
+                                event.setStatus(EventStatus.ACTIVE);
+                                clientEvents.add(event);
+                            }
+                            diff -= SERVER_CLIENT_TIME;
+                            dEnd = event.getEndDate();
                         }
-                        diff -= SERVER_CLIENT_TIME;
-                        dEnd = event.getEndDate();
+                        dEnd = dateEvent.getEndDate();
                     }
-                    dEnd = dateEvent.getEndDate();
                 }
             }
             System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
@@ -289,15 +290,15 @@ public class ServerController {
             dayTimeEvent.setClient(client);
 
             dateTimeEventRepository.save(dayTimeEvent);
-
-            if (tempEvents != null) {
-                try {
-                    dateTimeEventRepository.delete(tempEvents);
-                    dateTimeEventRepository.deleteByClientId(null);
-                } catch (Exception e) {
-                    System.err.println("saveClientEvent ERROR " + e);
-                }
-            }
+//
+//            if (tempEvents != null) {
+//                try {
+//                    dateTimeEventRepository.delete(tempEvents);
+//                    dateTimeEventRepository.deleteByClientId(null);
+//                } catch (Exception e) {
+//                    System.err.println("saveClientEvent ERROR " + e);
+//                }
+//            }
 
             return ResponseEntity.status(HttpStatus.OK).build();
         }
