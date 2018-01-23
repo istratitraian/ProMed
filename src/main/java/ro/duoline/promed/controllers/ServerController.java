@@ -153,102 +153,110 @@ public class ServerController {
 
     public static boolean isWorkingDay(String text) {
         LocalDate localNow = LocalDate.parse(text.split(" ")[0]);
-        
-        System.out.println("isWorkingDay "+localNow+", text = "+text);
+
+        System.out.println("isWorkingDay " + localNow + ", text = " + text);
         return (localNow.getDayOfWeek().getValue() != 7 && localNow.getDayOfWeek().getValue() != 6);
     }
 
     private List<DayTimeEvent> tempEvents;
 
-//    @CrossOrigin
+    @CrossOrigin
     @GetMapping("/server/calendar/jsonclient/{serverId}")
     @ResponseBody
     public List<JsonEvent> getJsonClientEvents(
             @PathVariable Integer serverId,
             @RequestParam(required = false) String start,
-            @RequestParam(required = false) String end) throws ParseException {
+            @RequestParam(required = false) String end) {
 
         List<DayTimeEvent> clientEvents = new ArrayList<>();
 
 //        if (localNow.getDayOfWeek().getValue() != 7 && localNow.getDayOfWeek().getValue() != 6) {
+        List<DayTimeEvent> dateEvents = new ArrayList<>();
         User server = userRepository.findOne(serverId);
-        if (server != null) {
-            List<DayTimeEvent> dateEvents = new ArrayList<>();
 
-            Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
 
-            Date dNow = new Date();
+            if (server != null) {
 
-            Date sD = (Date) dateFormat.parseObject(dateFormat.format(dNow));
-            Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
+                Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), sD, eD));
+                Date dNow = new Date();
 
-            Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
+                Date sD = (Date) dateFormat.parseObject(dateFormat.format(dNow));
+                Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
 
-                return o1.getStartDate().compareTo(o2.getStartDate());
-            });
+                dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), sD, eD));
 
-            if (dateEvents.isEmpty()) {
-            } else {
+
+                Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
+
+                    return o1.getStartDate().compareTo(o2.getStartDate());
+                });
+
+                if (dateEvents.isEmpty()) {
+                } else {
 //                String pattern = "yyyy-MM-dd";
 //                localDate.format(DateTimeFormatter.ofPattern(pattern));
 
-                long diff;
-                Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
-                        dateFormat.format(dNow) + " 9:00"
-                ) : dNow;
+                    long diff;
+                    Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
+                            dateFormat.format(dNow) + " 9:00"
+                    ) : dNow;
 
-                for (DayTimeEvent dateEvent : dateEvents) {
-                    Date dStart = dateEvent.getStartDate();
-                    
+                    for (DayTimeEvent dateEvent : dateEvents) {
+                        Date dStart = dateEvent.getStartDate();
+
 //                    if(isWorkingDay(dStart.toString())){
-                        
-                    diff = dStart.getTime() - dEnd.getTime();
-                    System.out.println(" ---->>>" + dStart + " dEnd = " + dEnd);
+                        diff = dStart.getTime() - dEnd.getTime();
+//                        System.out.println(" ---->>>" + dStart + " dEnd = " + dEnd);
 
-                    while (diff >= SERVER_CLIENT_TIME) {
-                        DayTimeEvent event = new DayTimeEvent();
-                        event.setStartDate(dEnd);
-                        event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
+                        while (diff >= SERVER_CLIENT_TIME) {
+                            DayTimeEvent event = new DayTimeEvent();
+                            event.setStartDate(dEnd);
+                            event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
 
-                        Calendar calendarStart = Calendar.getInstance();
-                        calendarStart.setTime(event.getStartDate());
-                        Calendar calendarEnd = Calendar.getInstance();
-                        calendarEnd.setTime(event.getEndDate());
+                            Calendar calendarStart = Calendar.getInstance();
+                            calendarStart.setTime(event.getStartDate());
+                            Calendar calendarEnd = Calendar.getInstance();
+                            calendarEnd.setTime(event.getEndDate());
 
-                        if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
-                                && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
-                            System.out.println("while diff = " + diff + ", start = " + event.getStartDate() + ", end = " + event.getEndDate());
-                            event.setDescription("Consultatie Nume Prenume pre");
-                            event.setUser(server);
-                            event.setStatus(EventStatus.ACTIVE);
-                            clientEvents.add(event);
+                            if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
+                                    && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
+//                            System.out.println("while diff = " + diff + ", start = " + event.getStartDate() + ", end = " + event.getEndDate());
+                                event.setDescription("Consultatie Nume Prenume pre");
+                                event.setUser(server);
+                                event.setStatus(EventStatus.ACTIVE);
+                                clientEvents.add(event);
+                            }
+                            diff -= SERVER_CLIENT_TIME;
+                            dEnd = event.getEndDate();
                         }
-                        diff -= SERVER_CLIENT_TIME;
-                        dEnd = event.getEndDate();
+                        dEnd = dateEvent.getEndDate();
                     }
-                    dEnd = dateEvent.getEndDate();
-                }
 //                }
-            }
-            if (tempEvents != null) {
-                dateTimeEventRepository.delete(tempEvents);
-            }
-//
-            dateTimeEventRepository.save(clientEvents);
-            tempEvents = new ArrayList<>(clientEvents);
-
-            clientEvents.clear();
+                }
+//            if (tempEvents != null) {
+//                dateTimeEventRepository.delete(tempEvents);
+//            }
 ////
-            clientEvents.addAll(dateTimeEventRepository.findByUserIdAndStatusAndStartDateBetween(server.getId(), EventStatus.ACTIVE, sD, eD));
-            System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
+//            dateTimeEventRepository.save(clientEvents);
+//            tempEvents = new ArrayList<>(clientEvents);
+//
+//            clientEvents.clear();
+//////
+//            clientEvents.addAll(dateTimeEventRepository.findByUserIdAndStatusAndStartDateBetween(server.getId(), EventStatus.ACTIVE, sD, eD));
+                System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
+            }
+        } catch (Exception e) {
+            System.err.println("getJSonClient " + e);
         }
 //        }
 
         return new EventsToJson(clientEvents).getJsonEvents();
+//        return new EventsToJson(dateEvents).getJsonEvents();
     }
 
+    @CrossOrigin
     @PostMapping("/server/calendar/jsonclient/save/{serverId}")
 //    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<Void> saveClientEvent(@RequestBody JsonEvent event, @PathVariable Integer serverId) throws ParseException {
@@ -309,7 +317,7 @@ public class ServerController {
                     dateTimeEventRepository.delete(tempEvents);
                     dateTimeEventRepository.deleteByClientId(null);
                 } catch (Exception e) {
-                    System.err.println("saveClientEvent ERROR "+e);
+                    System.err.println("saveClientEvent ERROR " + e);
                 }
             }
 
@@ -318,7 +326,7 @@ public class ServerController {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
-//    @CrossOrigin
+    @CrossOrigin
     @DeleteMapping("/server/calendar/jsonrest/delete")
     @ResponseStatus(value = HttpStatus.OK)
 //    public ResponseEntity<Void> deleteEvent(@RequestBody JsonEvent ev, Principal principal) {
@@ -338,7 +346,7 @@ public class ServerController {
 //        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-//    @CrossOrigin
+    @CrossOrigin
     @PostMapping("/server/calendar/jsonrest/save")
     @ResponseStatus(value = HttpStatus.OK)
     public void saveEvent(@RequestBody JsonEvent event, Principal principal) throws ParseException {

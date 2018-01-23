@@ -11,7 +11,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'post',
-            url: 'http://localhost:8080/server/calendar/jsonrest/save', //'?_csrf=' + $('meta[name="_csrf"]').attr('content'),
+            url: '/server/calendar/jsonrest/save', //'?_csrf=' + $('meta[name="_csrf"]').attr('content'),
             data: JSON.stringify({id: e.id, title: e.title,
                 start: moment(e.start).format("YYYY-MM-DD HH:mm"),
                 end: moment(e.end).format("YYYY-MM-DD HH:mm")
@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     var CALR = $('#calendar').fullCalendar({
 //        dragScroll: false,
-        events: 'http://localhost:8080/server/calendar/jsonrest',
+        events: '/server/calendar/jsonrest',
 
         eventRender: function (event, element, view) {
             if (event.allDay === 'true') {
@@ -67,7 +67,7 @@ $(document).ready(function () {
 
             delBtn.click(function () {
                 $.ajax({
-                    url: "http://localhost:8080/server/calendar/jsonrest/delete",
+                    url: "/server/calendar/jsonrest/delete",
                     type: "delete",
                     contentType: "application/json",
                     dataType: 'text', //to get success use text
@@ -124,7 +124,7 @@ $(document).ready(function () {
 //                $('#calendar').fullCalendar('changeView', 'agendaDay', moment(date, 'YYYY-MM-DD').format());
 //                $('#calendar').fullCalendar('changeView', 'agendaDay', moment(time, 'YYYY-MM-DD', true).format());
             }
-//                $.getJSON('http://localhost:8080/server/calendar/jsonrest/' + moment(time, 'MM/DD/YYYY', true).format(), function (data) {
+//                $.getJSON('/server/calendar/jsonrest/' + moment(time, 'MM/DD/YYYY', true).format(), function (data) {
 //                    this.events = data;
 ////                    $('#calendar').fullCalendar('removeEvents');
 ////                    $('#calendar').fullCalendar('renderEvents', this.events, true);

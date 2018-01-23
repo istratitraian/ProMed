@@ -8,13 +8,13 @@ $(document).ready(function () {
 
 
     function saveEvent(e) {
-
+            console.log('saveEvent '+e.start+", end "+e.end);
         $.ajax({
             type: 'post',
-            url: 'http://localhost:8080/server/calendar/jsonclient/save/13', //'?_csrf=' + $('meta[name="_csrf"]').attr('content'),
-            data: JSON.stringify({id: e.id, title: e.title,
-                start: moment(e.start).format("YYYY-MM-DD HH:mm"),
-                end: moment(e.end).format("YYYY-MM-DD HH:mm"),
+            url: '/server/calendar/jsonclient/save/13', //'?_csrf=' + $('meta[name="_csrf"]').attr('content'),
+            data: JSON.stringify({title: e.title,
+                start: e.start,//moment(e.start).format("YYYY-MM-DD HH:mm"),
+                end: e.end,//moment(e.end).format("YYYY-MM-DD HH:mm"),
                 firstName: e.firstName,
                 lastName: e.lastName,
                 phoneNumber: e.phone,
@@ -26,22 +26,23 @@ $(document).ready(function () {
                 console.log(e.id + ", " + e.title + " CREATED : ");
 //                CALR.fullCalendar('updateEvent', e);
                 CALR.fullCalendar('removeEvents');
-//                CALR.fullCalendar('refetchEvents');
+                CALR.fullCalendar('refetchEvents');
             }
         });
 
 //         location.reload();
     }
 
+                
 
 
     var CALR = $('#calendar').fullCalendar({
 //        dragScroll: false,
-        events: 'http://localhost:8080/server/calendar/jsonclient/13', // /serverId
+        events: '/server/calendar/jsonclient/13', // /serverId
 
         eventRender: function (event, element, view) {
             if (event !== null) {
-                element.css('background-color', 'red');
+                element.css('background-color', 'green');
 //                element.hide();
 //                element.disable(true);
 //                element.attr('disabled','true');
@@ -77,9 +78,10 @@ $(document).ready(function () {
 
             editBtn.click(function () {
                 if (isEdited) {
+                    
                     event.title = title.val();
-                    event.start = start.val();
-                    event.end = end.val();
+                    event.start = event.start.format('YYYY-MM-DD HH:mm');
+                    event.end = event.end.format('YYYY-MM-DD HH:mm');
                     event.firstName = firstName.val();
                     event.lastName = lastName.val();
                     event.phoneNumber = phone.val();

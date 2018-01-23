@@ -32,18 +32,23 @@ public class EventsToJson {
                 jsonEvents.add(new JsonEvent(event));
             });
         } catch (Exception e) {
+            System.err.println("EnventToJson.gtJsonEvents() "+e);
         }
 
         return jsonEvents;
     }
 
-//    public List<JsonEvent> getJsonClientEvents() {
-//
-//        jsonEvents = new ArrayList<>(events.size());
-//        events.forEach((event) -> {
-//            jsonEvents.add(new JsonEvent(event, true));
-//        });
-//
-//        return jsonEvents;
-//    }
+    public List<JsonEvent> getJsonClientEvents() {
+
+        jsonEvents = new ArrayList<>(events.size());
+        events.forEach((event) -> {
+            JsonEvent jsonEv = new JsonEvent();
+//            jsonEv.setTitle(event.getDescription());
+//            jsonEv.setStart(event.getStartDate());
+//            jsonEv.setTitle(event.getDescription());
+            jsonEvents.add(jsonEv);
+        });
+
+        return jsonEvents;
+    }
 }
