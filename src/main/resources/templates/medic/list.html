@@ -10,6 +10,15 @@
 
             <div th:if="${not #lists.isEmpty(medics)}">
 
+                <!--<div sec:authorize="!isAuthenticated()" >-->
+                <script src='../static/js/angular/moment.min.js'></script>
+                <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
+                <script src='../static/js/timeline/fullcalendar.js'></script>
+
+                <script src="../static/js/timeline/calndar-client.js"></script>
+
+
+
                 <div th:include="fragments/page-nav :: page-nav-top"></div>
 
                 <!--<table class="table table-striped">-->
@@ -44,6 +53,11 @@
                             <table>
                                 <tr> <td th:text="${medic.firstName}+'  '+${medic.lastName}"></td></tr>
                                 <tr> <td><a th:href="@{'/medic/show/' + ${medic.id}}">Detalii</a> </td></tr>
+                                <!--<tr> <td><a href="" onclick="clientCalendar('${medic.id}')"><span class="icon"><i class="glyphicon glyphicon-calendar"></i></span></a> </td></tr>-->
+                                <!--th:onclick="'javascript:upload(' + ${gallery} + ')'"-->
+                                <tr> <td><a href="" 
+                                            th:onclick="'javascript:clientCalendar('+${medic.id}+')'"
+                                            ><span class="icon"><i class="glyphicon glyphicon-calendar"></i></span></a> </td></tr>
                             </table>
                         </td>
                         <!--<td th:text="${medic.lastName}"></td>-->
@@ -59,6 +73,47 @@
 
                     </tr>
                 </table>
+
+
+
+
+
+
+
+
+                <div id='calendar' class="modal fade"></div>
+
+
+                <div id="fullCalClient" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4  class="modal-title">
+                                    <!--<label >Descriere</label>-->
+                                    <textarea id="modalTitle"
+                                              placeholder="Descriere rezervare"
+                                              rows="6" cols="50" style="resize: vertical;"></textarea>
+
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modalStart"></p>
+                                <p id="modalEnd"></p>
+                                <input type="text" placeholder="Nume"  id="modalFirstName"/>
+                                <input type="text" placeholder="Prenume"  id="modalLastName"/>
+                                <input type="text" placeholder="Telefon"  id="modalPhone"/>
+                                <input type="text" placeholder="Email"  id="modalEmail"/>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info" data-dismiss="modal" id="editBtn" >Rezerva</button>
+                                <!--<button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>-->
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Renunta</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--</div>-->
 
                 <div th:include="fragments/page-nav :: page-nav-bottom"></div>
 

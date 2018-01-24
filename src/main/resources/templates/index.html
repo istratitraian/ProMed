@@ -7,7 +7,7 @@
     </head>
     <body>
         <nav  id="navbar" th:replace="fragments/navbar :: navbar"></nav>
-
+        <h2>UPDATE</h2>
         <main class=" margin-top100-bottom150" >
             <div class="container container-shadowed padding-botom-20 padding-top-20px"  >
 
@@ -19,10 +19,10 @@
                     <script src='../static/js/loginCrsrfTest.js'></script>
                 </div>-->
 
-                <script src='../static/js/angular/moment.min.js'></script>
+<!--                <script src='../static/js/angular/moment.min.js'></script>
                 <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
-                <script src='../static/js/timeline/fullcalendar.js'></script>
-                <div sec:authorize="!isAuthenticated()" >
+                <script src='../static/js/timeline/fullcalendar.js'></script>-->
+<!--                <div sec:authorize="!isAuthenticated()" >
 
                     <script src="../static/js/timeline/calndar-client.js"></script>
                     <div id='calendar'></div>
@@ -33,7 +33,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4  class="modal-title">
-                                        <!--<label >Descriere</label>-->
+                                        <label >Descriere</label>
                                         <textarea id="modalTitle"
                                                   placeholder="Descriere rezervare"
                                                   rows="6" cols="50" style="resize: vertical;"></textarea>
@@ -50,14 +50,14 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-info" data-dismiss="modal" id="editBtn" >Rezerva</button>
-                                    <!--<button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>-->
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Renunta</button>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                </div>
+                </div>-->
 
 
                 <ul>
@@ -72,9 +72,9 @@
 
 
                 <div sec:authorize="isAuthenticated()" >
-                    <!--                    <script src='../static/js/angular/moment.min.js'></script>
-                                        <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
-                                        <script src='../static/js/timeline/fullcalendar.js'></script>-->
+                    <script src='../static/js/angular/moment.min.js'></script>
+                    <link rel='stylesheet' href='../static/css/timeline/fullcalendar.css' />
+                    <script src='../static/js/timeline/fullcalendar.js'></script>
                     <div sec:authorize="hasAuthority('MEDIC')" >
                         <script src="../static/js/timeline/calndar-server.js"></script>
                     </div>
