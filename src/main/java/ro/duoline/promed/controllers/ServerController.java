@@ -148,14 +148,6 @@ public class ServerController {
         return new EventsToJson(dateEvents).getJsonEvents();
     }
 
-    public static boolean isWorkingDay(String text) {
-        LocalDate localNow = LocalDate.parse(text.split(" ")[0]);
-
-        System.out.println("isWorkingDay " + localNow + ", text = " + text);
-        return (localNow.getDayOfWeek().getValue() != 7 && localNow.getDayOfWeek().getValue() != 6);
-    }
-
-    private List<DayTimeEvent> tempEvents;
 
     @CrossOrigin
     @GetMapping("/server/calendar/jsonclient/{serverId}")
