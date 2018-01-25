@@ -9,20 +9,17 @@ $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content')}}
 //    $('#calendar').fullCalendar('refetchEvents');
 //});
 
-var serverId = -1;
 function clientCalendar(id) {
-    serverId = id;
-//     $("#calendar").remove();
 
-//    $('#clientCalendar').modal();
-//    $("#calendar").fullCalendar({
-//        reloadEvents: '/server/calendar/jsonclient/' + serverId // /serverId
-//    });
-    $('#calendar').fullCalendar('removeEvents');
-    $("#calendar").fullCalendar('addEventSource', '/server/calendar/jsonclient/' + id);
-    $('#calendar').fullCalendar('render');
-//    $('#calendar').fullCalendar('refetchEvents');
-
+    $('#clientCalendar').show();
+    var CAL = $('#calendar');
+//    CAL.fullCalendar( 'destroy' );// destroy calendar
+    CAL.fullCalendar('removeEventSources');
+//    CAL.fullCalendar( 'unselect' );
+//    $('#calendar').fullCalendar('option', 'scrollTime', new Date());
+    CAL.fullCalendar('addEventSource', '/server/calendar/jsonclient/' + id);
+    CAL.fullCalendar('render');
+//    CAL.focus();
 
     console.log("clientCalnedar(" + id + ")");
 
@@ -32,8 +29,14 @@ $(document).ready(function () {
 
     var isMontSelected = false;
 
-    $("#calendar").fullCalendar({
-        events: '/server/calendar/jsonclient/' + serverId, // /serverId
+    $('#calendar').fullCalendar({
+
+//        buttonIcons: {
+//            prev: 'circle-triangle-w',
+//            next: 'circle-triangle-e'
+//        },
+
+//        events: '/server/calendar/jsonclient/' + serverId, // /serverId
 //        events: function (start, end, timezone, callback) {
 //            $("#calendar").fullCalendar('removeEvents');
 ////            $("#calendar").fullCalendar({
@@ -67,8 +70,6 @@ $(document).ready(function () {
             if (event !== null) {
                 element.css('background-color', '#090');
 //                element.hide();
-//                element.disable(true);
-//                element.attr('disabled','true');
             }
         },
 
@@ -160,23 +161,25 @@ $(document).ready(function () {
                 $('#calendar').fullCalendar('changeView', 'agendaDay', date.format('YYYY-MM-DD'));
             }
         },
+        scrollTime: new Date(),
         timeFormat: 'H(:mm)',
         allDaySlot: false,
         nowIndicator: true,
         lazyFetching: true, //default true 
         timezone: "local",
-        height: 900,
+        height: 600,
+//        aspectRatio: 2,
         handleWindowResize: true,
-        //contentHeight: 500,
+        contentHeight: 500,
         header: {
             left: 'prevYear title nextYear',
             center: 'today',
             right: 'prev,agendaDay,agendaFiveDay,agendaWeek,month,next'
         },
         footer: {
-            left: 'prev,today,next',
-            center: 'title',
-            right: 'basicWeek,basicDay,listWeek,listMonth,listYear'
+            left: '',
+            center: '',
+            right: ''
         },
         firstDay: 1, //Luni
         // weekends: false, // sat, sun remove

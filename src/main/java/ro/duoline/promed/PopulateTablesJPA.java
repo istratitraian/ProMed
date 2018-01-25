@@ -1,13 +1,9 @@
 package ro.duoline.promed;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
-import java.text.Format;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import ro.duoline.promed.jpa.SpecializationRepository;

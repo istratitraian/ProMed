@@ -10,7 +10,6 @@ import java.security.Principal;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -148,7 +147,6 @@ public class ServerController {
         return new EventsToJson(dateEvents).getJsonEvents();
     }
 
-
     @CrossOrigin
     @GetMapping("/server/calendar/jsonclient/{serverId}")
     @ResponseBody
@@ -205,8 +203,9 @@ public class ServerController {
                             calendarStart.setTime(event.getStartDate());
                             Calendar calendarEnd = Calendar.getInstance();
                             calendarEnd.setTime(event.getEndDate());
-
-                            if (calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
+                            System.out.println("startDate " + event.getStartDate() + " >= " + new Date(new Date().getTime() + SERVER_CLIENT_TIME));
+                            if (event.getStartDate().getTime() >= new Date().getTime() + SERVER_CLIENT_TIME
+                                    && calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
                                     && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
 //                            System.out.println("while diff = " + diff + ", start = " + event.getStartDate() + ", end = " + event.getEndDate());
                                 event.setDescription("Consultatie Nume Prenume pre");
@@ -282,16 +281,6 @@ public class ServerController {
             dayTimeEvent.setClient(client);
 
             dateTimeEventRepository.save(dayTimeEvent);
-//
-//            if (tempEvents != null) {
-//                try {
-//                    dateTimeEventRepository.delete(tempEvents);
-//                    dateTimeEventRepository.deleteByClientId(null);
-//                } catch (Exception e) {
-//                    System.err.println("saveClientEvent ERROR " + e);
-//                }
-//            }
-
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();

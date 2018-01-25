@@ -11,7 +11,6 @@ public class JsonEvent implements Serializable {
     private String title;
     private String start;
     private String end;
-    private boolean allDay;
     private int id;
 //    private int clinetId;
 //    private int serverId;
@@ -73,13 +72,6 @@ public class JsonEvent implements Serializable {
         return id;
     }
 
-    public boolean isAllDay() {
-        return allDay;
-    }
-
-    public void setAllDay(boolean allDay) {
-        this.allDay = allDay;
-    }
 
     public String getTitle() {
         return title;
