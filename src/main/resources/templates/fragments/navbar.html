@@ -8,70 +8,75 @@
     <body>
 
         <!--<div th:fragment="navbar" >-->
-            <nav class="navbar navbar-expand-md navbar-inverse navbar-fixed-top "  role="navigation" th:fragment="navbar">
-                <!--<nav class="navbar navbar-inverse navbar-fixed-top"  role="navigation" th:fragment="navbar">-->
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbarId">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>                        
-                        </button>
-                        <a class="navbar-brand" href="#" th:href="@{/}">
-                            <span  id="appNameId1">
-                                Pro<span id="appNameId2">MED</span>
-                            </span>
-                        </a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="myNavbarId" >
-                        <ul class="nav navbar-nav">
-                            <li><a href="#" th:href="@{/specialization/list}">Specializari</a></li>
-                            <li><a href="#" th:href="@{/medic/list/1}">Doctori</a></li>
-                        </ul>
-
-                        
-                        <div class="col-sm-3 col-md-3">
-                            <!--th:object="${userMedicForm}"-->
-                            <form class="navbar-form" role="search" method="post"  th:action="@{/search}">
-                                <div class="input-group">
-                                    <input type="text" name="searchText" id="searchText" class="form-control" placeholder="Cauta Doctor, Specializare, Serviciu" />
-                                    <div class="input-group-btn">
-                                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+        <nav class="navbar navbar-expand-md navbar-inverse navbar-fixed-top "  role="navigation" th:fragment="navbar">
+            <!--<nav class="navbar navbar-inverse navbar-fixed-top"  role="navigation" th:fragment="navbar">-->
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbarId">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>
+                    <a class="navbar-brand" href="#" th:href="@{/}">
+                        <span  id="appNameId1">
+                            <span id="appNameId2">R</span>ezervari
+                        </span>
+                    </a>
 
 
-                        <ul class="nav navbar-nav navbar-right">
 
-                            <li sec:authorize="isAuthenticated()" class="dropdown" >
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span sec:authentication="principal.username">username</span>
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li  sec:authorize="hasAuthority('MEDIC')"><a id="username" href="" th:href="@{'/medic/info/' + ${#authentication.name}}" >
-                                            <span class="glyphicon glyphicon-info-sign"></span>&nbsp;Info</a>
-                                    </li>
-                                    <li sec:authorize="hasAuthority('USER')"><a id="username" href="" th:href="@{'/user/info/' + ${#authentication.name}}" >
-                                            <span class="glyphicon glyphicon-info-sign"></span>&nbsp;Info</a>
-                                    </li>
-
-
-                                    <li><a href="#" th:href="@{/logout}"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
-                                </ul>
-                            </li>
-
-
-                            <li sec:authorize="!isAuthenticated()"><a href="#" th:href="@{/login}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a></li>
-                            <li sec:authorize="!isAuthenticated()"><a href="#" th:href="@{/user/new}"><span class="glyphicon glyphicon-user"></span>&nbsp;Sign In</a></li>
-                            <!--<li><a href="#" th:href="@{/cart/}"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>-->
-
-                        </ul>
-                    </div>
                 </div>
-            </nav>
+                <div class="collapse navbar-collapse" id="myNavbarId" >
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" th:href="@{/specialization/list}">Specializari</a></li>
+                        <li><a href="#" th:href="@{/medic/list/1}">Doctori</a></li>
+                    </ul>
+
+                    <div class="col-sm-5 col-md-5 " >
+                        <!--th:object="${userMedicForm}"-->
+                        <form class="navbar-form" role="search" method="post"  th:action="@{/search}">
+                            <div class="input-group">
+                                <input type="text" name="searchText" id="searchText" class="form-control" placeholder="Cauta Doctor, Specializare, Serviciu" />
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <li sec:authorize="isAuthenticated()" class="dropdown" >
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span sec:authentication="principal.username">username</span>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li  sec:authorize="hasAuthority('MEDIC')"><a id="username" href="" th:href="@{'/medic/info/' + ${#authentication.name}}" >
+                                        <span class="glyphicon glyphicon-info-sign"></span>&nbsp;Info</a>
+                                </li>
+                                <li sec:authorize="hasAuthority('USER')"><a id="username" href="" th:href="@{'/user/info/' + ${#authentication.name}}" >
+                                        <span class="glyphicon glyphicon-info-sign"></span>&nbsp;Info</a>
+                                </li>
+
+
+                                <li><a href="#" th:href="@{/logout}"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
+                            </ul>
+                        </li>
+
+
+                        <li sec:authorize="!isAuthenticated()"><a href="#" th:href="@{/login}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a></li>
+                        <li sec:authorize="!isAuthenticated()"><a href="#" th:href="@{/user/new}"><span class="glyphicon glyphicon-user"></span>&nbsp;Sign In</a></li>
+                        <!--<li><a href="#" th:href="@{/cart/}"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>-->
+
+                    </ul>
+                </div>
+
+
+            </div>
+        </nav>
 
 
         <!--</div>-->

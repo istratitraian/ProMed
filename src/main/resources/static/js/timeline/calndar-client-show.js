@@ -2,21 +2,9 @@
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content')}});
 
 
-var serverId = -1;
-function clientCalendar(id) {
-    serverId = id;
-    $('#clientCalendar').show();
-    var CAL = $('#calendar');
-    CAL.fullCalendar('removeEventSources');
-    CAL.fullCalendar('addEventSource', '/server/calendar/jsonclient/' + id);
-    CAL.fullCalendar('render');
-    console.log("clientCalnedar(" + id + ")");
-}
 
 $(document).ready(function () {
-
     var isMontSelected = false;
-
     $('#calendar').fullCalendar({
         events: '/server/calendar/jsonclient/' + serverId,
         eventRender: function (event, element, view) {
@@ -24,10 +12,7 @@ $(document).ready(function () {
                 element.css('background-color', '#090');
             }
         },
-
         eventClick: function (e, element) {
-
-
             var isEdited = false;
             var isFName = false;
             var isLName = false;
@@ -54,9 +39,7 @@ $(document).ready(function () {
             var email = $('#modalEmail');
             email.css('width', '100%').val(e.email);
 
-
             $('#fullCalClient').modal();
-
 
             editBtn.click(function () {
                 if (isEdited) {

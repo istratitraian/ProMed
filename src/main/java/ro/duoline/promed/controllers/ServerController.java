@@ -100,7 +100,7 @@ public class ServerController {
     private DateTimeEventRepository dateTimeEventRepository;
     public static final long SERVER_CLIENT_TIME = 1800000;//30 min in mls
     public static final long MIN5 = 300000;
-    public static final int END_WORK_HOUR = 17;
+    public static final int END_WORK_HOUR = 18;
     public static final int START_WORK_HOUR = 9;
 
     @CrossOrigin
@@ -165,62 +165,73 @@ public class ServerController {
 
             Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            Date dNow = new Date();
+            Date startDay = (Date) dateFormat.parseObject(start.split("T")[0]);
+            Date dNow = startDay.getTime() > new Date().getTime() ? startDay : new Date();
+            Date dateNow = (Date) dateFormat.parseObject(dateFormat.format(dNow));
+            Date endDay = (Date) dateFormat.parseObject(end.split("T")[0]);
 
-            Date sD = (Date) dateFormat.parseObject(dateFormat.format(dNow));
-            Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
-
-            dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), sD, eD));
+            dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), dateNow, endDay));
 
             Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
-
                 return o1.getStartDate().compareTo(o2.getStartDate());
             });
 
-            if (dateEvents.isEmpty()) {
-            } else {
-//                String pattern = "yyyy-MM-dd";
-//                localDate.format(DateTimeFormatter.ofPattern(pattern));
+            for (DayTimeEvent dateEvent : dateEvents) {
+                Date dStart = dateEvent.getStartDate();
 
-                long diff;
-//                Date dEnd = dNow.getHours() < START_WORK_HOUR ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
-//                        dateFormat.format(dNow) + " 9:00"
-//                ) : dNow;
-                Date dEnd = dNow;
-                for (DayTimeEvent dateEvent : dateEvents) {
-                    Date dStart = dateEvent.getStartDate();
+                if (dStart.getTime() > new Date().getTime()) {
+                    long diff = dStart.getTime() - dNow.getTime();
 
-                    if (dStart.getTime() > new Date().getTime()) {
-                        diff = dStart.getTime() - dEnd.getTime();
-//                        System.out.println(" ---->>>" + dStart + " dEnd = " + dEnd);
+                    while (diff >= SERVER_CLIENT_TIME) {
+                        DayTimeEvent event = new DayTimeEvent();
+                        event.setStartDate(dNow);
+                        event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
 
-                        while (diff >= SERVER_CLIENT_TIME) {
-                            DayTimeEvent event = new DayTimeEvent();
-                            event.setStartDate(dEnd);
-                            event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
-
-                            Calendar calendarStart = Calendar.getInstance();
-                            calendarStart.setTime(event.getStartDate());
-                            Calendar calendarEnd = Calendar.getInstance();
-                            calendarEnd.setTime(event.getEndDate());
-                            System.out.println("startDate " + event.getStartDate() + " >= " + new Date(new Date().getTime() + SERVER_CLIENT_TIME));
-                            if (event.getStartDate().getTime() >= new Date().getTime() + SERVER_CLIENT_TIME
-                                    && calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
-                                    && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR) {
-//                            System.out.println("while diff = " + diff + ", start = " + event.getStartDate() + ", end = " + event.getEndDate());
-                                event.setDescription("Consultatie Nume Prenume pre");
-                                event.setUser(server);
-                                event.setStatus(EventStatus.ACTIVE);
-                                clientEvents.add(event);
-                            }
-                            diff -= SERVER_CLIENT_TIME;
-                            dEnd = event.getEndDate();
+                        Calendar calendarStart = Calendar.getInstance();
+                        calendarStart.setTime(event.getStartDate());
+                        Calendar calendarEnd = Calendar.getInstance();
+                        calendarEnd.setTime(event.getEndDate());
+                        if (event.getStartDate().getTime() >= new Date().getTime() + SERVER_CLIENT_TIME
+                                && calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
+                                && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR
+                                && calendarEnd.get(Calendar.HOUR_OF_DAY) != 0) {
+//                            System.out.println("start of work hour " + calendarStart.get(Calendar.HOUR_OF_DAY));
+//                            System.out.println("end of work hour " + calendarEnd.get(Calendar.HOUR_OF_DAY));
+                            event.setDescription("Consultatie Nume Prenume pre");
+                            event.setUser(server);
+                            event.setStatus(EventStatus.ACTIVE);
+                            clientEvents.add(event);
                         }
-                        dEnd = dateEvent.getEndDate();
+                        diff -= SERVER_CLIENT_TIME;
+                        dNow = event.getEndDate();
                     }
+                    dNow = dateEvent.getEndDate();
                 }
+            }//rof
+
+            long diff = endDay.getTime() - dNow.getTime();
+            while (diff >= SERVER_CLIENT_TIME) {
+                DayTimeEvent event = new DayTimeEvent();
+                event.setStartDate(dNow);
+                event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
+                Calendar calendarStart = Calendar.getInstance();
+                calendarStart.setTime(event.getStartDate());
+                Calendar calendarEnd = Calendar.getInstance();
+                calendarEnd.setTime(event.getEndDate());
+                if (event.getStartDate().getTime() >= new Date().getTime() + SERVER_CLIENT_TIME
+                        && calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
+                        && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR
+                        && calendarEnd.get(Calendar.HOUR_OF_DAY) != 0) {
+                    event.setDescription("Consultatie Nume Prenume post");
+                    event.setUser(server);
+                    event.setStatus(EventStatus.ACTIVE);
+                    clientEvents.add(event);
+                }
+                diff -= SERVER_CLIENT_TIME;
+                dNow = event.getEndDate();
             }
-            System.out.println("- - - - " + sD + ", now = " + eD + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
+
+            System.out.println("- - - - " + dateNow + ", now = " + endDay + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
         }
 
         return new EventsToJson(clientEvents).getJsonEvents();

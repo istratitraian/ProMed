@@ -11,17 +11,10 @@
             <div th:if="${not #lists.isEmpty(medics)}">
 
                 <!--<div sec:authorize="!isAuthenticated()" >-->
-                <link rel='stylesheet' href='../../static/css/timeline/fullcalendar.css' th:href="@{/static/css/timeline/fullcalendar.css}" />
-                <script src='../../static/js/timeline/moment.min.js' th:src="@{/static/js/timeline/moment.min.js}"></script>
-                <script src='../../static/js/timeline/fullcalendar.js' th:src="@{/static/js/timeline/fullcalendar.js}"></script>
-
-                <script src="../static/js/timeline/calndar-client.js" th:src="@{/static/js/timeline/calndar-client.js}"></script>
-
 
 
                 <div th:include="fragments/page-nav :: page-nav-top"></div>
 
-                <!--<table class="table table-striped">-->
                 <table class="table table-responsive">
                     <tr th:each="medic : ${medics}">
                         <td>
@@ -48,13 +41,10 @@
                             </div>
                         </td>
 
-                        <!--<td th:text="${medic.id}"></td>-->
                         <td>
                             <table>
                                 <tr> <td th:text="${medic.firstName}+'  '+${medic.lastName}"></td></tr>
                                 <tr> <td><a th:href="@{'/medic/show/' + ${medic.id}}">Detalii</a> </td></tr>
-                                <!--<tr> <td><a href="" onclick="clientCalendar('${medic.id}')"><span class="icon"><i class="glyphicon glyphicon-calendar"></i></span></a> </td></tr>-->
-                                <!--th:onclick="'javascript:upload(' + ${gallery} + ')'"-->
                                 <tr> <td><a href="#clientCalendar" role="button" data-toggle="modal"
                                             th:onclick="'javascript:clientCalendar('+${medic.id}+')'"
                                             ><span class="icon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -63,7 +53,6 @@
                                 </tr>
                             </table>
                         </td>
-                        <!--<td th:text="${medic.lastName}"></td>-->
 
                         <td>
                             <div th:if="${not #lists.isEmpty(medic.usersSpecializations)}">
@@ -77,57 +66,22 @@
                     </tr>
                 </table>
 
-
                 <div id="clientCalendar" class="modal fade"   aria-hidden="true" style="margin-top: 60px;">
-                    <!--<div class="modal-dialog">-->
                     <div class="modal-content container">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:red;">×</button>
                         </div>
                         <div class="modal-body" >
                             <div id="calendar"></div>
-
                         </div>
                     </div>
-                    <!--</div>-->
                 </div>
-
-                <div id="fullCalClient" class="modal fade">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4  class="modal-title">
-                                    <!--<label >Descriere</label>-->
-                                    <textarea id="modalTitle"
-                                              placeholder="Descriere rezervare"
-                                              rows="6" cols="50" style="resize: vertical;"></textarea>
-
-                                </h4>
-                            </div>
-                            <div class="modal-body">
-                                <p id="modalStart"></p>
-                                <p id="modalEnd"></p>
-                                <input type="text" placeholder="Nume"  id="modalFirstName"/>
-                                <input type="text" placeholder="Prenume"  id="modalLastName"/>
-                                <input type="text" placeholder="Telefon"  id="modalPhone"/>
-                                <input type="text" placeholder="Email"  id="modalEmail"/>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-info" data-dismiss="modal" id="editBtn" >Rezerva</button>
-                                <!--<button type="button" class="btn btn-danger" data-dismiss="modal" id="delBtn" >Elimina</button>-->
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Renunta</button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <!--</div>-->
 
                 <div th:include="fragments/page-nav :: page-nav-bottom"></div>
-
             </div>
-
         </div>
+
         <footer th:replace="fragments/footer :: footer"></footer>
+        <div th:include="fragments/client-calendar-res :: res" ></div>
     </body>
 </html>
