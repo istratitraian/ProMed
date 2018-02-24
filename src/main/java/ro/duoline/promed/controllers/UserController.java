@@ -10,6 +10,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import ro.duoline.promed.CacheExample;
 import ro.duoline.promed.SecurityConfig;
 import ro.duoline.promed.commands.UserForm;
 import ro.duoline.promed.converters.UserFormToUser;
@@ -35,8 +36,12 @@ public class UserController {
     @Resource(name = "editUserFormValidator")
     private Validator editUserFormValidator;
 
+    @Autowired
+    private CacheExample cacheExample;
+
     @GetMapping("/user/list")
     public String list(Model model) {
+        System.out.println("UserController.list() getCache() " + cacheExample.getCahce("T1"));
         System.out.println("UserController.list() " + userRepository.findAll());
         model.addAttribute("users", userRepository.findAll());
         return "user/list";

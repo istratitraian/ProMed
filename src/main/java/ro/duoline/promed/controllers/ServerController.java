@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Resource;
+import javax.cache.annotation.CacheKey;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,38 +73,38 @@ public class ServerController {
 //    private MessageSource messageSource;
     @Autowired
     private RoleRepository roleRepository;
-
+    
     @Resource(name = "editUserFormValidator")
     private Validator editUserFormValidator;
-
+    
     @Resource(name = "newUserFormValidator")
     private Validator newUserFormValidator;
-
+    
     @Resource(name = "passwordEncoder")
     PasswordEncoder passwordEncoder;
-
+    
     @Autowired
     private UserToUserForm userToUserForm;
-
+    
     @Autowired
     private UserRepository userRepository;
-
+    
     @Autowired
     private UserFormToUser userFormToUser;
-
+    
     @Autowired
     private SpecializationRepository specializationRepository;
-
+    
     @Autowired
     private UsersSpecializationsRepository usersSpecializationsRepository;
-
+    
     @Autowired
     private DateTimeEventRepository dateTimeEventRepository;
     public static final long SERVER_CLIENT_TIME = 1800000;//30 min in mls
     public static final long MIN5 = 300000;
     public static final int END_WORK_HOUR = 18;
     public static final int START_WORK_HOUR = 9;
-
+    
     @CrossOrigin
     @GetMapping("/server/calendar/jsonrest/get/{eventId}")
     @ResponseBody
@@ -111,13 +113,13 @@ public class ServerController {
         if (principal != null) {
 //            User user = userRepository.findByUsername(principal.getName());
             System.out.println("getJsonEvent(" + eventId + ")");
-
+            
             return new JsonEvent(dateTimeEventRepository.findOne(eventId));
         }
-
+        
         return null;
     }
-
+    
     @GetMapping("/server/calendar/jsonrest")
     @ResponseBody
     public List<JsonEvent> getJsonEvents(Principal principal,
@@ -131,22 +133,22 @@ public class ServerController {
                         + ", s:" + start.split("T")[0]
                         + " - " + end.split("T")[0] + ":e"
                         + " principal " + principal.getName());
-
+                
                 Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date sD = (Date) dateFormat.parseObject(start.split("T")[0]);
                 Date eD = (Date) dateFormat.parseObject(end.split("T")[0]);
-
+                
                 dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(user.getId(), sD, eD));
             } catch (NumberFormatException | ParseException e) {
                 System.out.println("ERROR ServerController.getCalendar(" + start + "), " + e);
             }
         }
-
+        
         System.out.println("- - - - " + start + " dateEvents : " + dateEvents.size());
-
+        
         return new EventsToJson(dateEvents).getJsonEvents();
     }
-
+    
     @CrossOrigin
     @GetMapping("/server/calendar/jsonclient/{serverId}")
     @ResponseBody
@@ -154,39 +156,39 @@ public class ServerController {
             @PathVariable Integer serverId,
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end) throws ParseException {
-
+        
         List<DayTimeEvent> clientEvents = new ArrayList<>();
 
 //        if (localNow.getDayOfWeek().getValue() != 7 && localNow.getDayOfWeek().getValue() != 6) {
         List<DayTimeEvent> dateEvents = new ArrayList<>();
         User server = userRepository.findOne(serverId);
-
+        
         if (server != null) {
-
+            
             Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
+            
             Date startDay = (Date) dateFormat.parseObject(start.split("T")[0]);
             Date dNow = startDay.getTime() > new Date().getTime() ? startDay : new Date();
             Date dateNow = (Date) dateFormat.parseObject(dateFormat.format(dNow));
             Date endDay = (Date) dateFormat.parseObject(end.split("T")[0]);
-
+            
             dateEvents.addAll(dateTimeEventRepository.findByUserIdAndStartDateBetween(server.getId(), dateNow, endDay));
-
+            
             Collections.sort(dateEvents, (DayTimeEvent o1, DayTimeEvent o2) -> {
                 return o1.getStartDate().compareTo(o2.getStartDate());
             });
-
+            
             for (DayTimeEvent dateEvent : dateEvents) {
                 Date dStart = dateEvent.getStartDate();
-
+                
                 if (dStart.getTime() > new Date().getTime()) {
                     long diff = dStart.getTime() - dNow.getTime();
-
+                    
                     while (diff >= SERVER_CLIENT_TIME) {
                         DayTimeEvent event = new DayTimeEvent();
                         event.setStartDate(dNow);
                         event.setEndDate(new Date(event.getStartDate().getTime() + SERVER_CLIENT_TIME));
-
+                        
                         Calendar calendarStart = Calendar.getInstance();
                         calendarStart.setTime(event.getStartDate());
                         Calendar calendarEnd = Calendar.getInstance();
@@ -195,8 +197,6 @@ public class ServerController {
                                 && calendarStart.get(Calendar.HOUR_OF_DAY) >= START_WORK_HOUR
                                 && calendarEnd.get(Calendar.HOUR_OF_DAY) < END_WORK_HOUR
                                 && calendarEnd.get(Calendar.HOUR_OF_DAY) != 0) {
-//                            System.out.println("start of work hour " + calendarStart.get(Calendar.HOUR_OF_DAY));
-//                            System.out.println("end of work hour " + calendarEnd.get(Calendar.HOUR_OF_DAY));
                             event.setDescription("Consultatie Nume Prenume pre");
                             event.setUser(server);
                             event.setStatus(EventStatus.ACTIVE);
@@ -230,26 +230,26 @@ public class ServerController {
                 diff -= SERVER_CLIENT_TIME;
                 dNow = event.getEndDate();
             }
-
+            
             System.out.println("- - - - " + dateNow + ", now = " + endDay + " getJsonClientEvents : " + clientEvents.size() + ", dbActiveEvents = " + dateEvents.size());
         }
-
+        
         return new EventsToJson(clientEvents).getJsonEvents();
     }
-
+    
     @CrossOrigin
     @PostMapping("/server/calendar/jsonclient/save/{serverId}")
 //    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<Void> saveClientEvent(@RequestBody JsonEvent event, @PathVariable Integer serverId) throws ParseException {
-
+        
         User server = userRepository.findOne(serverId);
-
+        
         if (server != null) {
-
+            
             DayTimeEvent dayTimeEvent = dateTimeEventRepository.findOne(event.getId());
             System.out.println("saveClientEvent(" + event + ") exists = " + (dayTimeEvent != null));
             User client = null;
-
+            
             if (dayTimeEvent != null) {
                 client = dayTimeEvent.getClient();
                 dateTimeEventRepository.delete(event.getId());
@@ -259,7 +259,7 @@ public class ServerController {
                     String.format("%s%n%s %s%n%s%n%s",
                             event.getTitle(), event.getFirstName(), event.getLastName(),
                             event.getPhoneNumber(), event.getEmail()));
-
+            
             Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date sD = (Date) dateFormat.parseObject(event.getStart());
             Date eD = (Date) dateFormat.parseObject(event.getEnd());
@@ -267,7 +267,7 @@ public class ServerController {
             dayTimeEvent.setEndDate(eD);
             dayTimeEvent.setStatus(EventStatus.REZERVED);
             dayTimeEvent.setUser(server);
-
+            
             if (client == null) {
                 client = new User();
                 client.setPhoneNumber(event.getPhoneNumber());
@@ -279,7 +279,7 @@ public class ServerController {
                 client.addAuthority(SecurityConfig.AUTHORITY_CLIENT);
                 client.setEmail(event.getEmail());
                 System.out.println("new Client " + client);
-
+                
             } else {
                 System.out.println("existentClient " + client);
                 client.setPhoneNumber(event.getPhoneNumber());
@@ -288,15 +288,15 @@ public class ServerController {
                 client.setEmail(event.getEmail());
             }
             userRepository.save(client);
-
+            
             dayTimeEvent.setClient(client);
-
+            
             dateTimeEventRepository.save(dayTimeEvent);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
-
+    
     @CrossOrigin
     @DeleteMapping("/server/calendar/jsonrest/delete")
     @ResponseStatus(value = HttpStatus.OK)
@@ -306,9 +306,9 @@ public class ServerController {
         if (principal != null) {
             User user = userRepository.findByUsername(principal.getName());
             DayTimeEvent event = dateTimeEventRepository.findOne(ev.getId());
-
+            
             if (Objects.equals(event.getUser().getId(), user.getId())) {
-
+                
                 System.out.println("user " + user.getUsername() + ", event = " + ev.getId() + " : DELETED");
                 dateTimeEventRepository.delete(ev.getId());
 //                return ResponseEntity.status(HttpStatus.OK).build();
@@ -316,14 +316,14 @@ public class ServerController {
         }
 //        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
+    
     @CrossOrigin
     @PostMapping("/server/calendar/jsonrest/save")
     @ResponseStatus(value = HttpStatus.OK)
     public void saveEvent(@RequestBody JsonEvent event, Principal principal) throws ParseException {
-
+        
         if (principal != null) {
-
+            
             DayTimeEvent dayTimeEvent = dateTimeEventRepository.findOne(event.getId());
             System.out.println("saveEvent(" + event + ") exists = " + (dayTimeEvent != null));
             User user = userRepository.findByUsername(principal.getName());
@@ -332,7 +332,7 @@ public class ServerController {
             }
             dayTimeEvent = new DayTimeEvent();
             dayTimeEvent.setDescription(event.getTitle());
-
+            
             Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date sD = (Date) dateFormat.parseObject(event.getStart());
             Date eD = (Date) dateFormat.parseObject(event.getEnd());
@@ -346,9 +346,9 @@ public class ServerController {
             dateTimeEventRepository.save(dayTimeEvent);
 //
         }
-
+        
     }
-
+    
     @GetMapping("/medic/info/{userName}")
     public String userInfo(@PathVariable String userName, Model model, Principal principal) {
         User user = userRepository.findByUsername(userName);
@@ -359,10 +359,18 @@ public class ServerController {
         model.addAttribute("medic", user);
         return "medic/show";
     }
-
+    
     private final PageNav pageNav = new PageNav(3, "/medic/list/");
     private List<User> userList;
-
+    
+//    @CacheResult(cacheName = "pageNavItems")
+    @Cacheable("pageNavItems")
+    public List<?> getPageNavItems(@CacheKey String key, Model model, Integer pageIndex) {
+        
+        System.out.println("PAGENAVITEMS "+key);
+        return pageNav.buildPageNav(model, pageIndex, userList);
+    }
+    
     @GetMapping("/medic/list/{page}")
     public String list(Model model, @PathVariable(name = "page", required = false) Integer pageIndex) {
 //        if (userList == null) {
@@ -370,32 +378,33 @@ public class ServerController {
         sortUsersById(userList);
 //        }
 
-        model.addAttribute("medics", pageNav.buildPageNav(model, pageIndex, userList));
+        model.addAttribute("medics", getPageNavItems("page_" + pageIndex, model, pageIndex));
+//        model.addAttribute("medics", pageNav.buildPageNav(model, pageIndex, userList));
         return "medic/list";
     }
-
+    
     public static List<User> sortUsersById(List<User> list) {
         Collections.sort(list, (User o1, User o2) -> o1.getId() > o2.getId() ? 1 : -1);
         return list;
     }
-
+    
     @GetMapping("/medic/show/{id}")
     public String getUser(@PathVariable Integer id, Model model, Principal principal) {
         User user = userRepository.findOne(id);
-
+        
         System.out.println("MedicController.getUser(" + id + ") user : " + user.getAuthorities()
                 + ", isMEdic=" + user.getAuthorities().contains(SecurityConfig.AUTHORITY_MEDIC)
         );
-
+        
         boolean isAuthorized = principal != null
                 && principal.getName().equals(user.getUsername())
                 && user.getAuthorities().contains(SecurityConfig.AUTHORITY_MEDIC);
-
+        
         model.addAttribute("isMedicAuthorized", isAuthorized);
         model.addAttribute("medic", user);
         return "medic/show";
     }
-
+    
     @GetMapping("/medic/edit/{id}")
 //    @PreAuthorize("#id == authentication.name")
     public String editGet(@PathVariable Integer id, Model model, Principal principal) {
@@ -407,10 +416,10 @@ public class ServerController {
         UserMedicForm userMedicForm = new UserMedicForm(userToUserForm.convert(user));
         userMedicForm.setSpecialization(user.getUsersSpecializations().toString().replaceFirst("\\[", "").replaceFirst("\\]", ""));
         model.addAttribute("userMedicForm", userMedicForm);
-
+        
         return "medic/medicformEdit";
     }
-
+    
     @PostMapping("/medic/edit")
     public String editUser(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
         editUserFormValidator.validate(userMedicForm, bindingResult);
@@ -419,13 +428,13 @@ public class ServerController {
         }
         return updateMedic(userMedicForm);
     }
-
+    
     @GetMapping("/admin/newmedic")
     public String newMedic(Model model) {
         model.addAttribute("userMedicForm", new UserMedicForm());
         return "medic/medicform";
     }
-
+    
     @PostMapping("/admin/newmedic")
     public String newMedic(@Valid UserMedicForm userMedicForm, BindingResult bindingResult) {
         newUserFormValidator.validate(userMedicForm, bindingResult);
@@ -434,12 +443,12 @@ public class ServerController {
         }
         return saveMedic(userMedicForm);
     }
-
+    
     @Autowired
     private PictureRepository pictureRepository;
-
+    
     private String saveMedic(UserMedicForm userMedicForm) {
-
+        
         String[] spechs = userMedicForm.getSpecialization().split(",");
         User u = userFormToUser.convert(userMedicForm);
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
@@ -456,9 +465,9 @@ public class ServerController {
                 System.err.println("Unable to get byte array from uploaded file.");
             }
         }
-
+        
         Set<UsersSpecializations> usersSpecializations = new HashSet<>();
-
+        
         for (String spech : spechs) {
             spech = spech.trim();
             Specialization specialization = specializationRepository.findByName(spech);
@@ -466,16 +475,16 @@ public class ServerController {
                 specialization = new Specialization(spech);
                 specializationRepository.save(specialization);
             }
-
+            
             usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
         }
-
+        
         usersSpecializationsRepository.save(usersSpecializations);
         return "redirect:/medic/show/" + savedUser.getId();
     }
-
+    
     private String updateMedic(UserMedicForm userMedicForm) {
-
+        
         String[] spechs = userMedicForm.getSpecialization().split(",");
         User u = userFormToUser.convert(userMedicForm);
         u.addAuthority(SecurityConfig.AUTHORITY_MEDIC);
@@ -493,13 +502,13 @@ public class ServerController {
                 System.err.println("Unable to get byte array from uploaded file.");
             }
         } else {
-
+            
             u.setProfileImage(pictureRepository.findByUserId(u.getId()));
             savedUser = userRepository.save(u);
         }
-
+        
         Set<UsersSpecializations> usersSpecializations = new HashSet<>();
-
+        
         for (String spech : spechs) {
             spech = spech.trim();
             Specialization specialization = specializationRepository.findByName(spech);
@@ -507,10 +516,10 @@ public class ServerController {
                 specialization = new Specialization(spech);
                 specializationRepository.save(specialization);
             }
-
+            
             usersSpecializations.add(new UsersSpecializations(savedUser, specialization));
         }
-
+        
         usersSpecializationsRepository.save(usersSpecializations);
         return "redirect:/medic/show/" + savedUser.getId();
     }

@@ -52,6 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         
         http
                 .authorizeRequests().antMatchers("/h2/**", "/h2-console/**").permitAll()
+                
+//                .and().authorizeRequests().antMatchers("/**").permitAll()//Actuator test mappings, beans, logs ,,,, //allAccess /health, /info
+                
                 .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
                 .and().authorizeRequests().antMatchers("/static/**").permitAll()
                 .and().authorizeRequests().antMatchers("/image/**").permitAll()

@@ -79,13 +79,16 @@
                 </form>
 
             </div>
-            <div id="calendar" class="col-sm-12"></div>
+            <!--<div sec:authorize="!isAuthenticated()">-->
+            <!--<div  th:if="!isMedicAuthorized">-->
+                <div id="calendar" class="col-sm-12"></div>
+                <div th:include="fragments/client-calendar-res :: show-res" ></div>
+            <!--</div>-->
         </div>
         <script th:inline="javascript">
             var serverId = /*[[${medic.id}]]*/ '0'; // DEFAULT IS 0
             console.log('medic/show serverId = ' + serverId);
         </script>
         <footer th:replace="fragments/footer :: footer"></footer>
-        <div th:include="fragments/client-calendar-res :: show-res" ></div>
     </body>
 </html>
