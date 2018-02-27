@@ -51,41 +51,44 @@ public class IndexControllerTest {
 
     @BeforeClass
     public static void setUpClass() {
+        System.out.println("BeforeClass");
+
     }
 
     @AfterClass
     public static void tearDownClass() {
+        System.out.println("AfterClass");
+
     }
 
     @Before
     public void setUp() {
+        System.out.println("Before every @Test");
+        assertThat(indexController).isNotNull();
+        assertThat(restTemplate).isNotNull();
+        assertThat(mockMvc).isNotNull();
     }
 
     @After
     public void tearDown() {
+        System.out.println("After");
     }
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void shouldReturnDefaultMessage() throws Exception {
-        this.mockMvc.perform(get("http://localhost:" + port + "/"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("html")))
-                ;
-    }
-
-    @Test
     public void contexLoads() throws Exception {
-        assertThat(indexController).isNotNull();
-        assertThat(restTemplate).isNotNull();
-        assertThat(mockMvc).isNotNull();
+        System.out.println("contexLoads()");
+        this.mockMvc.perform(get("http://localhost:" + port + "/"))
+                //                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("html")));
     }
 
     @Test
     public void testIndex() {
+        System.out.println("testIndex");
         String object = this.restTemplate.getForObject("http://localhost:" + port + "/", String.class);
         assertThat(object).contains("html");
     }
