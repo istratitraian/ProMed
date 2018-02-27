@@ -5,16 +5,27 @@
  */
 package ro.duoline.promed.controllers;
 
+import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
  *
  * @author I.T.W764
  */
 @Controller
+//@Transactional()
+
 public class AdminController {
 
+//@PropertySource()
+    @ExceptionHandler(IOException.class)
+    public void handleEx() {
+    }
 
-    
+    @Autowired
+    public AdminController() {
+    }
 
 }

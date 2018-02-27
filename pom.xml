@@ -22,10 +22,16 @@
     </properties>
     <dependencies>
         
+<!--        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+        </dependency>-->
+        
         <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
-            <version>1.0.0</version>
+            <!--<version>1.0.0</version>-->
         </dependency>
         
         <dependency>
@@ -69,11 +75,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
-        </dependency>-->
+        </dependency>
         
         
         <dependency>
@@ -135,11 +141,16 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         
-        <dependency>
+        <!--<dependency>-->
             <!--http:// links of actuator : localhost:8080/actuator -->
-            <groupId>org.springframework.boot</groupId>
+<!--            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
-        </dependency>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>

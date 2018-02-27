@@ -13,6 +13,7 @@ import ro.duoline.promed.domains.json.JsonEvent;
 @Controller
 public class IndexController {
 
+    
     @GetMapping("/")
     public String index(Model model) {
 
